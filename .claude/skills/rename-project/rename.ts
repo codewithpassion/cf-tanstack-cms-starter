@@ -60,12 +60,9 @@ const appFiles = async (pattern: string) => {
 // `"database_name":`, which gets its own rewrite below.
 const nameField = new RegExp(`("name":\\s*)"${oldName}"`);
 const heading = new RegExp(`^# ${oldTitle}$`, "m");
-// Also the staging database (`<name>-staging`); preview database names are
-// derived from the Worker name at deploy time.
-const databaseNameField = new RegExp(
-  `("database_name":\\s*)"${oldName}(-staging)?"`,
-  "g"
-);
+// TODO(cms-port): the D1 database is `<name>-cms`, the R2 bucket `<name>-cms-media`
+// and the KV namespaces `<name>-cms-*`; phase 5 extends this rewrite to cover them.
+const databaseNameField = new RegExp(`("database_name":\\s*)"${oldName}"`, "g");
 
 const rewrites: Rewrite[] = [
   {

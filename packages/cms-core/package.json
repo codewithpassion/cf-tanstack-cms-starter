@@ -1,22 +1,16 @@
 {
-  "name": "@repo/db",
+  "name": "@repo/cms-core",
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/schema.ts",
-    "./shared": "./src/shared.ts"
+    "./version": "./src/version.ts"
   },
   "scripts": {
-    "generate": "drizzle-kit generate",
     "test": "bun test",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "drizzle-orm": "^0.45.3"
-  },
   "devDependencies": {
     "@types/bun": "latest",
-    "drizzle-kit": "^0.31.11",
     "typescript": "^5.9.2"
   }
 }

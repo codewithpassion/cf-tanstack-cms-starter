@@ -2,45 +2,52 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "boilerplate",
   "compatibility_date": "2026-08-19",
-  "compatibility_flags": ["nodejs_compat"],
+  // global_fetch_strictly_public: the MCP OAuth server fetches Client ID Metadata Documents;
+  // @cloudflare/workers-oauth-provider refuses to without it (SSRF protection).
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "main": "src/server.ts",
   "observability": { "enabled": true },
+  // The Worker answers on https://<name>.<subdomain>.workers.dev. MCP OAuth tokens are bound to
+  // the host that issued them, so moving to a custom domain later means re-authorising MCP clients.
+  "workers_dev": true,
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "boilerplate",
+      "database_name": "boilerplate-cms",
       // Filled in by `wrangler d1 create` (the setup-cloudflare skill does it).
       // Local development ignores the value.
       "database_id": "local",
       "migrations_dir": "../../packages/db/migrations"
     }
   ],
-  "env": {
-    // The Worker every pull request preview hangs off (`boilerplate-staging`).
-    // Previews never touch production. See README "Pull request previews".
-    "staging": {
-      "preview_urls": true,
-      "d1_databases": [
-        {
-          "binding": "DB",
-          "database_name": "boilerplate-staging",
-          // Filled in by the setup-previews skill.
-          "database_id": "local",
-          "migrations_dir": "../../packages/db/migrations"
-        }
-      ],
-      // A preview inherits no bindings. Each PR gets its own D1 database:
-      // apps/web/scripts/preview.ts swaps these placeholders for it after the
-      // build. Never commit a real id here.
-      "previews": {
-        "d1_databases": [
-          {
-            "binding": "DB",
-            "database_name": "PREVIEW_DB_NAME_PLACEHOLDER",
-            "database_id": "PREVIEW_DB_ID_PLACEHOLDER"
-          }
-        ]
-      }
-    }
+  // The ids are filled in by `wrangler kv namespace create`. Local development ignores them.
+  "kv_namespaces": [
+    // Published page snapshots, one key per page, read on every public request.
+    { "binding": "CMS_PAGES", "id": "local" },
+    // MCP OAuth: clients, grants and tokens of @cloudflare/workers-oauth-provider.
+    { "binding": "OAUTH_KV", "id": "local" }
+  ],
+  // Uploaded media, served through /media/:id.
+  "r2_buckets": [
+    { "binding": "CMS_MEDIA", "bucket_name": "boilerplate-cms-media" }
+  ],
+  // Share images: Browser Run screenshots /og-render/*. In local dev BROWSER launches a local
+  // Chrome. On Linux hosts that restrict unprivileged user namespaces, run `CI=1 bun run dev`
+  // (miniflare adds --no-sandbox only then).
+  "browser": { "binding": "BROWSER" },
+  // Workers AI for the page agent's second provider. AI always runs remotely, also in local dev;
+  // CF_REMOTE_BINDINGS=0 (vite.config.ts) turns remote bindings off so `bun run dev` starts
+  // without a Cloudflare login.
+  "ai": { "binding": "AI", "remote": true },
+  // Daily Search Console sync. 18:00 UTC.
+  "triggers": { "crons": ["0 18 * * *"] },
+  "vars": {
+    // Shown in the site chrome and used as the MCP server name.
+    "SITE_NAME": "Boilerplate",
+    // Public origin for sitemap, canonical URLs and share images, e.g. "https://example.com".
+    // Empty means: use the origin of the request.
+    "SITE_ORIGIN": "",
+    // Search Console property for the daily sync, e.g. "sc-domain:example.com". Empty disables it.
+    "GSC_PROPERTY": ""
   }
 }
