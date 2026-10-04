@@ -2,7 +2,7 @@
 name: project-init
 description: Turn this boilerplate into a named project - asks for the name, renames, sets up Clerk auth, puts the name in the README, and connects Cloudflare for a first deploy.
 disable-model-invocation: true
-allowed-tools: AskUserQuestion, Skill, Bash(git:*), Bash(bun:*), Read, Edit, Write
+allowed-tools: AskUserQuestion, Skill, Bash(clerk:*), Bash(cp:*), Bash(git:*), Bash(bun:*), Read, Edit, Write
 ---
 
 # Initialise the project
@@ -36,9 +36,10 @@ Done when `git status` is clean and the commit names both the old and new name.
 The code for Clerk auth is already in the repo, and the admin area needs it, so
 there is no question to ask. What is left is a Clerk application and its keys.
 
-- Sign in to the Clerk CLI and pick or create the application: use the
-  `clerk-setup` skill, or `clerk apps create "<Display Name>" --json`, then
-  `clerk link --app <id>`, from the repo root.
+- Sign in to the Clerk CLI (`clerk whoami --json`; if needed ask the user to
+  run `! clerk auth login`), then pick or create the application with
+  `clerk apps list --json` / `clerk apps create "<Display Name>" --json`, and
+  `clerk link --app <id>`, all from the repo root.
 - `cp -n apps/web/.env.example apps/web/.env.local`, then
   `clerk env pull --app <id> --file apps/web/.env.local`. It fills two of the
   three key names; copy `CLERK_PUBLISHABLE_KEY` to `VITE_CLERK_PUBLISHABLE_KEY`
