@@ -51,9 +51,9 @@ One row per item of the build. Tick a row only with proof: the command that was 
 
 | Done | Item | Proof |
 | --- | --- | --- |
-| [ ] | Neutral SaaS theme (white/zinc, Inter, indigo accent, dark mode), generic header, footer and home fallback | |
-| [ ] | Seed content: Home, About, Pricing, Contact, 3 blog posts, nav, footer, swatches | |
-| [ ] | `docs/design.md` and the `restyle` skill | |
+| [x] | Neutral SaaS theme (white/zinc, Inter, indigo accent, dark mode), generic header, footer and home fallback | commit f6f6bac: brand tokens moved to `--color-brand-*`, border `cyber` renamed `glow`, admin on theme tokens, logo, favicon, share card; `apps/web`: `bunx tsc --noEmit` clean, `bun test` 433 pass; `bun run test` 4 tasks pass; `bun run build` ok, `grep -rIl drizzle dist/client` empty; `bunx ultracite check` clean; screenshots of home (light, dark, 390px), about, pricing, blog, post, `/admin/pages` and the editor checked in a headless browser |
+| [x] | Seed content: Home, About, Pricing, Contact, 3 blog posts, nav, footer, swatches | commit fee8f15: `starter-content.ts` builders, `importStarterContent` service and `cms.setup.importStarterContent` button on `/admin/setup`, `bun run seed`; run twice against local D1: second run skips all 7 pages; cms-core 512 and services 431 tests pass |
+| [x] | `docs/design.md` and the `restyle` skill | `docs/design.md` and `.claude/skills/restyle/SKILL.md` written; steps in both were run during this phase |
 
 ## Phase 5: Skills and docs
 
