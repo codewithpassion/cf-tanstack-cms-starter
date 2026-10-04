@@ -322,70 +322,74 @@ function AgentModelsEditor() {
         <p className="text-muted-foreground text-sm">Loading…</p>
       )}
       {!!models && (
-        <table className="mb-3 w-full text-sm [overflow-wrap:normal]">
-          <thead className="text-left text-muted-foreground text-xs">
-            <tr>
-              <th className="w-16 py-1 font-normal">Enabled</th>
-              <th className="py-1 font-normal">Label</th>
-              <th className="py-1 font-normal">Provider</th>
-              <th className="py-1 font-normal">Model id</th>
-              <th className="w-10" />
-            </tr>
-          </thead>
-          <tbody>
-            {models.map((m, i) => (
-              <tr
-                className="border-border border-t align-top"
-                data-testid="ai-model-row"
-                key={`${m.provider}|${m.id}`}
-              >
-                <td className="py-1.5">
-                  <input
-                    aria-label={`Enable ${m.label}`}
-                    checked={m.enabled}
-                    data-testid="ai-model-enabled"
-                    onChange={(e) => update(i, { enabled: e.target.checked })}
-                    type="checkbox"
-                  />
-                </td>
-                <td className="py-1.5 pr-2">
-                  <input
-                    aria-label="Label"
-                    className="w-full rounded border border-border bg-background px-2 py-0.5"
-                    maxLength={60}
-                    onChange={(e) => update(i, { label: e.target.value })}
-                    value={m.label}
-                  />
-                </td>
-                <td className="py-1.5 pr-2 text-muted-foreground">
-                  {PROVIDER_LABEL[m.provider]}
-                </td>
-                <td className="py-1.5 pr-2">
-                  <code className="text-muted-foreground text-xs">{m.id}</code>
-                  {!m.available && !!m.reason && (
-                    <p className="mt-0.5 text-amber-300/90 text-xs">
-                      Unavailable here: {m.reason}
-                    </p>
-                  )}
-                </td>
-                <td className="py-1.5 text-right">
-                  {m.provider === "workers-ai" && (
-                    <button
-                      className="text-muted-foreground text-xs hover:text-danger"
-                      data-testid="ai-model-remove"
-                      onClick={() =>
-                        setModels((ms) => ms && ms.filter((_, j) => j !== i))
-                      }
-                      type="button"
-                    >
-                      Remove
-                    </button>
-                  )}
-                </td>
+        <div className="mb-3 overflow-x-auto">
+          <table className="w-full text-sm [overflow-wrap:normal]">
+            <thead className="text-left text-muted-foreground text-xs">
+              <tr>
+                <th className="w-16 py-1 font-normal">Enabled</th>
+                <th className="py-1 font-normal">Label</th>
+                <th className="py-1 font-normal">Provider</th>
+                <th className="py-1 font-normal">Model id</th>
+                <th className="w-10" />
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {models.map((m, i) => (
+                <tr
+                  className="border-border border-t align-top"
+                  data-testid="ai-model-row"
+                  key={`${m.provider}|${m.id}`}
+                >
+                  <td className="py-1.5">
+                    <input
+                      aria-label={`Enable ${m.label}`}
+                      checked={m.enabled}
+                      data-testid="ai-model-enabled"
+                      onChange={(e) => update(i, { enabled: e.target.checked })}
+                      type="checkbox"
+                    />
+                  </td>
+                  <td className="py-1.5 pr-2">
+                    <input
+                      aria-label="Label"
+                      className="w-full rounded border border-border bg-background px-2 py-0.5"
+                      maxLength={60}
+                      onChange={(e) => update(i, { label: e.target.value })}
+                      value={m.label}
+                    />
+                  </td>
+                  <td className="py-1.5 pr-2 text-muted-foreground">
+                    {PROVIDER_LABEL[m.provider]}
+                  </td>
+                  <td className="py-1.5 pr-2">
+                    <code className="text-muted-foreground text-xs">
+                      {m.id}
+                    </code>
+                    {!m.available && !!m.reason && (
+                      <p className="mt-0.5 text-amber-300/90 text-xs">
+                        Unavailable here: {m.reason}
+                      </p>
+                    )}
+                  </td>
+                  <td className="py-1.5 text-right">
+                    {m.provider === "workers-ai" && (
+                      <button
+                        className="text-muted-foreground text-xs hover:text-danger"
+                        data-testid="ai-model-remove"
+                        onClick={() =>
+                          setModels((ms) => ms && ms.filter((_, j) => j !== i))
+                        }
+                        type="button"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
       <div className="mb-3 flex flex-wrap items-center gap-2 text-sm">
         <input
@@ -616,37 +620,39 @@ function ImportTable({ result }: { result: StarterImportResult }) {
       : "Already exists, skipped";
   return (
     <>
-      <table
-        className="mb-4 w-full text-sm [overflow-wrap:normal]"
-        data-testid="import-table"
-      >
-        <thead className="text-left text-muted-foreground text-xs">
-          <tr>
-            <th className="py-1 font-normal">Page</th>
-            <th className="py-1 font-normal">Path</th>
-            <th className="py-1 font-normal">Result</th>
-          </tr>
-        </thead>
-        <tbody>
-          {result.items.map((item) => (
-            <tr className="border-border border-t" key={item.path}>
-              <td className="py-1.5 pr-3">
-                <Link
-                  className="text-primary hover:underline"
-                  params={{ pageId: item.pageId }}
-                  to="/admin/editor/$pageId"
-                >
-                  {item.title}
-                </Link>
-              </td>
-              <td className="py-1.5 pr-3">
-                <code className="text-xs">{item.path}</code>
-              </td>
-              <td className="py-1.5">{actionText(item)}</td>
+      <div className="mb-4 overflow-x-auto">
+        <table
+          className="w-full text-sm [overflow-wrap:normal]"
+          data-testid="import-table"
+        >
+          <thead className="text-left text-muted-foreground text-xs">
+            <tr>
+              <th className="py-1 font-normal">Page</th>
+              <th className="py-1 font-normal">Path</th>
+              <th className="py-1 font-normal">Result</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {result.items.map((item) => (
+              <tr className="border-border border-t" key={item.path}>
+                <td className="py-1.5 pr-3">
+                  <Link
+                    className="text-primary hover:underline"
+                    params={{ pageId: item.pageId }}
+                    to="/admin/editor/$pageId"
+                  >
+                    {item.title}
+                  </Link>
+                </td>
+                <td className="py-1.5 pr-3">
+                  <code className="text-xs">{item.path}</code>
+                </td>
+                <td className="py-1.5">{actionText(item)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <p className="mb-4 text-muted-foreground text-sm">
         Site menu and footer:{" "}
         {result.site === "created"

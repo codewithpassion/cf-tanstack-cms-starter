@@ -1,4 +1,5 @@
 import { slugToPath } from "@repo/cms-core/paths";
+import { validateSiteDoc } from "@repo/cms-core/site/schema";
 import {
   STARTER_IMAGE_KEYS,
   type StarterMedia,
@@ -7,6 +8,7 @@ import {
 } from "@repo/cms-core/starter-content";
 import { type MediaDeps, uploadMedia } from "./media-service";
 import {
+  CmsError,
   createPage,
   getPage,
   publish,
@@ -85,6 +87,38 @@ export async function importStarterContent(
     }
   }
 
+  // Validate everything that will be written before writing anything, so a bad document can't
+  // leave the import half-applied.
+  const state = await getSiteState(deps.site);
+  const writeSite = state.draftVersion === 0;
+  for (const page of wanted) {
+    if (existing.has(page.slug)) {
+      continue;
+    }
+    const checked = deps.pages.validate({
+      ...page.doc,
+      seo: { ...page.doc.seo, slug: page.slug },
+    });
+    if (!checked.ok) {
+      throw new CmsError(
+        "INVALID_DOC",
+        `starter page "${page.slug}" failed validation`,
+        checked.errors
+      );
+    }
+  }
+  const siteDoc = writeSite ? starterSiteDoc(deps.site.config) : null;
+  if (siteDoc) {
+    const checked = validateSiteDoc(siteDoc);
+    if (!checked.ok) {
+      throw new CmsError(
+        "INVALID_DOC",
+        "starter site settings failed validation",
+        checked.errors
+      );
+    }
+  }
+
   const pages =
     existing.size === wanted.length
       ? wanted
@@ -109,15 +143,10 @@ export async function importStarterContent(
     });
   }
 
-  const state = await getSiteState(deps.site);
-  if (state.draftVersion !== 0) {
+  if (!siteDoc) {
     return { items, site: "skipped" };
   }
-  const saved = await saveSiteDraft(
-    deps.site,
-    0,
-    starterSiteDoc(deps.site.config)
-  );
+  const saved = await saveSiteDraft(deps.site, 0, siteDoc);
   await publishSite(deps.site, saved.draftVersion);
   return { items, site: "created" };
 }

@@ -11,7 +11,7 @@ import { getPage, listPages } from "./pages-service";
 import { getSiteState } from "./site-service";
 import { importStarterContent } from "./starter-import";
 
-function setup() {
+function setup(config = TEST_CONFIG) {
   const { db } = createTestDb();
   const { kv } = createMemoryKv();
   const puts: string[] = [];
@@ -23,7 +23,7 @@ function setup() {
       // biome-ignore lint/suspicious/noUnnecessaryConditions: getBlockDef returns undefined for unknown types.
       labelFor: (type: string) => getBlockDef(type)?.label ?? type,
     },
-    site: { repo: createSiteD1Repo(db), kv, config: TEST_CONFIG },
+    site: { repo: createSiteD1Repo(db), kv, config },
     media: {
       repo: createMemoryMediaRepo().repo,
       blobs: {
@@ -78,5 +78,20 @@ describe("importStarterContent", () => {
       p.filter((x) => x.slug === "")
     );
     expect(result.items.find((i) => i.path === "/")?.pageId).toBe(home?.id);
+  });
+
+  it("imports on a plain-http dev origin", async () => {
+    const { deps } = setup({ ...TEST_CONFIG, origin: "http://localhost:3000" });
+    const result = await importStarterContent(deps);
+    expect(result.site).toBe("created");
+    expect(result.items).toHaveLength(7);
+  });
+
+  it("validates everything before writing anything, so a bad site doc leaves no pages behind", async () => {
+    // A name over the 120-character limit makes the site doc (and only it) invalid.
+    const { deps, puts } = setup({ ...TEST_CONFIG, name: "x".repeat(130) });
+    await expect(importStarterContent(deps)).rejects.toThrow();
+    expect(await listPages(deps.pages)).toHaveLength(0);
+    expect(puts).toHaveLength(0);
   });
 });

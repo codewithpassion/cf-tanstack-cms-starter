@@ -26,7 +26,7 @@ bun install
 cp apps/web/.env.example apps/web/.env.local
 ```
 
-Fill in `apps/web/.env.local`: the three Clerk keys, `ADMIN_EMAILS` (your email), `PREVIEW_SIGNING_KEY` (any long random string, for example `openssl rand -hex 32`), and for the one-click dev login `DEV_LOGIN_EMAIL` and `DEV_LOGIN_PASSWORD`. Without Clerk keys the pages fail with a server error; only `/api/health` answers.
+Fill in `apps/web/.env.local`: the three Clerk keys, `ADMIN_EMAILS` (your email), `PREVIEW_SIGNING_KEY` (at least 32 characters; generate one with `openssl rand -base64 32`), and for the one-click dev login `DEV_LOGIN_EMAIL` and `DEV_LOGIN_PASSWORD`. Without Clerk keys the pages fail with a server error; only `/api/health` answers.
 
 ```bash
 cd apps/web
@@ -34,7 +34,7 @@ bun run create-dev-user
 CF_REMOTE_BINDINGS=0 bun run dev
 ```
 
-Open <http://localhost:3000/login> and use "Dev login (local only)", then go to `/admin`. Open `/admin/setup` and click "Import starter content". It shows a dry run first, then creates the sample pages and posts as drafts. Publish them from the editor. From `apps/web`, `bun run seed` runs the same import against the local database without the browser (run `bun run dev` once first, so the migrations are applied).
+Open <http://localhost:3000/login> and use "Dev login (local only)", then go to `/admin`. Open `/admin/setup` and click "Import starter content". One click creates and publishes the sample pages, posts, menu and footer; pages that already exist are skipped, so it is safe to run again. Edit them in the editor and publish your changes. From `apps/web`, `bun run seed` runs the same import against the local database without the browser (run `bun run dev` once first, so the migrations are applied).
 
 `bun run dev` applies the D1 migrations to a local database first. The local database, KV and R2 are simulated by Miniflare under `apps/web/.wrangler`; delete that folder for a clean slate. `CF_REMOTE_BINDINGS=0` skips the one remote binding (Workers AI) so dev starts without a Cloudflare login; the agent then offers Claude models only, and those need `ANTHROPIC_API_KEY`.
 

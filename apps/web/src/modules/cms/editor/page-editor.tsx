@@ -680,7 +680,7 @@ function TopBar({
         : { text: "Draft", cls: "bg-accent text-foreground" };
 
   return (
-    <header className="flex h-12 shrink-0 items-center gap-3 overflow-x-auto border-b max-md:[&>*]:shrink-0 border-border bg-card px-3 text-sm">
+    <header className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-b border-border bg-card px-3 py-1.5 text-sm md:h-12 md:flex-nowrap md:overflow-x-auto md:py-0">
       <Link
         to={page.kind === "post" ? "/admin/posts" : "/admin/pages"}
         className="rounded p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -692,7 +692,7 @@ function TopBar({
         <div className="truncate font-semibold" data-testid="page-title">
           {page.title}
         </div>
-        <div className="truncate font-mono text-xs text-muted-foreground">
+        <div className="truncate font-mono text-xs text-muted-foreground max-md:hidden">
           {path}
         </div>
       </div>
@@ -703,7 +703,7 @@ function TopBar({
         {badge.text}
       </span>
 
-      <div className="mx-auto flex items-center gap-2">
+      <div className="mx-auto flex items-center gap-2 max-md:hidden">
         <div className="flex rounded border border-border p-0.5">
           {DEVICES.map(({ id, label, Icon }) => (
             <button
@@ -772,7 +772,7 @@ function TopBar({
       <span
         data-testid="save-status"
         data-status={status}
-        className={`w-40 text-right text-xs ${
+        className={`text-right text-xs md:w-40 ${
           status === "conflict" ||
           status === "rejected" ||
           status === "signed-out" ||

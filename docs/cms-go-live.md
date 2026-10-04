@@ -64,8 +64,8 @@ The Worker answers on `https://<name>.<subdomain>.workers.dev`. To use your own 
 
 ## 3. First run in the admin
 
-1. Open `/admin/setup`, click "Import starter content", check the dry run and confirm. This creates drafts only.
-2. Replace the lorem ipsum in each page and post, then publish them. Publishing the home page replaces the "Nothing published yet" page.
+1. Open `/admin/setup`, click "Import starter content". This creates and publishes the sample pages, posts, menu and footer; pages that already exist are skipped.
+2. Replace the lorem ipsum in each page and post, then publish your changes. The import already published the home page, so the "Nothing published yet" page is gone.
 3. **Site settings** (`/admin/site`): set the navigation, footer, default SEO and default share image, then publish.
 4. Replace the placeholder text that is not on a page: the `llms.txt` intro and the agent's positioning text (one file each in the code, marked "edit me"), and the sample posts under `/blog`.
 5. **Agent spend caps** (`/admin/setup`, "AI agent settings"): defaults are $3 per conversation and $20 per day. Site-wide runs have a fixed $15 cap per run.

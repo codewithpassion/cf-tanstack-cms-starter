@@ -27,9 +27,9 @@ The post list block is a content block too: it shows the newest posts, optionall
 
 Open a page from the list. The page renders on a live canvas inside an iframe, so what you see is what visitors get.
 
-- The palette adds blocks. The layers panel shows the page as a tree and reorders it by drag and drop.
+- The "Add block" button in the Layers header adds blocks. The layers panel shows the page as a tree and reorders it by drag and drop.
 - Click a block on the canvas to edit it in the inspector. Text fields use a rich text editor (bold, italic, links, lists).
-- The style panel sets colors from the site's swatches, gradients, spacing and borders.
+- The Style sub-tab of the Inspector (next to Content) sets colors from the site's swatches, gradients, spacing and borders.
 - Edits save to the draft as small operations. Each save carries the draft's version, so if the same page was changed somewhere else (another tab, the agent, an MCP client) you get a stale-draft message instead of an overwrite.
 - The history panel lists revisions, lets you name and pin one, compare it with the draft, and restore a whole revision or a single block from it.
 
@@ -47,11 +47,11 @@ The SEO panel in the editor sets the title, description, slug, canonical address
 
 ## Share images
 
-The share image is the picture shown when a link is posted on social media. The builder in the SEO panel offers three templates (hero, card, post), lets you override the text, and renders the image with Cloudflare Browser Run. The result is saved to the media library and set on the page. Without a custom image, pages use the default share image from the site settings.
+The share image is the picture shown when a link is posted on social media. The "Create share image…" button on SEO > Fields opens a builder that offers three templates (hero, card, post), lets you override the text, and renders the image with Cloudflare Browser Run. The result is saved to the media library and set on the page. Without a custom image, pages use the default share image from the site settings.
 
 ## Site settings
 
-`/admin/site` holds what appears on every page: the navigation (with dropdown children), the footer (columns, highlights, legal links), the color swatches the style panel offers, default SEO and the default share image. It has its own draft, publish and history, separate from pages.
+`/admin/site` holds what appears on every page: the navigation (with dropdown children), the footer (columns, highlights, legal links), the color swatches the Style sub-tab offers, default SEO and the default share image. It has its own draft, publish and history, separate from pages.
 
 ## Blog
 

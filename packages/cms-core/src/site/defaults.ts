@@ -47,14 +47,20 @@ export function defaultFooter(config: Pick<SiteConfig, "name">): SiteFooter {
   };
 }
 
+/** The organization's URLs must be https (site/schema.ts). A plain-http origin (`bun run dev` on localhost) would make the default site settings unsaveable, so it gets a placeholder until a real https origin is set. */
+const PLACEHOLDER_ORIGIN = "https://example.com";
+
 export function defaultOrganization(
   config: Pick<SiteConfig, "name" | "origin">
 ): SiteSeo["organization"] {
+  const origin = config.origin.startsWith("https://")
+    ? config.origin
+    : PLACEHOLDER_ORIGIN;
   return {
     name: config.name,
-    url: config.origin,
+    url: origin,
     // No logo file by default: the default share card is the only https image the site serves.
-    logo: `${config.origin}/og-image.jpg`,
+    logo: `${origin}/og-image.jpg`,
     sameAs: [],
   };
 }
