@@ -2,12 +2,24 @@ import { Show, SignIn, useUser } from "@clerk/tanstack-react-start";
 import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "#/components/ui/button";
 import { Card, CardContent, CardHeader } from "#/components/ui/card";
+import { safeRedirectPath } from "#/lib/sign-in-target";
 
 export const Route = createFileRoute("/login")({
+  // Set when a signed-out caller hits an admin page or procedure (integrations/trpc/auth-redirect.ts):
+  // where to go after signing in. Anything but a same-site path is dropped.
+  validateSearch: (
+    search: Record<string, unknown>
+  ): { redirect_url?: string } => ({
+    redirect_url: safeRedirectPath(search.redirect_url),
+  }),
   component: LoginPage,
 });
 
 function LoginPage() {
+  const { redirect_url } = Route.useSearch();
+  const devLoginHref = redirect_url
+    ? `/api/dev-login?redirect_url=${encodeURIComponent(redirect_url)}`
+    : "/api/dev-login";
   return (
     <main className="page-wrap flex min-h-[calc(100vh-13rem)] items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md">
@@ -24,12 +36,12 @@ function LoginPage() {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex justify-center pt-2">
-              <SignIn routing="hash" />
+              <SignIn forceRedirectUrl={redirect_url} routing="hash" />
             </div>
             {import.meta.env.DEV ? (
               <div className="flex justify-center">
                 <Button asChild size="sm" variant="outline">
-                  <a href="/api/dev-login">Dev login (local only)</a>
+                  <a href={devLoginHref}>Dev login (local only)</a>
                 </Button>
               </div>
             ) : null}
@@ -49,14 +61,14 @@ function LoginPage() {
         </Show>
 
         <Show when="signed-in">
-          <SignedInGreeting />
+          <SignedInGreeting redirectUrl={redirect_url} />
         </Show>
       </Card>
     </main>
   );
 }
 
-function SignedInGreeting() {
+function SignedInGreeting({ redirectUrl }: { redirectUrl?: string }) {
   const { user } = useUser();
   if (!user) {
     return null;
@@ -99,6 +111,11 @@ function SignedInGreeting() {
           </div>
         </div>
 
+        {redirectUrl ? (
+          <Button asChild className="w-full">
+            <a href={redirectUrl}>Continue</a>
+          </Button>
+        ) : null}
         <p className="text-center text-muted-foreground text-xs">
           Manage your account from the avatar in the header. Built with{" "}
           <a

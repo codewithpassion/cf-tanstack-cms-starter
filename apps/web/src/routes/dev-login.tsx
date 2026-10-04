@@ -2,16 +2,21 @@ import { useSignIn, useUser } from "@clerk/tanstack-react-start";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Spinner } from "#/components/ui/spinner";
+import { DEFAULT_SIGN_IN_TARGET, safeRedirectPath } from "#/lib/sign-in-target";
 
 export const Route = createFileRoute("/dev-login")({
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (
+    search: Record<string, unknown>
+  ): { token: string; redirect_url?: string } => ({
     token: typeof search.token === "string" ? search.token : "",
+    redirect_url: safeRedirectPath(search.redirect_url),
   }),
   component: DevLogin,
 });
 
 function DevLogin() {
-  const { token } = Route.useSearch();
+  const { token, redirect_url } = Route.useSearch();
+  const target = redirect_url ?? DEFAULT_SIGN_IN_TARGET;
   const { signIn } = useSignIn();
   const { user } = useUser();
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +25,7 @@ function DevLogin() {
   useEffect(() => {
     if (user) {
       // Already signed in (e.g. an agent re-running the flow) - nothing to redeem.
-      window.location.href = "/";
+      window.location.href = target;
       return;
     }
 
@@ -44,14 +49,14 @@ function DevLogin() {
 
       const { error: finalizeError } = await signIn.finalize({
         navigate: ({ decorateUrl }) => {
-          window.location.href = decorateUrl("/");
+          window.location.href = decorateUrl(target);
         },
       });
       if (finalizeError) {
         setError(finalizeError.message ?? "Dev login failed.");
       }
     })();
-  }, [token, signIn, user]);
+  }, [token, signIn, user, target]);
 
   if (error) {
     return (
