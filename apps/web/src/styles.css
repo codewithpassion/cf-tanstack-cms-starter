@@ -3,6 +3,8 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@import "./modules/cms/style/cms.css";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -48,6 +50,22 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* CMS brand tokens (cms-core types.ts BRAND_TOKENS). The CMS writes var(--color-<token>) inline
+   where Tailwind can't see it, so they live in `@theme static` to be emitted even when unused.
+   primary, accent and muted share their names with the shadcn tokens above, so they resolve to the
+   same variables (one source of truth); the rest are literals. Phase 4 restyles: change a hex here
+   and the matching TOKEN_CSS entry in cms-core editor/style-model.ts together (theme-tokens.test). */
+@theme static {
+  --color-primary: var(--primary);
+  --color-primary-soft: #fb9518;
+  --color-accent: var(--accent);
+  --color-danger: #ff3859;
+  --color-ink: #1a1a1a;
+  --color-ink-soft: #2a2a2a;
+  --color-muted: var(--muted);
+  --color-white: #fff;
 }
 
 /* Brand core from docs/image.png - constant across themes. One accent only:
@@ -163,6 +181,7 @@
 
 body {
   min-height: 100dvh;
+  overflow-wrap: anywhere;
 }
 
 body {

@@ -10,7 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AboutRouteImport } from './routes/about'
+import { Route as SplatRouteImport } from './routes/$'
 import { Route as DevLoginRouteImport } from './routes/dev-login'
 import { Route as LlmsFullDottxtRouteImport } from './routes/llms-full[.]txt'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
@@ -18,19 +18,34 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminShellRouteImport } from './routes/admin._shell'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as MediaIdRouteImport } from './routes/media.$id'
 import { Route as OauthAuthorizeRouteImport } from './routes/oauth.authorize'
+import { Route as OgRenderAgentPageIdRouteImport } from './routes/og-render-agent.$pageId'
 import { Route as OgRenderSplatRouteImport } from './routes/og-render.$'
+import { Route as AdminShellAgentRouteImport } from './routes/admin._shell.agent'
+import { Route as AdminShellApiKeysRouteImport } from './routes/admin._shell.api-keys'
+import { Route as AdminShellMediaRouteImport } from './routes/admin._shell.media'
+import { Route as AdminShellPagesRouteImport } from './routes/admin._shell.pages'
+import { Route as AdminShellPostsRouteImport } from './routes/admin._shell.posts'
+import { Route as AdminShellSeoRouteImport } from './routes/admin._shell.seo'
+import { Route as AdminShellSetupRouteImport } from './routes/admin._shell.setup'
+import { Route as AdminShellSiteRouteImport } from './routes/admin._shell.site'
+import { Route as AdminApiAgentRouteImport } from './routes/admin.api.agent'
 import { Route as AdminApiMediaRouteImport } from './routes/admin.api.media'
+import { Route as AdminEditorPageIdRouteImport } from './routes/admin.editor.$pageId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
+const SplatRoute = SplatRouteImport.update({
+  id: '/$',
+  path: '/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevLoginRoute = DevLoginRouteImport.update({
@@ -68,6 +83,26 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminShellRoute = AdminShellRouteImport.update({
+  id: '/admin/_shell',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MediaIdRoute = MediaIdRouteImport.update({
   id: '/media/$id',
   path: '/media/$id',
@@ -78,9 +113,59 @@ const OauthAuthorizeRoute = OauthAuthorizeRouteImport.update({
   path: '/oauth/authorize',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OgRenderAgentPageIdRoute = OgRenderAgentPageIdRouteImport.update({
+  id: '/og-render-agent/$pageId',
+  path: '/og-render-agent/$pageId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OgRenderSplatRoute = OgRenderSplatRouteImport.update({
   id: '/og-render/$',
   path: '/og-render/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminShellAgentRoute = AdminShellAgentRouteImport.update({
+  id: '/agent',
+  path: '/agent',
+  getParentRoute: () => AdminShellRoute,
+} as any)
+const AdminShellApiKeysRoute = AdminShellApiKeysRouteImport.update({
+  id: '/api-keys',
+  path: '/api-keys',
+  getParentRoute: () => AdminShellRoute,
+} as any)
+const AdminShellMediaRoute = AdminShellMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
+  getParentRoute: () => AdminShellRoute,
+} as any)
+const AdminShellPagesRoute = AdminShellPagesRouteImport.update({
+  id: '/pages',
+  path: '/pages',
+  getParentRoute: () => AdminShellRoute,
+} as any)
+const AdminShellPostsRoute = AdminShellPostsRouteImport.update({
+  id: '/posts',
+  path: '/posts',
+  getParentRoute: () => AdminShellRoute,
+} as any)
+const AdminShellSeoRoute = AdminShellSeoRouteImport.update({
+  id: '/seo',
+  path: '/seo',
+  getParentRoute: () => AdminShellRoute,
+} as any)
+const AdminShellSetupRoute = AdminShellSetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
+  getParentRoute: () => AdminShellRoute,
+} as any)
+const AdminShellSiteRoute = AdminShellSiteRouteImport.update({
+  id: '/site',
+  path: '/site',
+  getParentRoute: () => AdminShellRoute,
+} as any)
+const AdminApiAgentRoute = AdminApiAgentRouteImport.update({
+  id: '/admin/api/agent',
+  path: '/admin/api/agent',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminApiMediaRoute = AdminApiMediaRouteImport.update({
@@ -88,10 +173,15 @@ const AdminApiMediaRoute = AdminApiMediaRouteImport.update({
   path: '/admin/api/media',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminEditorPageIdRoute = AdminEditorPageIdRouteImport.update({
+  id: '/admin/editor/$pageId',
+  path: '/admin/editor/$pageId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/$': typeof SplatRoute
   '/dev-login': typeof DevLoginRoute
   '/llms-full.txt': typeof LlmsFullDottxtRoute
   '/llms.txt': typeof LlmsDottxtRoute
@@ -99,14 +189,29 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin': typeof AdminShellRouteWithChildren
+  '/blog/$slug': typeof BlogSlugRoute
   '/media/$id': typeof MediaIdRoute
   '/oauth/authorize': typeof OauthAuthorizeRoute
+  '/og-render-agent/$pageId': typeof OgRenderAgentPageIdRoute
   '/og-render/$': typeof OgRenderSplatRoute
+  '/admin/': typeof AdminIndexRoute
+  '/blog/': typeof BlogIndexRoute
+  '/admin/agent': typeof AdminShellAgentRoute
+  '/admin/api-keys': typeof AdminShellApiKeysRoute
+  '/admin/media': typeof AdminShellMediaRoute
+  '/admin/pages': typeof AdminShellPagesRoute
+  '/admin/posts': typeof AdminShellPostsRoute
+  '/admin/seo': typeof AdminShellSeoRoute
+  '/admin/setup': typeof AdminShellSetupRoute
+  '/admin/site': typeof AdminShellSiteRoute
+  '/admin/api/agent': typeof AdminApiAgentRoute
   '/admin/api/media': typeof AdminApiMediaRoute
+  '/admin/editor/$pageId': typeof AdminEditorPageIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/$': typeof SplatRoute
   '/dev-login': typeof DevLoginRoute
   '/llms-full.txt': typeof LlmsFullDottxtRoute
   '/llms.txt': typeof LlmsDottxtRoute
@@ -114,15 +219,29 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin': typeof AdminIndexRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/media/$id': typeof MediaIdRoute
   '/oauth/authorize': typeof OauthAuthorizeRoute
+  '/og-render-agent/$pageId': typeof OgRenderAgentPageIdRoute
   '/og-render/$': typeof OgRenderSplatRoute
+  '/blog': typeof BlogIndexRoute
+  '/admin/agent': typeof AdminShellAgentRoute
+  '/admin/api-keys': typeof AdminShellApiKeysRoute
+  '/admin/media': typeof AdminShellMediaRoute
+  '/admin/pages': typeof AdminShellPagesRoute
+  '/admin/posts': typeof AdminShellPostsRoute
+  '/admin/seo': typeof AdminShellSeoRoute
+  '/admin/setup': typeof AdminShellSetupRoute
+  '/admin/site': typeof AdminShellSiteRoute
+  '/admin/api/agent': typeof AdminApiAgentRoute
   '/admin/api/media': typeof AdminApiMediaRoute
+  '/admin/editor/$pageId': typeof AdminEditorPageIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/$': typeof SplatRoute
   '/dev-login': typeof DevLoginRoute
   '/llms-full.txt': typeof LlmsFullDottxtRoute
   '/llms.txt': typeof LlmsDottxtRoute
@@ -130,16 +249,31 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/_shell': typeof AdminShellRouteWithChildren
+  '/blog/$slug': typeof BlogSlugRoute
   '/media/$id': typeof MediaIdRoute
   '/oauth/authorize': typeof OauthAuthorizeRoute
+  '/og-render-agent/$pageId': typeof OgRenderAgentPageIdRoute
   '/og-render/$': typeof OgRenderSplatRoute
+  '/admin/': typeof AdminIndexRoute
+  '/blog/': typeof BlogIndexRoute
+  '/admin/_shell/agent': typeof AdminShellAgentRoute
+  '/admin/_shell/api-keys': typeof AdminShellApiKeysRoute
+  '/admin/_shell/media': typeof AdminShellMediaRoute
+  '/admin/_shell/pages': typeof AdminShellPagesRoute
+  '/admin/_shell/posts': typeof AdminShellPostsRoute
+  '/admin/_shell/seo': typeof AdminShellSeoRoute
+  '/admin/_shell/setup': typeof AdminShellSetupRoute
+  '/admin/_shell/site': typeof AdminShellSiteRoute
+  '/admin/api/agent': typeof AdminApiAgentRoute
   '/admin/api/media': typeof AdminApiMediaRoute
+  '/admin/editor/$pageId': typeof AdminEditorPageIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/about'
+    | '/$'
     | '/dev-login'
     | '/llms-full.txt'
     | '/llms.txt'
@@ -147,14 +281,29 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/admin'
+    | '/blog/$slug'
     | '/media/$id'
     | '/oauth/authorize'
+    | '/og-render-agent/$pageId'
     | '/og-render/$'
+    | '/admin/'
+    | '/blog/'
+    | '/admin/agent'
+    | '/admin/api-keys'
+    | '/admin/media'
+    | '/admin/pages'
+    | '/admin/posts'
+    | '/admin/seo'
+    | '/admin/setup'
+    | '/admin/site'
+    | '/admin/api/agent'
     | '/admin/api/media'
+    | '/admin/editor/$pageId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/about'
+    | '/$'
     | '/dev-login'
     | '/llms-full.txt'
     | '/llms.txt'
@@ -162,14 +311,28 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/admin'
+    | '/blog/$slug'
     | '/media/$id'
     | '/oauth/authorize'
+    | '/og-render-agent/$pageId'
     | '/og-render/$'
+    | '/blog'
+    | '/admin/agent'
+    | '/admin/api-keys'
+    | '/admin/media'
+    | '/admin/pages'
+    | '/admin/posts'
+    | '/admin/seo'
+    | '/admin/setup'
+    | '/admin/site'
+    | '/admin/api/agent'
     | '/admin/api/media'
+    | '/admin/editor/$pageId'
   id:
     | '__root__'
     | '/'
-    | '/about'
+    | '/$'
     | '/dev-login'
     | '/llms-full.txt'
     | '/llms.txt'
@@ -177,15 +340,30 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/admin/_shell'
+    | '/blog/$slug'
     | '/media/$id'
     | '/oauth/authorize'
+    | '/og-render-agent/$pageId'
     | '/og-render/$'
+    | '/admin/'
+    | '/blog/'
+    | '/admin/_shell/agent'
+    | '/admin/_shell/api-keys'
+    | '/admin/_shell/media'
+    | '/admin/_shell/pages'
+    | '/admin/_shell/posts'
+    | '/admin/_shell/seo'
+    | '/admin/_shell/setup'
+    | '/admin/_shell/site'
+    | '/admin/api/agent'
     | '/admin/api/media'
+    | '/admin/editor/$pageId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
+  SplatRoute: typeof SplatRoute
   DevLoginRoute: typeof DevLoginRoute
   LlmsFullDottxtRoute: typeof LlmsFullDottxtRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
@@ -193,10 +371,17 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  AdminShellRoute: typeof AdminShellRouteWithChildren
+  BlogSlugRoute: typeof BlogSlugRoute
   MediaIdRoute: typeof MediaIdRoute
   OauthAuthorizeRoute: typeof OauthAuthorizeRoute
+  OgRenderAgentPageIdRoute: typeof OgRenderAgentPageIdRoute
   OgRenderSplatRoute: typeof OgRenderSplatRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  BlogIndexRoute: typeof BlogIndexRoute
+  AdminApiAgentRoute: typeof AdminApiAgentRoute
   AdminApiMediaRoute: typeof AdminApiMediaRoute
+  AdminEditorPageIdRoute: typeof AdminEditorPageIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -208,11 +393,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
+    '/$': {
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dev-login': {
@@ -264,6 +449,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/_shell': {
+      id: '/admin/_shell'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminShellRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/media/$id': {
       id: '/media/$id'
       path: '/media/$id'
@@ -278,11 +491,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OauthAuthorizeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/og-render-agent/$pageId': {
+      id: '/og-render-agent/$pageId'
+      path: '/og-render-agent/$pageId'
+      fullPath: '/og-render-agent/$pageId'
+      preLoaderRoute: typeof OgRenderAgentPageIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/og-render/$': {
       id: '/og-render/$'
       path: '/og-render/$'
       fullPath: '/og-render/$'
       preLoaderRoute: typeof OgRenderSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/_shell/agent': {
+      id: '/admin/_shell/agent'
+      path: '/agent'
+      fullPath: '/admin/agent'
+      preLoaderRoute: typeof AdminShellAgentRouteImport
+      parentRoute: typeof AdminShellRoute
+    }
+    '/admin/_shell/api-keys': {
+      id: '/admin/_shell/api-keys'
+      path: '/api-keys'
+      fullPath: '/admin/api-keys'
+      preLoaderRoute: typeof AdminShellApiKeysRouteImport
+      parentRoute: typeof AdminShellRoute
+    }
+    '/admin/_shell/media': {
+      id: '/admin/_shell/media'
+      path: '/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AdminShellMediaRouteImport
+      parentRoute: typeof AdminShellRoute
+    }
+    '/admin/_shell/pages': {
+      id: '/admin/_shell/pages'
+      path: '/pages'
+      fullPath: '/admin/pages'
+      preLoaderRoute: typeof AdminShellPagesRouteImport
+      parentRoute: typeof AdminShellRoute
+    }
+    '/admin/_shell/posts': {
+      id: '/admin/_shell/posts'
+      path: '/posts'
+      fullPath: '/admin/posts'
+      preLoaderRoute: typeof AdminShellPostsRouteImport
+      parentRoute: typeof AdminShellRoute
+    }
+    '/admin/_shell/seo': {
+      id: '/admin/_shell/seo'
+      path: '/seo'
+      fullPath: '/admin/seo'
+      preLoaderRoute: typeof AdminShellSeoRouteImport
+      parentRoute: typeof AdminShellRoute
+    }
+    '/admin/_shell/setup': {
+      id: '/admin/_shell/setup'
+      path: '/setup'
+      fullPath: '/admin/setup'
+      preLoaderRoute: typeof AdminShellSetupRouteImport
+      parentRoute: typeof AdminShellRoute
+    }
+    '/admin/_shell/site': {
+      id: '/admin/_shell/site'
+      path: '/site'
+      fullPath: '/admin/site'
+      preLoaderRoute: typeof AdminShellSiteRouteImport
+      parentRoute: typeof AdminShellRoute
+    }
+    '/admin/api/agent': {
+      id: '/admin/api/agent'
+      path: '/admin/api/agent'
+      fullPath: '/admin/api/agent'
+      preLoaderRoute: typeof AdminApiAgentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/api/media': {
@@ -292,12 +575,45 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminApiMediaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/editor/$pageId': {
+      id: '/admin/editor/$pageId'
+      path: '/admin/editor/$pageId'
+      fullPath: '/admin/editor/$pageId'
+      preLoaderRoute: typeof AdminEditorPageIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AdminShellRouteChildren {
+  AdminShellAgentRoute: typeof AdminShellAgentRoute
+  AdminShellApiKeysRoute: typeof AdminShellApiKeysRoute
+  AdminShellMediaRoute: typeof AdminShellMediaRoute
+  AdminShellPagesRoute: typeof AdminShellPagesRoute
+  AdminShellPostsRoute: typeof AdminShellPostsRoute
+  AdminShellSeoRoute: typeof AdminShellSeoRoute
+  AdminShellSetupRoute: typeof AdminShellSetupRoute
+  AdminShellSiteRoute: typeof AdminShellSiteRoute
+}
+
+const AdminShellRouteChildren: AdminShellRouteChildren = {
+  AdminShellAgentRoute: AdminShellAgentRoute,
+  AdminShellApiKeysRoute: AdminShellApiKeysRoute,
+  AdminShellMediaRoute: AdminShellMediaRoute,
+  AdminShellPagesRoute: AdminShellPagesRoute,
+  AdminShellPostsRoute: AdminShellPostsRoute,
+  AdminShellSeoRoute: AdminShellSeoRoute,
+  AdminShellSetupRoute: AdminShellSetupRoute,
+  AdminShellSiteRoute: AdminShellSiteRoute,
+}
+
+const AdminShellRouteWithChildren = AdminShellRoute._addFileChildren(
+  AdminShellRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
+  SplatRoute: SplatRoute,
   DevLoginRoute: DevLoginRoute,
   LlmsFullDottxtRoute: LlmsFullDottxtRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
@@ -305,10 +621,17 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  AdminShellRoute: AdminShellRouteWithChildren,
+  BlogSlugRoute: BlogSlugRoute,
   MediaIdRoute: MediaIdRoute,
   OauthAuthorizeRoute: OauthAuthorizeRoute,
+  OgRenderAgentPageIdRoute: OgRenderAgentPageIdRoute,
   OgRenderSplatRoute: OgRenderSplatRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  BlogIndexRoute: BlogIndexRoute,
+  AdminApiAgentRoute: AdminApiAgentRoute,
   AdminApiMediaRoute: AdminApiMediaRoute,
+  AdminEditorPageIdRoute: AdminEditorPageIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

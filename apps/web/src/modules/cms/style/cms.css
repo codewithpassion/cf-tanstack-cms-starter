@@ -1,0 +1,183 @@
+/*
+ * CMS style system (docs/cms-plan.md §3.4).
+ *
+ * UNLAYERED on purpose: unlayered rules beat Tailwind v4's layered utilities whatever their
+ * specificity, so block components must not hard-code outer spacing/background classes.
+ *
+ * Blocks and elements write --cms-* custom properties inline (app/cms/style/vars.ts). This file
+ * maps them per device: desktop (>=1024px) is the base, tablet (768-1023px) inherits desktop,
+ * mobile (<768px) inherits tablet. Suffixes: -d desktop, -t tablet, -m mobile.
+ *
+ * Every var() chain ends in a literal: a var() with nothing set is invalid at computed-value time
+ * and falls back to the property's initial value (0, transparent...), not to a Tailwind class.
+ * Block defaults are written inline as vars, so these literals only apply when neither the block
+ * default nor the user set anything.
+ */
+
+/* --- Block wrapper: outer spacing and background --- */
+
+.cms-block {
+  position: relative;
+  padding-top: var(--cms-pt-d, 0px);
+  padding-bottom: var(--cms-pb-d, 0px);
+  margin-top: var(--cms-mt-d, 0px);
+  margin-bottom: var(--cms-mb-d, 0px);
+  background-color: var(--cms-bg, transparent);
+  background-image: var(--cms-bg-gradient, none);
+}
+
+.cms-inner {
+  max-width: var(--cms-mw-d, 1280px);
+  padding-inline: var(--cms-px-d, 32px);
+  margin-inline: auto;
+  text-align: var(--cms-ta-d, left);
+}
+
+/* A centred-by-default measure (lead paragraph, divider) that follows the block's align. */
+.cms-measure {
+  margin-right: var(--cms-mr-d, auto);
+  margin-left: var(--cms-ml-d, 0px);
+}
+
+/* The block component's main layout container (grid, list). */
+.cms-gap {
+  gap: var(--cms-gap-d, 24px);
+}
+
+.cms-block[data-cms-bg-image] {
+  isolation: isolate;
+}
+
+.cms-block[data-cms-bg-image]::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  content: "";
+  background-image: var(--cms-bg-image, none);
+  background-position: center;
+  background-size: cover;
+}
+
+/* Border applies to the block's card surfaces. Default "none" keeps today's look. */
+.cms-block[data-cms-border="cyber"] .cms-card {
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+.cms-block[data-cms-border="subtle"] .cms-card {
+  border: 1px solid var(--color-border);
+}
+
+/* A highlighted card (pricing's recommended plan) keeps its primary border whatever the block's border style. */
+.cms-block .cms-card[data-cms-highlight] {
+  border: 1px solid var(--color-primary);
+}
+
+/*
+ * --- Element styles ---
+ * Gated per device by marker attributes (data-cms-fs="d t m"), so an element with nothing set
+ * keeps its Tailwind classes. Element vars use their own --cms-e-* prefix so they never pick up
+ * the block's inherited vars.
+ */
+
+[data-cms-fs~="d"] {
+  font-size: var(--cms-e-fs-d, 1rem);
+}
+
+[data-cms-ta~="d"] {
+  text-align: var(--cms-e-ta-d, left);
+}
+
+@media (width < 1024px) {
+  .cms-block {
+    padding-top: var(--cms-pt-t, var(--cms-pt-d, 0px));
+    padding-bottom: var(--cms-pb-t, var(--cms-pb-d, 0px));
+    margin-top: var(--cms-mt-t, var(--cms-mt-d, 0px));
+    margin-bottom: var(--cms-mb-t, var(--cms-mb-d, 0px));
+  }
+
+  .cms-inner {
+    max-width: var(--cms-mw-t, var(--cms-mw-d, 1280px));
+    padding-inline: var(--cms-px-t, var(--cms-px-d, 24px));
+    text-align: var(--cms-ta-t, var(--cms-ta-d, left));
+  }
+
+  .cms-measure {
+    margin-right: var(--cms-mr-t, var(--cms-mr-d, auto));
+    margin-left: var(--cms-ml-t, var(--cms-ml-d, 0px));
+  }
+
+  .cms-gap {
+    gap: var(--cms-gap-t, var(--cms-gap-d, 24px));
+  }
+
+  [data-cms-fs~="t"] {
+    font-size: var(--cms-e-fs-t, var(--cms-e-fs-d, 1rem));
+  }
+
+  [data-cms-ta~="t"] {
+    text-align: var(--cms-e-ta-t, var(--cms-e-ta-d, left));
+  }
+}
+
+@media (width < 768px) {
+  .cms-block {
+    padding-top: var(--cms-pt-m, var(--cms-pt-t, var(--cms-pt-d, 0px)));
+    padding-bottom: var(--cms-pb-m, var(--cms-pb-t, var(--cms-pb-d, 0px)));
+    margin-top: var(--cms-mt-m, var(--cms-mt-t, var(--cms-mt-d, 0px)));
+    margin-bottom: var(--cms-mb-m, var(--cms-mb-t, var(--cms-mb-d, 0px)));
+  }
+
+  .cms-inner {
+    max-width: var(--cms-mw-m, var(--cms-mw-t, var(--cms-mw-d, 1280px)));
+    padding-inline: var(--cms-px-m, var(--cms-px-t, var(--cms-px-d, 16px)));
+    text-align: var(--cms-ta-m, var(--cms-ta-t, var(--cms-ta-d, left)));
+  }
+
+  .cms-measure {
+    margin-right: var(--cms-mr-m, var(--cms-mr-t, var(--cms-mr-d, auto)));
+    margin-left: var(--cms-ml-m, var(--cms-ml-t, var(--cms-ml-d, 0px)));
+  }
+
+  .cms-gap {
+    gap: var(--cms-gap-m, var(--cms-gap-t, var(--cms-gap-d, 24px)));
+  }
+
+  [data-cms-fs~="m"] {
+    font-size: var(--cms-e-fs-m, var(--cms-e-fs-t, var(--cms-e-fs-d, 1rem)));
+  }
+
+  [data-cms-ta~="m"] {
+    text-align: var(--cms-e-ta-m, var(--cms-e-ta-t, var(--cms-e-ta-d, left)));
+  }
+}
+
+/* --- Visibility: vars.ts resolves the desktop → tablet → mobile cascade and marks each hidden device --- */
+
+@media (width >= 1024px) {
+  [data-cms-hide-d] {
+    display: none;
+  }
+}
+
+@media (768px <= width < 1024px) {
+  [data-cms-hide-t] {
+    display: none;
+  }
+}
+
+@media (width < 768px) {
+  [data-cms-hide-m] {
+    display: none;
+  }
+}
+
+/*
+ * The article blockquote's frame (richtext/render.tsx `ARTICLE.blockquote`), from the source's
+ * app/app.css. Layered as it was there, so Tailwind utilities on the same element still win.
+ */
+@layer components {
+  .cyber-border {
+    position: relative;
+  }
+}

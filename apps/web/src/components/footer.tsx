@@ -1,45 +1,103 @@
-import { Button } from "#/components/ui/button";
-import { Separator } from "#/components/ui/separator";
+import { useSiteConfig } from "#/modules/cms/site/site-context";
+import { SiteHref, useSite } from "#/modules/cms/site/use-site";
 
-export default function Footer() {
-  const year = new Date().getFullYear();
+// One grid column per footer column, plus the brand column and (when it has items) the text
+// column, from lg up. Whole class names, so Tailwind generates them.
+const LG_COLS: Record<number, string> = {
+  1: "lg:grid-cols-1",
+  2: "lg:grid-cols-2",
+  3: "lg:grid-cols-3",
+  4: "lg:grid-cols-4",
+  5: "lg:grid-cols-5",
+  6: "lg:grid-cols-6",
+  7: "lg:grid-cols-7",
+  8: "lg:grid-cols-8",
+};
+
+const heading =
+  "mb-4 font-sans font-semibold text-primary text-xs uppercase tracking-[0.18em]";
+
+/**
+ * The public site's footer, from the site doc's footer (site/use-site.tsx). CMS pages render it
+ * themselves (unless the page sets `chrome: "none"`). The text column ("highlights") is left out
+ * while it has no items.
+ */
+export function Footer() {
+  const currentYear = new Date().getFullYear();
+  const { name } = useSiteConfig();
+  const { footer } = useSite();
+  const hasHighlights = footer.highlights.items.length > 0;
+  const columns = footer.columns.length + 1 + (hasHighlights ? 1 : 0);
 
   return (
-    <footer className="site-footer px-4 pt-10 pb-14 text-muted-foreground">
-      <div className="page-wrap flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
-        <p className="m-0 text-sm">
-          &copy; {year} Your name here. All rights reserved.
-        </p>
-        <p className="island-kicker m-0">Built with TanStack Start</p>
-      </div>
-      <Separator className="my-4" />
-      <div className="flex justify-center gap-4">
-        <Button asChild size="icon" variant="ghost">
-          <a href="https://x.com/tan_stack" rel="noreferrer" target="_blank">
-            <span className="sr-only">Follow TanStack on X</span>
-            <svg aria-hidden="true" height="32" viewBox="0 0 16 16" width="32">
-              <path
-                d="M12.6 1h2.2L10 6.48 15.64 15h-4.41L7.78 9.82 3.23 15H1l5.14-5.84L.72 1h4.52l3.12 4.73L12.6 1zm-.77 12.67h1.22L4.57 2.26H3.26l8.57 11.41z"
-                fill="currentColor"
-              />
-            </svg>
-          </a>
-        </Button>
-        <Button asChild size="icon" variant="ghost">
-          <a
-            href="https://github.com/TanStack"
-            rel="noreferrer"
-            target="_blank"
-          >
-            <span className="sr-only">Go to TanStack GitHub</span>
-            <svg aria-hidden="true" height="32" viewBox="0 0 16 16" width="32">
-              <path
-                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"
-                fill="currentColor"
-              />
-            </svg>
-          </a>
-        </Button>
+    <footer className="border-border border-t bg-background py-12 font-sans text-muted-foreground text-sm">
+      <div className="mx-auto max-w-6xl px-6">
+        <div
+          className={`grid grid-cols-1 gap-8 md:grid-cols-2 ${LG_COLS[columns] ?? "lg:grid-cols-4"}`}
+        >
+          {/* Brand */}
+          <div>
+            <div className="mb-2 font-heading text-base text-foreground">
+              {name}
+            </div>
+            <p className="mb-2">{footer.tagline}</p>
+            <p className="text-xs">{footer.location}</p>
+          </div>
+
+          {/* Link columns */}
+          {footer.columns.map((column) => (
+            <div key={column._key}>
+              <h2 className={heading}>{column.title}</h2>
+              <nav aria-label={column.title} className="flex flex-col gap-2">
+                {column.links.map((link) => (
+                  <SiteHref
+                    className="text-muted-foreground transition-colors hover:text-primary"
+                    href={link.href}
+                    key={link._key}
+                  >
+                    {link.label}
+                  </SiteHref>
+                ))}
+              </nav>
+            </div>
+          ))}
+
+          {/* Text column */}
+          {hasHighlights && (
+            <div>
+              <h2 className={heading}>{footer.highlights.title}</h2>
+              <div className="flex flex-col gap-2">
+                {footer.highlights.items.map((item) => (
+                  <p className="text-xs" key={item._key}>
+                    {item.text}
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Bottom bar */}
+        <div className="mt-8 flex flex-col items-start justify-between gap-4 border-border border-t pt-8 md:flex-row md:items-center">
+          <p className="text-xs">
+            &copy; {currentYear}
+            {` ${footer.copyright}`}
+          </p>
+          {/* Legal links go through SiteHref (a router Link for site paths): the CMS catch-all serves them. */}
+          {footer.legalLinks.length > 0 && (
+            <div className="flex gap-6">
+              {footer.legalLinks.map((link) => (
+                <SiteHref
+                  className="text-xs transition-colors hover:text-primary"
+                  href={link.href}
+                  key={link._key}
+                >
+                  {link.label}
+                </SiteHref>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </footer>
   );
