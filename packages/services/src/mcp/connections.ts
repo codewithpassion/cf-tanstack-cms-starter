@@ -64,7 +64,7 @@ export function connectionName(
   now: number,
   timeZone = DEFAULT_TIME_ZONE
 ): string {
-  const date = new Date(now).toLocaleDateString("en-AU", {
+  const date = new Date(now).toLocaleDateString("en-GB", {
     day: "numeric",
     month: "short",
     year: "numeric",

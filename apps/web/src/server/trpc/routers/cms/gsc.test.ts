@@ -97,9 +97,12 @@ describe("setup router: Search Console backfill", () => {
     await expect(
       admin.runGscBackfillMonth({ start: "2026-01-01", end: "2026-03-01" })
     ).rejects.toMatchObject({ code: "BAD_REQUEST" });
-    await expect(
-      admin.runGscBackfillMonth({ start: "2026-01-01", end: "2026-01-31" })
-    ).rejects.toThrow(GSC_CONNECT_HINT);
+    expect(
+      await admin.runGscBackfillMonth({
+        start: "2026-01-01",
+        end: "2026-01-31",
+      })
+    ).toEqual({ ok: false, message: GSC_CONNECT_HINT });
 
     const asked: unknown[] = [];
     const client: GscClient = {

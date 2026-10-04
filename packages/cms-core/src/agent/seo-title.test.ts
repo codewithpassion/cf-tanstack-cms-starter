@@ -8,11 +8,11 @@ const TEMPLATE = "%s | Acme Studio";
 
 describe("bareTitle", () => {
   it("drops a trailing copy of the template's suffix, case-insensitively, and nothing else", () => {
-    expect(bareTitle("Workshops | Acme Studio", TEMPLATE)).toBe("Workshops");
-    expect(bareTitle("Workshops | acme studio ", TEMPLATE)).toBe("Workshops");
-    expect(bareTitle("Workshops", TEMPLATE)).toBe("Workshops");
-    expect(bareTitle("Acme Studio workshops", TEMPLATE)).toBe(
-      "Acme Studio workshops"
+    expect(bareTitle("Services | Acme Studio", TEMPLATE)).toBe("Services");
+    expect(bareTitle("Services | acme studio ", TEMPLATE)).toBe("Services");
+    expect(bareTitle("Services", TEMPLATE)).toBe("Services");
+    expect(bareTitle("Acme Studio services", TEMPLATE)).toBe(
+      "Acme Studio services"
     );
     // A title that is only the suffix stays as it is.
     expect(bareTitle("| Acme Studio", TEMPLATE)).toBe("| Acme Studio");
@@ -24,22 +24,22 @@ describe("bareTitle", () => {
 describe("withBareTitles", () => {
   const proposal: SeoProposal = {
     seo: {
-      focusKeyphrase: "team workshops",
-      title: "Workshops | Acme Studio",
+      focusKeyphrase: "team services",
+      title: "Services | Acme Studio",
     },
     variants: [
-      { title: "Team workshops | Acme Studio", description: "d1" },
-      { title: "Workshops for your team", description: "d2" },
+      { title: "Team services | Acme Studio", description: "d1" },
+      { title: "Services for your team", description: "d2" },
     ],
   };
 
   it("strips the suffix from the seo title and every variant, and counts what changed", () => {
     const res = withBareTitles(proposal, TEMPLATE, undefined);
     expect(res.stripped).toBe(2);
-    expect(res.proposal.seo.title).toBe("Workshops");
+    expect(res.proposal.seo.title).toBe("Services");
     expect(res.proposal.variants.map((v) => v.title)).toEqual([
-      "Team workshops",
-      "Workshops for your team",
+      "Team services",
+      "Services for your team",
     ]);
     expect(res.proposal.variants[0]?.description).toBe("d1");
   });

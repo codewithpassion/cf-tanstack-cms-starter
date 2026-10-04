@@ -11,6 +11,7 @@
 // biome-ignore-all lint/suspicious/noUnnecessaryConditions: defensive checks on data the types do not fully describe (model output, server results, stored rows), as in the source.
 
 import Anthropic from "@anthropic-ai/sdk";
+import { budgetMessage } from "@repo/cms-core/agent/budget-message";
 import {
   LOCK_LEASE_MS,
   LOCK_RENEW_MS,
@@ -40,7 +41,7 @@ import { mediaIdSchema } from "@repo/cms-core/media-schema";
 import { nanoid } from "nanoid";
 import { z } from "zod";
 import type { ServiceDeps } from "../cms/pages-service";
-import { budgetMessage, DEFAULT_BUDGET_TIME_ZONE, loadBudget } from "./budget";
+import { DEFAULT_BUDGET_TIME_ZONE, loadBudget } from "./budget";
 import { runTurn } from "./loop";
 import {
   modelOptions,

@@ -11,6 +11,8 @@
 // biome-ignore-all lint/style/useReadonlyClassProperties: ported verbatim; kept as in the source.
 // biome-ignore-all lint/suspicious/noEmptyBlockStatements: intentional no-op callbacks and ignored failures, as in the source.
 // biome-ignore-all lint/suspicious/noUnnecessaryConditions: defensive checks on data the types do not fully describe (model output, server results, stored rows), as in the source.
+
+import { budgetMessage } from "@repo/cms-core/agent/budget-message";
 import type { BudgetStatus } from "@repo/cms-core/agent/budget-types";
 import {
   conflicts,
@@ -19,7 +21,7 @@ import {
   proposedDoc,
   seoOpFor,
 } from "@repo/cms-core/agent/changeset";
-import { addUsage, formatUsd } from "@repo/cms-core/agent/cost";
+import { addUsage } from "@repo/cms-core/agent/cost";
 import {
   type AgentModelOption,
   DEFAULT_MODEL,
@@ -1145,7 +1147,7 @@ export class AgentView {
         );
       }
       if (!res.ok) {
-        return this.notify(`Applied, but not recorded: ${res.message}`, true);
+        return this.notify(notRecorded(res), true);
       }
       this.updateChangeset(id, {
         status,
@@ -1247,7 +1249,7 @@ export class AgentView {
         );
       }
       if (!res.ok) {
-        return this.notify(`Applied, but not recorded: ${res.message}`, true);
+        return this.notify(notRecorded(res), true);
       }
       this.updateChangeset(id, {
         status: "accepted",
@@ -1273,22 +1275,11 @@ export class AgentView {
   }
 }
 
-/**
- * Why the agent paused, in a sentence. The same text as services `budgetMessage` (agent/budget.ts),
- * which the browser can't import at runtime (D19).
- */
-export function budgetMessage(budget: BudgetStatus): string {
-  if (budget.blocked === "thread" && budget.thread) {
-    return `This conversation has used ${formatUsd(budget.thread.spentUsd)} of its ${formatUsd(budget.thread.capUsd ?? 0)} limit.`;
-  }
-  if (budget.blocked === "run" && budget.run) {
-    return `This run has used ${formatUsd(budget.run.spentUsd)} of its ${formatUsd(budget.run.capUsd ?? 0)} limit.`;
-  }
-  if (budget.blocked === "day") {
-    return `Today's AI spend is ${formatUsd(budget.day.spentUsd)} of the ${formatUsd(budget.day.capUsd ?? 0)} daily limit.`;
-  }
-  return "";
-}
+/** The accept applied to the draft but the History entry failed: STALE_DRAFT means the draft hadn't saved yet. */
+const notRecorded = (res: { code: string; message: string }): string =>
+  res.code === "STALE_DRAFT"
+    ? "Applied, but the draft hasn't saved yet. Wait for it to save and retry."
+    : `Applied, but not recorded: ${res.message}`;
 
 const message = (err: unknown) =>
   err instanceof Error ? err.message : String(err);

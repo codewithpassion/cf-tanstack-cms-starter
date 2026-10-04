@@ -370,7 +370,7 @@ export function decideChangeset(
     if (status !== "rejected" && input.draftVersion === undefined) {
       throw new CmsError(
         "STALE_DRAFT",
-        "The draft hasn't been saved yet, so this can't be accepted. Wait for it to save and try again."
+        "The draft hasn't saved yet. Wait for it to save and retry."
       );
     }
     const cs = await d.store.getChangeset(input.changesetId);

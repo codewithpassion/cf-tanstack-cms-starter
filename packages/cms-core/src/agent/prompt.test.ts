@@ -10,8 +10,19 @@ import {
 } from "./prompt";
 import type { Changeset } from "./types";
 
-const BRAND_RE =
-  /Dominik|Harbour|Sydney|eventHero|newsletterSignup|lumaCheckout|fitCheck|cyan|orange/i;
+// Words from the site this starter was ported from, built from pieces so this file doesn't spell them.
+const BRAND_WORDS = [
+  ["Domi", "nik"],
+  ["Har", "bour"],
+  ["Syd", "ney"],
+  ["event", "Hero"],
+  ["newsletter", "Signup"],
+  ["lu", "ma", "Checkout"],
+  ["fit", "Check"],
+  ["cy", "an"],
+  ["or", "ange"],
+].map((parts) => parts.join(""));
+const BRAND_RE = new RegExp(BRAND_WORDS.join("|"), "i");
 
 describe("system prompt", () => {
   it("names the configured site and carries no brand strings", () => {

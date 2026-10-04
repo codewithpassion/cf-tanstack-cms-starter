@@ -8,6 +8,7 @@ import {
   PROVIDER_LABEL,
   WORKERS_AI_MODEL_ID,
 } from "@repo/cms-core/agent/models";
+import { GSC_RETENTION_MONTHS } from "@repo/cms-core/gsc/shape";
 import type {
   StarterImportItem,
   StarterImportResult,
@@ -83,8 +84,7 @@ function SetupPage() {
       )}
       <div className="flex flex-col gap-6">
         <StarterImportCard />
-        {/* TODO(cms-port-agent): cms.setup.planGscBackfill / runGscBackfillMonth. The source's
-            "Backfill Search Console history" card returns here once the setup router has them. */}
+        <GscBackfillCard />
         <AiSettingsCard />
       </div>
     </div>
@@ -435,6 +435,103 @@ function AgentModelsEditor() {
         )}
       </div>
     </div>
+  );
+}
+
+type BackfillWindow = { start: string; end: string };
+type BackfillState =
+  | { step: "loading" }
+  | { step: "unconfigured" }
+  | { step: "idle" }
+  | { step: "running"; done: number; rows: number }
+  | { step: "done"; rows: number }
+  | { step: "error"; message: string };
+
+/** "Backfill Search Console history": pulls the last 16 months one month at a time, so no request does it all. Only offered once Search Console is connected. */
+function GscBackfillCard() {
+  const [windows, setWindows] = useState<BackfillWindow[]>([]);
+  const [state, setState] = useState<BackfillState>({ step: "loading" });
+
+  useEffect(() => {
+    void getTrpc()
+      .cms.setup.planGscBackfill.query({ months: GSC_RETENTION_MONTHS })
+      .then(
+        (plan) => {
+          if (!plan.ok) {
+            return setState({ step: "error", message: plan.message });
+          }
+          setWindows(plan.windows);
+          setState({ step: plan.configured ? "idle" : "unconfigured" });
+        },
+        (err: unknown) => {
+          const message = failureText(err);
+          if (message !== null) {
+            setState({ step: "error", message });
+          }
+        }
+      );
+  }, []);
+
+  const run = async () => {
+    let rows = 0;
+    try {
+      for (const [done, window] of windows.entries()) {
+        setState({ step: "running", done, rows });
+        const res =
+          // biome-ignore lint/performance/noAwaitInLoops: one month per request, in order, so no single request does the whole backfill.
+          await getTrpc().cms.setup.runGscBackfillMonth.mutate(window);
+        if (!res.ok) {
+          return setState({ step: "error", message: res.message });
+        }
+        rows += res.summary.rows;
+      }
+      setState({ step: "done", rows });
+    } catch (err) {
+      const message = failureText(err);
+      if (message !== null) {
+        setState({ step: "error", message });
+      }
+    }
+  };
+
+  const canRun =
+    windows.length > 0 &&
+    (state.step === "idle" || state.step === "done" || state.step === "error");
+
+  return (
+    <Card
+      description={`Pulls up to ${GSC_RETENTION_MONTHS} months of Search Console history into the database, one month at a time. The daily sync keeps it current afterwards. Safe to run again: each month's rows are replaced.`}
+      testId="gsc-backfill"
+      title="Backfill Search Console history"
+    >
+      {state.step === "loading" && (
+        <p className="text-muted-foreground text-sm">Loading…</p>
+      )}
+      {state.step === "unconfigured" && (
+        <p className="text-muted-foreground text-sm">
+          Search Console isn't connected yet. Connect it first (see the go-live
+          guide), then come back here.
+        </p>
+      )}
+      {state.step === "running" && (
+        <p className="text-sm" data-testid="gsc-backfill-progress">
+          Month {state.done + 1} of {windows.length}… {state.rows} rows so far.
+        </p>
+      )}
+      {state.step === "done" && (
+        <p className="mb-3 text-sm" data-testid="gsc-backfill-done">
+          Pulled {windows.length} months, {state.rows} rows.
+        </p>
+      )}
+      {state.step === "error" && (
+        <p className="mb-3 text-danger text-sm">{state.message}</p>
+      )}
+      {canRun ? (
+        <Button data-testid="gsc-backfill-run" onClick={run} size="sm">
+          {state.step === "idle" ? "Backfill history" : "Run again"}
+        </Button>
+      ) : null}
+    </Card>
   );
 }
 

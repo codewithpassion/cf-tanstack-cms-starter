@@ -4,6 +4,12 @@ import { block, doc, post, seo } from "@repo/cms-core/ops/test-docs";
 import { postBlockStyle } from "@repo/cms-core/posts";
 import { richTextFromString } from "@repo/cms-core/richtext/schema";
 import type { PageDoc } from "@repo/cms-core/types";
+import {
+  createMemoryHistory,
+  createRootRoute,
+  createRouter,
+  RouterProvider,
+} from "@tanstack/react-router";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import { PageRenderer } from "./render/page-renderer";
@@ -159,27 +165,37 @@ describe("post body rendering", () => {
 });
 
 describe("post layout", () => {
-  const render = (d: PageDoc) =>
-    renderToStaticMarkup(
-      <PostLayout doc={d} post={d.post ?? post()}>
-        <PageRenderer doc={d} />
-      </PostLayout>
-    );
+  // The back and tag links are router links, so the layout renders inside a memory router.
+  const render = async (d: PageDoc) => {
+    const rootRoute = createRootRoute({
+      component: () => (
+        <PostLayout doc={d} post={d.post ?? post()}>
+          <PageRenderer doc={d} />
+        </PostLayout>
+      ),
+    });
+    const router = createRouter({
+      routeTree: rootRoute,
+      history: createMemoryHistory({ initialEntries: ["/"] }),
+    });
+    await router.load();
+    return renderToStaticMarkup(<RouterProvider router={router} />);
+  };
 
-  it("shows post.title as the H1 and the reading time override (9 min read)", () => {
-    const html = render(postDoc(FIRST_POST));
+  it("shows post.title as the H1 and the reading time override (9 min read)", async () => {
+    const html = await render(postDoc(FIRST_POST));
     expect(html).toContain(`>${FIRST_POST.title}</h1>`);
     expect(html).toContain(">9 min read<");
     expect(html).not.toContain(`${FIRST_POST.title} | SEO`);
   });
 
-  it("links back to the blog and to each tag's filtered index", () => {
-    const html = render(postDoc(FIRST_POST));
+  it("links back to the blog and to each tag's filtered index", async () => {
+    const html = await render(postDoc(FIRST_POST));
     expect(html).toContain('href="/blog"');
     expect(html).toContain('href="/blog?tag=Guides"');
   });
 
-  it("blocks inside a post don't fade in again (the article column already does)", () => {
+  it("blocks inside a post don't fade in again (the article column already does)", async () => {
     const d = postDoc(FIRST_POST);
     const withCallout: PageDoc = {
       ...d,
@@ -192,11 +208,11 @@ describe("post layout", () => {
         }),
       ],
     };
-    const html = render(withCallout);
+    const html = await render(withCallout);
     expect(html).toContain("Note");
     // The layout's own animated wrappers (header, body, tags) and nothing more inside the blocks.
     const faded = (h: string) => h.match(OPACITY_0_RE)?.length ?? 0;
-    expect(faded(html)).toBe(faded(render(d)));
+    expect(faded(html)).toBe(faded(await render(d)));
     expect(faded(html)).toBe(3);
   });
 });

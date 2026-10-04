@@ -1,4 +1,5 @@
-import { budgetMessage, DEFAULT_BUDGET_TIME_ZONE, loadBudget } from "./budget";
+import { budgetMessage } from "@repo/cms-core/agent/budget-message";
+import { DEFAULT_BUDGET_TIME_ZONE, loadBudget } from "./budget";
 import type { AgentStore } from "./store-port";
 
 /**

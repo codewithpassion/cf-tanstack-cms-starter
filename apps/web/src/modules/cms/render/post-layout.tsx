@@ -6,6 +6,7 @@ import {
   postTitle,
 } from "@repo/cms-core/posts";
 import type { PageDoc, PostMeta } from "@repo/cms-core/types";
+import { Link } from "@tanstack/react-router";
 import { type HTMLMotionProps, motion } from "framer-motion";
 import type { ReactNode } from "react";
 
@@ -38,12 +39,12 @@ export function PostLayout({
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8 }}
           >
-            <a
-              href="/blog"
+            <Link
+              to="/blog"
               className="inline-flex items-center gap-2 text-primary font-sans text-xs mb-8 hover:text-foreground transition-colors"
             >
               &larr; Back to Blog
-            </a>
+            </Link>
 
             <div className="flex items-center gap-3 mb-6">
               <span className="text-primary font-sans text-xs rounded-full border border-border bg-muted px-2.5 py-0.5">
@@ -103,13 +104,14 @@ export function PostLayout({
             >
               <div className="flex flex-wrap gap-2">
                 {post.tags.map((tag) => (
-                  <a
+                  <Link
                     key={tag}
-                    href={`/blog?tag=${encodeURIComponent(tag)}`}
+                    to="/blog"
+                    search={{ tag }}
                     className="text-muted-foreground font-sans text-xs border border-border px-3 py-1 hover:text-foreground hover:border-foreground/30 transition-colors"
                   >
                     {tag}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </Animated>

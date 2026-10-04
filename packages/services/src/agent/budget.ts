@@ -5,7 +5,6 @@ import type {
   BudgetOverride,
   BudgetStatus,
 } from "@repo/cms-core/agent/budget-types";
-import { formatUsd } from "@repo/cms-core/agent/cost";
 import { DEFAULT_RUN_CAP_USD } from "@repo/cms-core/agent/limits";
 import {
   type AgentStore,
@@ -185,20 +184,6 @@ export async function loadBudget(
     day,
     overrides,
   });
-}
-
-/** Why the agent paused, in a sentence. */
-export function budgetMessage(budget: BudgetStatus): string {
-  if (budget.blocked === "thread" && budget.thread) {
-    return `This conversation has used ${formatUsd(budget.thread.spentUsd)} of its ${formatUsd(budget.thread.capUsd ?? 0)} limit.`;
-  }
-  if (budget.blocked === "run" && budget.run) {
-    return `This run has used ${formatUsd(budget.run.spentUsd)} of its ${formatUsd(budget.run.capUsd ?? 0)} limit.`;
-  }
-  if (budget.blocked === "day") {
-    return `Today's AI spend is ${formatUsd(budget.day.spentUsd)} of the ${formatUsd(budget.day.capUsd ?? 0)} daily limit.`;
-  }
-  return "";
 }
 
 const round6 = (n: number) => Math.round(n * 1e6) / 1e6;

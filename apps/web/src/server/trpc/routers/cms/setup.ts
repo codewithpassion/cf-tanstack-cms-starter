@@ -105,7 +105,7 @@ export const setupRouter = router({
   /**
    * Pulls one window (a month from `planGscBackfill`) into D1, replacing that window's rows. The
    * page calls this once per month, so no single request does the whole backfill. Without Search
-   * Console it throws (as the source did): the page only offers it when `configured`.
+   * Console it returns `ok: false` with the connect hint: the page only offers it when `configured`.
    */
   runGscBackfillMonth: adminProcedure
     .input(backfillMonthInput)
@@ -113,10 +113,12 @@ export const setupRouter = router({
       async ({
         ctx,
         input,
-      }): Promise<AdminResult<{ summary: SyncSummary }>> => {
+      }): Promise<
+        { ok: true; summary: SyncSummary } | { ok: false; message: string }
+      > => {
         const client = ctx.services.cms.gscClient;
         if (!client) {
-          throw new Error(GSC_CONNECT_HINT);
+          return { ok: false, message: GSC_CONNECT_HINT };
         }
         const summary = await syncSearchAnalytics(
           { store: createD1GscStore(ctx.services.cms.db), client },
