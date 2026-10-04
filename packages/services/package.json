@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./notes": "./src/notes.ts"
+    "./clock": "./src/clock.ts"
   },
   "scripts": {
     "test": "bun test",
@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "drizzle-orm": "^0.44.7",
+    "drizzle-orm": "^0.45.3",
     "typescript": "^5.9.2"
   }
 }
