@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
     "@repo/cms-core": "workspace:*",
     "@repo/db": "workspace:*",
     "nanoid": "^5.1.7",
