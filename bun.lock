@@ -88,6 +88,10 @@
     },
     "packages/cms-core": {
       "name": "@repo/cms-core",
+      "dependencies": {
+        "nanoid": "^5.1.7",
+        "zod": "^4.6.5",
+      },
       "devDependencies": {
         "@types/bun": "latest",
         "typescript": "^5.9.2",
@@ -96,6 +100,7 @@
     "packages/db": {
       "name": "@repo/db",
       "dependencies": {
+        "@repo/cms-core": "workspace:*",
         "drizzle-orm": "^0.45.3",
       },
       "devDependencies": {

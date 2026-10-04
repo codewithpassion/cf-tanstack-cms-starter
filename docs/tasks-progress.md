@@ -25,8 +25,8 @@ One row per item of the build. Tick a row only with proof: the command that was 
 | Done | Item | Proof |
 | --- | --- | --- |
 | [ ] | `@repo/cms-core`: PageDoc types, ops engine, paths, reserved slugs, site doc schema, style vars, richtext helpers, limits, safe-href, format-date, pure llms/sitemap builders | |
-| [ ] | `@repo/db`: schema for every CMS table, one `0000_cms` migration | |
-| [ ] | `@repo/db`: table modules (pages, media, api keys, MCP calls, OAuth connections, agent threads/runs/changesets, Search Console) with tests | |
+| [x] | `@repo/db`: schema for every CMS table, one `0000_cms` migration | 19 tables in `packages/db/src/schema.ts`; `bun run generate -- --name cms` wrote `migrations/0000_cms.sql`; loaded next to the source repo's three migrations in `bun:sqlite`, tables, columns, defaults, pks, fks, indexes (incl. the partial unique `pages_slug_unique`) and `mcp_calls` AUTOINCREMENT are identical; `wrangler d1 migrations apply DB --local` from `apps/web`: `41 commands executed successfully`, `0000_cms.sql ✅` |
+| [x] | `@repo/db`: table modules (pages, media, api keys, MCP calls, OAuth connections, agent threads/runs/changesets, Search Console) with tests | `packages/db`: `bun test` 56 pass, 0 fail (9 files; compare-and-set guards, `ChangesetDecided`, batch rollback and the turn lock run on a D1-shaped `bun:sqlite` stand-in); `bunx tsc --noEmit` clean; `bunx ultracite check packages/db` clean; brand grep over `packages/db` empty |
 | [ ] | Gate: package tests and typecheck pass | |
 
 ## Phase 2: Services

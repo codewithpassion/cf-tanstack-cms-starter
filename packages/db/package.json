@@ -4,7 +4,15 @@
   "type": "module",
   "exports": {
     ".": "./src/schema.ts",
-    "./shared": "./src/shared.ts"
+    "./shared": "./src/shared.ts",
+    "./pages": "./src/pages.ts",
+    "./media": "./src/media.ts",
+    "./site": "./src/site.ts",
+    "./gsc": "./src/gsc.ts",
+    "./agent-store": "./src/agent-store.ts",
+    "./api-keys": "./src/api-keys.ts",
+    "./oauth-connections": "./src/oauth-connections.ts",
+    "./test-utils": "./src/test-utils.ts"
   },
   "scripts": {
     "generate": "drizzle-kit generate",
@@ -12,6 +20,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@repo/cms-core": "workspace:*",
     "drizzle-orm": "^0.45.3"
   },
   "devDependencies": {
