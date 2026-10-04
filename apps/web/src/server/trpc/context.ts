@@ -9,16 +9,16 @@ import { auth } from "@clerk/tanstack-react-start/server";
 import type { Context as HonoContext } from "hono";
 
 /** Who is calling. `verifiedEmails` asks Clerk lazily, so only admin checks pay for it. */
-export interface CallerAuth {
+export type CallerAuth = {
   userId: string | null;
   /** Lowercased, verified email addresses of the signed-in user. Empty when signed out. */
   verifiedEmails: () => Promise<string[]>;
-}
+};
 
-// A type, not an interface: see the biome-ignore. Over HTTP,
-// @hono/trpc-server also adds `env` to ctx, but the SSR path does not, so
-// procedures use `ctx.services` and never `ctx.env`.
-// biome-ignore lint/style/useConsistentTypeDefinitions: @hono/trpc-server needs a Record<string, unknown>, which an interface is not
+// A type, not an interface: @hono/trpc-server needs a Record<string, unknown>,
+// which an interface is not. Over HTTP, @hono/trpc-server also adds `env` to
+// ctx, but the SSR path does not, so procedures use `ctx.services` and never
+// `ctx.env`.
 export type Context = {
   /** Lowercased entries of the comma-separated ADMIN_EMAILS secret. Empty means nobody is an admin. */
   adminEmails: string[];

@@ -12,5 +12,41 @@
   // resolved by editing vendored code.
   "files": {
     "includes": ["!**/components/ui", "!**/hooks/use-mobile.ts"]
-  }
+  },
+  // CMS code (ported from a sibling project): `type` aliases, because interfaces
+  // lose index-signature assignability to Record<string, unknown>, which the ops
+  // engine and page service rely on. No key, JSX attribute or class sorting:
+  // schema key order is also the editor's field order.
+  "overrides": [
+    {
+      "includes": [
+        "packages/cms-core/**",
+        "packages/db/**",
+        "packages/services/**",
+        "apps/web/src/modules/cms/**",
+        "apps/web/src/server/**"
+      ],
+      "assist": {
+        "actions": {
+          "source": {
+            "useSortedAttributes": "off",
+            "useSortedKeys": "off"
+          }
+        }
+      },
+      "linter": {
+        "rules": {
+          "nursery": {
+            "useSortedClasses": "off"
+          },
+          "style": {
+            "useConsistentTypeDefinitions": {
+              "level": "error",
+              "options": { "style": "type" }
+            }
+          }
+        }
+      }
+    }
+  ]
 }
