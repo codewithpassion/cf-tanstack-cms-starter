@@ -3,7 +3,6 @@
 // biome-ignore-all lint/style/useTemplate: ported verbatim; kept as in the source.
 // biome-ignore-all lint/suspicious/noBitwiseOperators: ported verbatim; byte and bit arithmetic (binary headers, hashing, colour channels).
 import { describe, expect, it } from "bun:test";
-
 import { mediaIdSchema } from "@repo/cms-core/media-schema";
 import {
   bytes,

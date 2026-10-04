@@ -23,10 +23,25 @@ export const shareImageRouter = router({
     .input(generateShareImageInput)
     .mutation(async ({ ctx, input }) => {
       // Loaded here, not at the top, so tests can import this router without the Workers runtime.
-      const [{ env }, { createShareImage }] = await Promise.all([
-        import("cloudflare:workers"),
-        import("../../../adapters/share-image.ts"),
-      ]);
-      return createShareImage(env, ctx.services.cms, input);
+      const [{ env }, { createShareImage, ShareImageError }, { MediaError }] =
+        await Promise.all([
+          import("cloudflare:workers"),
+          import("../../../adapters/share-image.ts"),
+          import("@repo/services/cms/media-service"),
+        ]);
+      // Expected failures (Browser Run unavailable, bad page, upload refused) come back as
+      // `{ ok: false, message }` like the other admin results: tRPC hides a thrown error's
+      // message in production.
+      try {
+        return {
+          ok: true as const,
+          ...(await createShareImage(env, ctx.services.cms, input)),
+        };
+      } catch (error) {
+        if (error instanceof ShareImageError || error instanceof MediaError) {
+          return { ok: false as const, message: error.message };
+        }
+        throw error;
+      }
     }),
 });
