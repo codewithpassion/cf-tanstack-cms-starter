@@ -119,4 +119,5 @@ export const TEST_CONFIG: SiteConfig = {
   name: "Example Site",
   origin: "https://example.com",
   gscProperty: "sc-domain:example.com",
+  timeZone: "UTC",
 };

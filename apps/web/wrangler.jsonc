@@ -49,6 +49,8 @@
     // or every CMS request fails.
     "SITE_ORIGIN": "",
     // Search Console property for the daily sync, e.g. "sc-domain:example.com". Empty disables it.
-    "GSC_PROPERTY": ""
+    "GSC_PROPERTY": "",
+    // IANA time zone for "today": the date of a new post, the agent's daily budget day. E.g. "Europe/Berlin".
+    "SITE_TIME_ZONE": "UTC"
   }
 }

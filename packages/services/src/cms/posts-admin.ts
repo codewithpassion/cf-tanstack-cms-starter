@@ -81,7 +81,8 @@ export const MAX_POST_TITLE_LENGTH = 200;
 /** A draft post at `blog/<slug>` with an empty body to write in, the given category and author, dated today. */
 export function createPost(
   d: ServiceDeps,
-  input: { title: string; slug: string; category: string; author: string }
+  input: { title: string; slug: string; category: string; author: string },
+  timeZone?: string
 ): Promise<AdminResult<{ id: string }>> {
   const title = input.title.trim();
   const slug = `blog/${input.slug}`;
@@ -98,7 +99,7 @@ export function createPost(
       kind: "post",
       slug,
       title,
-      doc: newPostDoc({ title, slug, category, author }),
+      doc: newPostDoc({ title, slug, category, author, timeZone }),
     });
     return { id: page.id };
   });
@@ -116,10 +117,12 @@ export const createPostsAdmin = (deps: {
   pages: ServiceDeps;
   queries: PostQueries;
   kv: { get: (key: string) => Promise<string | null> };
+  /** The site's IANA zone: the date a new post carries is "today" there (D14). Default UTC. */
+  timeZone?: string;
 }) => ({
   list: () => listPosts(deps.queries),
   checkSlug: (slug: string) => checkPostSlug(deps.pages, slug),
   create: (input: Parameters<typeof createPost>[1]) =>
-    createPost(deps.pages, input),
+    createPost(deps.pages, input, deps.timeZone),
   published: () => publishedPosts(deps.kv),
 });

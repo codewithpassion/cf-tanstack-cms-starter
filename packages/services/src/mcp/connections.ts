@@ -1,5 +1,5 @@
+import type { ApiScope } from "@repo/cms-core/mcp/scopes";
 import type { OauthConnectionRow } from "@repo/db";
-import type { ApiScope } from "@repo/db/shared";
 import { LAST_USED_EVERY_MS } from "@repo/db/shared";
 
 import { type Clock, systemClock } from "../clock";

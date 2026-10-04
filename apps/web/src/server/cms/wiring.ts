@@ -48,6 +48,7 @@ export const resolveSiteConfig = (
     name: env.SITE_NAME,
     origin: configured || fallback,
     gscProperty: env.GSC_PROPERTY,
+    timeZone: env.SITE_TIME_ZONE,
   });
 };
 
@@ -98,7 +99,12 @@ export const cmsServices = (env: Env, options: CmsWiringOptions = {}) => {
       config,
       author,
     }),
-    posts: createPostsAdmin({ pages: pagesDeps, queries, kv }),
+    posts: createPostsAdmin({
+      pages: pagesDeps,
+      queries,
+      kv,
+      timeZone: config.timeZone,
+    }),
     media: createMediaService({
       repo: createD1MediaRepo(db),
       blobs: env.CMS_MEDIA,

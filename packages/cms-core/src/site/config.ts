@@ -9,6 +9,8 @@ export type SiteConfig = {
   origin: string;
   /** Search Console property, e.g. `sc-domain:example.com`; null when not configured. */
   gscProperty: string | null;
+  /** IANA zone for "today" (post dates, the agent's daily budget). Default "UTC" (D14). */
+  timeZone: string;
 };
 
 const TRAILING_SLASHES = /\/+$/;
@@ -21,8 +23,19 @@ export function siteConfig(input: {
   name: string;
   origin: string;
   gscProperty?: string | null;
+  /** IANA zone, e.g. `Europe/Berlin`; empty or unset means UTC. Throws on an unknown zone. */
+  timeZone?: string | null;
 }): SiteConfig {
   const { gscProperty, name } = input;
+  const timeZone = input.timeZone?.trim() || "UTC";
+  try {
+    new Intl.DateTimeFormat("en", { timeZone });
+  } catch (error) {
+    throw new Error(
+      `SITE_TIME_ZONE is not an IANA time zone: ${JSON.stringify(timeZone)}`,
+      { cause: error }
+    );
+  }
   const origin = input.origin.trim().replace(TRAILING_SLASHES, "");
   if (!origin) {
     throw new Error(
@@ -45,5 +58,6 @@ export function siteConfig(input: {
     name: name.trim(),
     origin,
     gscProperty: gscProperty?.trim() || null,
+    timeZone,
   };
 }

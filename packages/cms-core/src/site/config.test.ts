@@ -10,7 +10,12 @@ describe("siteConfig", () => {
   it("trims, strips trailing slashes and nulls a missing property", () => {
     expect(
       siteConfig({ name: "  Acme ", origin: " https://acme.test// " })
-    ).toEqual({ name: "Acme", origin: "https://acme.test", gscProperty: null });
+    ).toEqual({
+      name: "Acme",
+      origin: "https://acme.test",
+      gscProperty: null,
+      timeZone: "UTC",
+    });
     expect(
       siteConfig({
         name: "A",
@@ -32,5 +37,16 @@ describe("siteConfig", () => {
     expect(() =>
       siteConfig({ name: "A", origin: "ftp://example.com" })
     ).toThrow(HTTP_RE);
+  });
+
+  it("takes an IANA time zone and rejects an unknown one", () => {
+    const base = { name: "A", origin: "https://a.test" };
+    expect(siteConfig({ ...base, timeZone: " Europe/Berlin " }).timeZone).toBe(
+      "Europe/Berlin"
+    );
+    expect(siteConfig({ ...base, timeZone: "" }).timeZone).toBe("UTC");
+    expect(() => siteConfig({ ...base, timeZone: "Mars/Base" })).toThrow(
+      "IANA time zone"
+    );
   });
 });

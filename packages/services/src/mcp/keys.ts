@@ -1,12 +1,9 @@
 // biome-ignore-all lint/style/noExportedImports: re-exports the shared retention and last-used constants from `@repo/db/shared`.
 // biome-ignore-all lint/performance/useTopLevelRegex: ported verbatim; one regex per request.
 
+import type { ApiScope } from "@repo/cms-core/mcp/scopes";
 import type { ApiKeyRow } from "@repo/db";
-import {
-  type ApiScope,
-  CALL_RETENTION_DAYS,
-  LAST_USED_EVERY_MS,
-} from "@repo/db/shared";
+import { CALL_RETENTION_DAYS, LAST_USED_EVERY_MS } from "@repo/db/shared";
 import { nanoid } from "nanoid";
 import { type Clock, systemClock } from "../clock";
 import { sha256Hex } from "../cms/media-bytes";
