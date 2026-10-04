@@ -262,18 +262,18 @@ export function FixBar({
   };
   return (
     <div
-      className="sticky top-0 z-10 mb-4 flex flex-wrap items-center gap-3 rounded border border-accent/40 bg-neutral-900/95 px-4 py-2 text-sm backdrop-blur"
+      className="sticky top-0 z-10 mb-4 flex flex-wrap items-center gap-3 rounded border border-primary/40 bg-card/95 px-4 py-2 text-sm backdrop-blur"
       data-testid="seo-fix-bar"
     >
-      <span className="text-neutral-200">
+      <span className="text-foreground">
         {selection.size} of at most {MAX_PLAN_ITEMS}{" "}
         {selection.size === 1 ? "page" : "pages"} picked
       </span>
-      <span className="text-xs text-neutral-500">
+      <span className="text-xs text-muted-foreground">
         The agent plans a site-wide run from these; you approve the plan, and
         every change stays a draft for review.
       </span>
-      {!!error && <span className="text-danger">{error}</span>}
+      {!!error && <span className="text-destructive">{error}</span>}
       <div className="ml-auto flex gap-2">
         <Button
           size="sm"

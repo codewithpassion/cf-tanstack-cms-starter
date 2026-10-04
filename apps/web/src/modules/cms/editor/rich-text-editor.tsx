@@ -68,13 +68,13 @@ import { Input } from "#/components/ui/input";
 const CLASSES = {
   paragraph: "mb-4 last:mb-0 leading-relaxed",
   heading:
-    "font-heading font-bold text-[color:var(--cms-heading,var(--color-white))] mt-8 mb-4 first:mt-0 [&:is(h2)]:text-2xl md:[&:is(h2)]:text-3xl [&:is(h3)]:text-xl md:[&:is(h3)]:text-2xl",
+    "font-heading font-semibold tracking-tight text-[color:var(--cms-heading,var(--foreground))] mt-8 mb-4 first:mt-0 [&:is(h2)]:text-2xl md:[&:is(h2)]:text-3xl [&:is(h3)]:text-xl md:[&:is(h3)]:text-2xl",
   bulletList: "list-disc pl-6 mb-4 last:mb-0 space-y-2",
   orderedList: "list-decimal pl-6 mb-4 last:mb-0 space-y-2",
   blockquote: "border-l-4 border-primary pl-6 my-6 italic",
-  code: "font-mono text-[0.9em] bg-ink-soft px-1.5 py-0.5 rounded",
+  code: "font-mono text-[0.9em] bg-muted px-1.5 py-0.5 rounded",
   bold: "font-bold",
-  link: "text-[color:var(--cms-accent,var(--color-accent))] underline underline-offset-4",
+  link: "text-[color:var(--cms-accent,var(--primary))] underline underline-offset-4",
   // The list item's paragraphs carry no margin in the public renderer.
   root: "outline-none [&_li>p]:mb-0",
 };
@@ -89,7 +89,7 @@ const COMPACT: typeof CLASSES = {
   blockquote: "border-l-2 border-primary pl-3 my-2 italic",
   code: CLASSES.code,
   bold: CLASSES.bold,
-  link: "text-accent underline",
+  link: "text-primary underline",
   root: CLASSES.root,
 };
 
@@ -99,15 +99,15 @@ const COMPACT: typeof CLASSES = {
  */
 const ARTICLE: typeof CLASSES = {
   paragraph:
-    "text-[color:var(--cms-text,rgb(255_255_255/0.8))] font-sans text-lg leading-relaxed mb-6",
+    "text-[color:var(--cms-text,var(--muted-foreground))] font-sans text-lg leading-relaxed mb-6",
   heading:
-    "font-heading font-bold [&:is(h2)]:text-2xl md:[&:is(h2)]:text-3xl [&:is(h2)]:text-[color:var(--cms-heading,var(--color-primary))] [&:is(h2)]:mt-12 [&:is(h2)]:mb-6 [&:is(h3)]:text-xl [&:is(h3)]:text-[color:var(--cms-accent,var(--color-accent))] [&:is(h3)]:mt-8 [&:is(h3)]:mb-4",
+    "font-heading font-semibold tracking-tight [&:is(h2)]:text-2xl md:[&:is(h2)]:text-3xl [&:is(h2)]:text-[color:var(--cms-heading,var(--foreground))] [&:is(h2)]:mt-12 [&:is(h2)]:mb-6 [&:is(h3)]:text-xl [&:is(h3)]:text-[color:var(--cms-accent,var(--primary))] [&:is(h3)]:mt-8 [&:is(h3)]:mb-4",
   bulletList:
-    "list-['►__'] marker:text-accent pl-7 space-y-3 mb-6 text-white/80 font-sans leading-relaxed [&_p]:text-base",
+    "list-disc marker:text-primary pl-7 space-y-3 mb-6 text-foreground/80 font-sans leading-relaxed [&_p]:text-base",
   orderedList:
-    "list-decimal pl-6 space-y-3 mb-6 text-white/80 font-sans leading-relaxed [&_p]:text-base",
+    "list-decimal pl-6 space-y-3 mb-6 text-foreground/80 font-sans leading-relaxed [&_p]:text-base",
   blockquote:
-    "cyber-border bg-ink-soft/30 pl-6 py-4 my-8 border-l-4 border-primary [&_p]:text-white [&_p]:text-xl [&_p]:italic [&_p]:mb-0",
+    "bg-muted/50 pl-6 py-4 my-8 border-l-4 border-primary [&_p]:text-foreground [&_p]:text-xl [&_p]:italic [&_p]:mb-0",
   code: CLASSES.code,
   bold: CLASSES.bold,
   link: CLASSES.link,
@@ -424,7 +424,7 @@ function Toolbar({ editor, onLink }: { editor: Editor; onLink: () => void }) {
   const chain = () => editor.chain().focus();
   return (
     <div
-      className="flex items-center gap-0.5 rounded border border-neutral-600 bg-neutral-900 p-1 text-white shadow-lg"
+      className="flex items-center gap-0.5 rounded border border-border bg-card p-1 text-foreground shadow-lg"
       // Keep the editor's selection: buttons act on mousedown's default being suppressed.
       onMouseDown={(e) => e.preventDefault()}
       data-testid="rich-text-toolbar"
@@ -457,7 +457,7 @@ function Toolbar({ editor, onLink }: { editor: Editor; onLink: () => void }) {
       >
         <Link2 className="h-4 w-4" />
       </ToolButton>
-      <span className="mx-1 h-5 w-px bg-neutral-700" />
+      <span className="mx-1 h-5 w-px bg-accent" />
       <ToolButton
         label="Heading 2"
         active={editor.isActive("heading", { level: 2 })}
@@ -515,7 +515,7 @@ function ToolButton({
       aria-label={label}
       aria-pressed={active}
       onClick={onClick}
-      className={`rounded p-1.5 ${active ? "bg-accent text-black" : "hover:bg-neutral-700"}`}
+      className={`rounded p-1.5 ${active ? "bg-accent text-black" : "hover:bg-accent"}`}
     >
       {children}
     </button>
@@ -600,7 +600,7 @@ function LinkDialog({
   return (
     <Dialog onOpenChange={(open) => !open && onClose()} open>
       <DialogContent
-        className="max-w-md border-neutral-700 sm:max-w-md bg-neutral-900 text-neutral-100"
+        className="max-w-md border-border sm:max-w-md bg-card text-foreground"
         data-testid="link-dialog"
         // Back to the text, not to the toolbar button (it unmounts when the editor loses focus).
         onCloseAutoFocus={(e) => {
@@ -622,7 +622,7 @@ function LinkDialog({
             aria-invalid={!!error}
             aria-label="Link"
             autoFocus
-            className="border-neutral-700 bg-neutral-950"
+            className="border-border bg-background"
             data-testid="link-input"
             onChange={(e) => {
               setHref(e.target.value);
@@ -633,7 +633,7 @@ function LinkDialog({
           />
           {!!error && (
             <p
-              className="text-danger text-sm"
+              className="text-destructive text-sm"
               data-testid="link-error"
               id={`${id}-error`}
               role="alert"

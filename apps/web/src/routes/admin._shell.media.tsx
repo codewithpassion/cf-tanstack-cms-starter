@@ -30,10 +30,10 @@ export const Route = createFileRoute("/admin/_shell/media")({
 
 function MediaPage() {
   return (
-    <div className="p-8 text-neutral-100">
+    <div className="p-8 text-foreground">
       <div className="mb-6">
         <h1 className="font-bold font-heading text-2xl">Media</h1>
-        <p className="mt-1 text-neutral-400 text-sm">
+        <p className="mt-1 text-muted-foreground text-sm">
           Every image in the library. Drop files on the grid to upload (JPEG,
           PNG, WebP, GIF, AVIF; up to 10 MB).
         </p>
@@ -97,21 +97,21 @@ function MediaDetails({ media }: { media: MediaInfo }) {
 
   return (
     <div
-      className="mt-4 space-y-3 border-neutral-800 border-t pt-3 text-xs"
+      className="mt-4 space-y-3 border-border border-t pt-3 text-xs"
       data-testid="media-details"
     >
       <div className="space-y-1">
-        <div className="text-neutral-400">URL</div>
+        <div className="text-muted-foreground">URL</div>
         <div className="flex items-center gap-2">
           <code
-            className="min-w-0 flex-1 select-all truncate rounded bg-neutral-950 px-2 py-1 text-neutral-300"
+            className="min-w-0 flex-1 select-all truncate rounded bg-background px-2 py-1 text-muted-foreground"
             title={url}
           >
             {url}
           </code>
           <button
             aria-label="Copy URL"
-            className="text-neutral-400 hover:text-white"
+            className="text-muted-foreground hover:text-foreground"
             data-testid="media-copy-url"
             onClick={() => {
               copy().catch(() => setCopyError("Could not copy the URL."));
@@ -119,27 +119,29 @@ function MediaDetails({ media }: { media: MediaInfo }) {
             type="button"
           >
             {copied ? (
-              <Check className="h-4 w-4 text-emerald-300" />
+              <Check className="h-4 w-4 text-emerald-700 dark:text-emerald-300" />
             ) : (
               <Copy className="h-4 w-4" />
             )}
           </button>
         </div>
-        {!!copyError && <p className="text-red-400">{copyError}</p>}
+        {!!copyError && (
+          <p className="text-red-600 dark:text-red-400">{copyError}</p>
+        )}
       </div>
       <div className="space-y-1">
-        <div className="text-neutral-400">Used on</div>
+        <div className="text-muted-foreground">Used on</div>
         {error ? (
-          <p className="text-red-400">{error}</p>
+          <p className="text-red-600 dark:text-red-400">{error}</p>
         ) : usage ? (
           usage.pages.length === 0 && !usage.site ? (
-            <p className="text-neutral-500">Not used on any page.</p>
+            <p className="text-muted-foreground">Not used on any page.</p>
           ) : (
             <ul className="space-y-1" data-testid="media-usage">
               {!!usage.site && (
                 <li>
                   <Link
-                    className="text-white hover:text-accent"
+                    className="text-foreground hover:text-primary"
                     to="/admin/site"
                   >
                     Site settings
@@ -149,13 +151,13 @@ function MediaDetails({ media }: { media: MediaInfo }) {
               {usage.pages.map((p) => (
                 <li key={p.id}>
                   <Link
-                    className="text-white hover:text-accent"
+                    className="text-foreground hover:text-primary"
                     params={{ pageId: p.id }}
                     to="/admin/editor/$pageId"
                   >
                     {p.title}
                   </Link>
-                  <span className="ml-1 text-neutral-500">
+                  <span className="ml-1 text-muted-foreground">
                     /{p.slug} ·{" "}
                     {p.inLive
                       ? p.inDraft
@@ -168,7 +170,7 @@ function MediaDetails({ media }: { media: MediaInfo }) {
             </ul>
           )
         ) : (
-          <p className="text-neutral-500">Checking…</p>
+          <p className="text-muted-foreground">Checking…</p>
         )}
       </div>
     </div>

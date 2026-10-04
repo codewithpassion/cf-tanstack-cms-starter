@@ -55,7 +55,7 @@ export function Inspector({ device }: { device: Device }) {
       className="flex h-full flex-col"
       data-testid="inspector"
     >
-      <TabsList className="m-2 grid grid-cols-2 bg-neutral-800">
+      <TabsList className="m-2 grid grid-cols-2 bg-muted">
         <TabsTrigger value="content">Content</TabsTrigger>
         <TabsTrigger value="style" data-testid="tab-style">
           Style
@@ -73,14 +73,14 @@ export function Inspector({ device }: { device: Device }) {
             data-testid="inspector-fieldset"
           >
             {readOnly && (
-              <p className="pt-2 text-xs text-neutral-500">
+              <p className="pt-2 text-xs text-muted-foreground">
                 Archived pages are read-only.
               </p>
             )}
             <BlockContentForm key={block._key} block={block} />
           </fieldset>
         ) : (
-          <p className="p-2 text-sm text-neutral-500">
+          <p className="p-2 text-sm text-muted-foreground">
             Select a block on the canvas or in Layers to edit its content.
           </p>
         )}
@@ -92,14 +92,14 @@ export function Inspector({ device }: { device: Device }) {
         {block ? (
           <fieldset disabled={readOnly} className="min-w-0">
             {readOnly && (
-              <p className="pt-2 text-xs text-neutral-500">
+              <p className="pt-2 text-xs text-muted-foreground">
                 Archived pages are read-only.
               </p>
             )}
             <StylePanel key={block._key} block={block} device={device} />
           </fieldset>
         ) : (
-          <p className="p-2 text-sm text-neutral-500">
+          <p className="p-2 text-sm text-muted-foreground">
             Select a block on the canvas or in Layers to style it.
           </p>
         )}
@@ -175,7 +175,7 @@ function BlockContentForm({ block }: { block: Block }) {
 
   if (!def) {
     return (
-      <p className="p-2 text-sm text-danger">
+      <p className="p-2 text-sm text-destructive">
         Unknown block type "{block._type}".
       </p>
     );
@@ -187,8 +187,8 @@ function BlockContentForm({ block }: { block: Block }) {
       data-testid="content-form"
       data-block={block._type}
     >
-      <div className="flex items-center gap-2 text-sm font-semibold text-neutral-200">
-        <def.Icon className="h-4 w-4 text-accent" /> {def.label}
+      <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+        <def.Icon className="h-4 w-4 text-primary" /> {def.label}
       </div>
       {fields.map((spec) => (
         <FieldControl
@@ -265,7 +265,7 @@ function FieldControl(props: ControlProps) {
     default:
       return (
         <FieldShell label={props.spec.label}>
-          <pre className="overflow-x-auto rounded bg-neutral-950 p-2 text-xs text-neutral-400">
+          <pre className="overflow-x-auto rounded bg-background p-2 text-xs text-muted-foreground">
             {JSON.stringify(props.value, null, 2)}
           </pre>
         </FieldShell>
@@ -274,7 +274,7 @@ function FieldControl(props: ControlProps) {
 }
 
 const inputClass =
-  "w-full rounded border border-neutral-700 bg-neutral-950 px-2 py-1.5 text-sm text-neutral-100 focus:border-accent focus:outline-none aria-[invalid=true]:border-danger";
+  "w-full rounded border border-border bg-background px-2 py-1.5 text-sm text-foreground focus:border-primary focus:outline-none aria-[invalid=true]:border-destructive";
 
 function FieldShell({
   label,
@@ -293,22 +293,25 @@ function FieldShell({
 }) {
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={htmlFor} className="text-xs font-medium text-neutral-300">
+      <label
+        htmlFor={htmlFor}
+        className="text-xs font-medium text-muted-foreground"
+      >
         {label}
         {!!optional && (
-          <span className="font-normal text-neutral-500"> (optional)</span>
+          <span className="font-normal text-muted-foreground"> (optional)</span>
         )}
       </label>
       {children}
-      {!!hint && <p className="text-xs text-neutral-500">{hint}</p>}
+      {!!hint && <p className="text-xs text-muted-foreground">{hint}</p>}
       {!!error && (
         <p
-          className="text-xs text-danger"
+          className="text-xs text-destructive"
           role="alert"
           data-testid="field-error"
         >
           {error}
-          <span className="block text-neutral-500">
+          <span className="block text-muted-foreground">
             Not applied: the page keeps the last valid value.
           </span>
         </p>
@@ -461,7 +464,7 @@ function MediaField({
         />
         {mediaId && library?.id === mediaId && library.media === null && (
           <p
-            className="mt-1 text-xs text-amber-300"
+            className="mt-1 text-xs text-amber-700 dark:text-amber-300"
             data-testid="image-missing"
           >
             This image isn't in the media library any more; pick another.
@@ -469,7 +472,7 @@ function MediaField({
         )}
         {keptAlt !== null && mediaId && alt === keptAlt && (
           <p
-            className="mt-1 text-xs text-amber-300"
+            className="mt-1 text-xs text-amber-700 dark:text-amber-300"
             data-testid="image-alt-kept"
           >
             Alt text may describe the previous image.
@@ -584,7 +587,7 @@ function RichTextField({
         value={value as RichTextDoc}
         toolbar="static"
         editable={pageStatus !== "archived"}
-        className="flex flex-col gap-1 rounded border border-neutral-700 bg-neutral-950 p-2 text-sm text-neutral-100 [&_.ProseMirror]:min-h-16"
+        className="flex flex-col gap-1 rounded border border-border bg-background p-2 text-sm text-foreground [&_.ProseMirror]:min-h-16"
         registerFlusher={registerFlusher}
         onInvalid={setError}
         onChange={(doc) => setError(commit(path, doc))}
@@ -608,7 +611,7 @@ function LinkField({
       <FieldShell label={spec.label} error={error} optional={spec.optional}>
         <button
           type="button"
-          className="flex w-fit items-center gap-1 rounded border border-dashed border-neutral-600 px-2 py-1 text-xs text-neutral-300 hover:border-accent"
+          className="flex w-fit items-center gap-1 rounded border border-dashed border-border px-2 py-1 text-xs text-muted-foreground hover:border-primary"
           data-testid={`add-${pathKey(path)}`}
           onClick={() => setError(commit(path, defaultValue(spec)))}
         >
@@ -629,13 +632,13 @@ function LinkField({
     multiline: false,
   });
   return (
-    <fieldset className="flex flex-col gap-2 rounded border border-neutral-800 p-2">
-      <legend className="flex w-full items-center justify-between px-1 text-xs font-medium text-neutral-300">
+    <fieldset className="flex flex-col gap-2 rounded border border-border p-2">
+      <legend className="flex w-full items-center justify-between px-1 text-xs font-medium text-muted-foreground">
         {spec.label} button
         {!!spec.optional && (
           <button
             type="button"
-            className="ml-2 text-neutral-500 hover:text-danger"
+            className="ml-2 text-muted-foreground hover:text-destructive"
             onClick={() => setError(commit(path, undefined))}
             aria-label={`Remove ${spec.label.toLowerCase()} button`}
           >
@@ -655,7 +658,7 @@ function LinkField({
           registerFlusher={registerFlusher}
         />
       ))}
-      {!!error && <p className="text-xs text-danger">{error}</p>}
+      {!!error && <p className="text-xs text-destructive">{error}</p>}
     </fieldset>
   );
 }
@@ -673,8 +676,8 @@ function ObjectField({
   }
   const obj = (value ?? {}) as Record<string, unknown>;
   return (
-    <fieldset className="flex flex-col gap-3 rounded border border-neutral-800 p-2">
-      <legend className="px-1 text-xs font-medium text-neutral-300">
+    <fieldset className="flex flex-col gap-3 rounded border border-border p-2">
+      <legend className="px-1 text-xs font-medium text-muted-foreground">
         {spec.label}
       </legend>
       {spec.fields.map((f) => (
@@ -732,9 +735,9 @@ function ListField({
   return (
     <div className="flex flex-col gap-2" data-testid={`list-${pathKey(path)}`}>
       <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-neutral-300">
+        <span className="text-xs font-medium text-muted-foreground">
           {spec.label}{" "}
-          <span className="text-neutral-500">({items.length})</span>
+          <span className="text-muted-foreground">({items.length})</span>
         </span>
         <button
           type="button"
@@ -745,7 +748,7 @@ function ListField({
             setOpen((s) => new Set(s).add(String(item._key)));
             set([...items, item]);
           }}
-          className="flex items-center gap-1 rounded px-1.5 py-0.5 text-xs text-accent hover:bg-neutral-800 disabled:opacity-30"
+          className="flex items-center gap-1 rounded px-1.5 py-0.5 text-xs text-primary hover:bg-muted disabled:opacity-30"
         >
           <Plus className="h-3.5 w-3.5" /> Add
         </button>
@@ -761,13 +764,13 @@ function ListField({
         return (
           <div
             key={key}
-            className="rounded border border-neutral-800"
+            className="rounded border border-border"
             data-testid="list-item"
           >
             <div className="flex items-center gap-1 px-2 py-1">
               <button
                 type="button"
-                className="min-w-0 flex-1 truncate text-left text-sm text-neutral-200"
+                className="min-w-0 flex-1 truncate text-left text-sm text-foreground"
                 onClick={() => toggle(key)}
                 aria-expanded={expanded}
               >
@@ -796,7 +799,7 @@ function ListField({
               </IconButton>
             </div>
             {expanded && (
-              <div className="flex flex-col gap-3 border-t border-neutral-800 p-2">
+              <div className="flex flex-col gap-3 border-t border-border p-2">
                 {spec.itemFields.map((f) => (
                   <FieldControl
                     key={f.name}
@@ -814,7 +817,7 @@ function ListField({
           </div>
         );
       })}
-      {!!error && <p className="text-xs text-danger">{error}</p>}
+      {!!error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
 }
@@ -837,7 +840,7 @@ function IconButton({
       aria-label={label}
       disabled={disabled}
       onClick={onClick}
-      className="rounded p-1 text-neutral-400 hover:bg-neutral-700 hover:text-white disabled:opacity-30"
+      className="rounded p-1 text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-30"
     >
       {children}
     </button>

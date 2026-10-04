@@ -319,23 +319,24 @@ export function consentCsp(redirectUri: string): string {
   return `default-src 'none'; style-src 'unsafe-inline'; img-src data:; form-action 'self'${target}; frame-ancestors 'none'; base-uri 'none'`;
 }
 
-/** The admin's dark palette: near black, an accent, a primary and a danger colour. */
+/** The consent page's palette: zinc neutrals and one indigo accent, light by default, dark on request. */
 const STYLE = `
-:root{color-scheme:dark}
-body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0a0a0a;color:#e5e5e5;font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding:16px;box-sizing:border-box}
-main{width:100%;max-width:520px;background:#171717;border:1px solid #262626;border-radius:8px;padding:24px}
-.kicker{color:#00d4ff;font-size:12px;letter-spacing:.15em;text-transform:uppercase;margin:0 0 6px}
-h1{color:#ff7733;font-size:22px;margin:0 0 16px}
-p{margin:0 0 12px}.muted{color:#a3a3a3;font-size:13px}
-strong{color:#fff}
-.note{border:1px solid #00d4ff;color:#cffafe;border-radius:6px;padding:8px 10px;font-size:13px}
-.warn{border:1px solid #ff3859;color:#fecdd3;border-radius:6px;padding:8px 10px;font-size:13px}
-fieldset{border:1px solid #262626;border-radius:6px;padding:8px 12px;margin:16px 0}
-legend{color:#a3a3a3;font-size:13px;padding:0 4px}
-label{display:block;padding:6px 0;cursor:pointer}label span{display:block;color:#a3a3a3;font-size:13px;margin-left:24px}
+:root{color-scheme:light dark;--bg:#fafafa;--card:#fff;--fg:#09090b;--muted:#71717a;--border:#e4e4e7;--primary:#4f46e5;--on-primary:#fff;--danger:#dc2626;--note-bg:#eef2ff;--warn-bg:#fef2f2}
+@media (prefers-color-scheme:dark){:root{--bg:#09090b;--card:#18181b;--fg:#fafafa;--muted:#a1a1aa;--border:#27272a;--primary:#6366f1;--danger:#f87171;--note-bg:#1e1b4b;--warn-bg:#450a0a}}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--fg);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;padding:16px;box-sizing:border-box}
+main{width:100%;max-width:520px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px;box-shadow:0 1px 3px rgb(0 0 0/.06)}
+.kicker{color:var(--primary);font-size:12px;font-weight:600;margin:0 0 6px}
+h1{color:var(--fg);font-size:22px;font-weight:600;letter-spacing:-.02em;margin:0 0 16px}
+p{margin:0 0 12px}.muted{color:var(--muted);font-size:13px}
+strong{font-weight:600}
+.note{border:1px solid var(--primary);background:var(--note-bg);border-radius:8px;padding:8px 10px;font-size:13px}
+.warn{border:1px solid var(--danger);background:var(--warn-bg);border-radius:8px;padding:8px 10px;font-size:13px}
+fieldset{border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin:16px 0}
+legend{color:var(--muted);font-size:13px;padding:0 4px}
+label{display:block;padding:6px 0;cursor:pointer}label span{display:block;color:var(--muted);font-size:13px;margin-left:24px}
 .actions{display:flex;gap:12px;margin-top:16px}
-button{font:inherit;border-radius:6px;padding:8px 18px;cursor:pointer;border:1px solid #404040;background:#0a0a0a;color:#e5e5e5}
-button.primary{background:#ff7733;border-color:#ff7733;color:#111;font-weight:600}
+button{font:inherit;border-radius:8px;padding:8px 18px;cursor:pointer;border:1px solid var(--border);background:var(--card);color:var(--fg)}
+button.primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary);font-weight:600}
 `;
 
 function shell(siteName: string, title: string, body: string): string {

@@ -497,7 +497,7 @@ export function SeoPanel({
       className="flex h-full flex-col"
       data-testid="seo-panel"
     >
-      <TabsList className="m-2 grid grid-cols-4 bg-neutral-800">
+      <TabsList className="m-2 grid grid-cols-4 bg-muted">
         <TabsTrigger value="fields" data-testid="seo-tab-fields">
           Fields
         </TabsTrigger>
@@ -507,7 +507,7 @@ export function SeoPanel({
         <TabsTrigger value="checklist" data-testid="seo-tab-checklist">
           Checks
           <span
-            className={`ml-1.5 rounded px-1 text-[10px] ${score >= 80 ? "bg-emerald-700/60" : score >= 50 ? "bg-amber-600/50" : "bg-danger/50"}`}
+            className={`ml-1.5 rounded px-1 text-[10px] ${score >= 80 ? "bg-emerald-700/60" : score >= 50 ? "bg-amber-600/50" : "bg-destructive/50"}`}
             data-testid="seo-score"
           >
             {score}
@@ -532,7 +532,7 @@ export function SeoPanel({
           data-testid="seo-fields"
         >
           {readOnly && (
-            <p className="text-xs text-neutral-500">
+            <p className="text-xs text-muted-foreground">
               Archived pages are read-only.
             </p>
           )}
@@ -569,7 +569,10 @@ export function SeoPanel({
         className="mt-0 min-h-0 flex-1 overflow-y-auto px-3 pb-6"
       >
         {!!ctxError && (
-          <p className="mb-2 text-xs text-amber-300" role="status">
+          <p
+            className="mb-2 text-xs text-amber-700 dark:text-amber-300"
+            role="status"
+          >
             Other pages couldn't be loaded ({ctxError}), so uniqueness isn't
             checked.
           </p>
@@ -581,7 +584,9 @@ export function SeoPanel({
         className="mt-0 min-h-0 flex-1 overflow-y-auto px-3 pb-6"
       >
         <Suspense
-          fallback={<p className="pt-1 text-xs text-neutral-500">Loading…</p>}
+          fallback={
+            <p className="pt-1 text-xs text-muted-foreground">Loading…</p>
+          }
         >
           <PerformancePanel pageId={pageId} />
         </Suspense>
@@ -594,7 +599,7 @@ export function SeoPanel({
 // Fields
 
 const inputClass =
-  "w-full rounded border border-neutral-700 bg-neutral-950 px-2 py-1.5 text-sm text-neutral-100 focus:border-accent focus:outline-none aria-[invalid=true]:border-danger disabled:opacity-60";
+  "w-full rounded border border-border bg-background px-2 py-1.5 text-sm text-foreground focus:border-primary focus:outline-none aria-[invalid=true]:border-destructive disabled:opacity-60";
 
 type Drafts = ReturnType<typeof useSeoDrafts>;
 
@@ -676,7 +681,7 @@ function SeoFields({
       <button
         type="button"
         onClick={onOpenChecks}
-        className="rounded border border-neutral-800 bg-neutral-950 px-2 py-1.5 text-left text-xs text-neutral-400 hover:border-neutral-600"
+        className="rounded border border-border bg-background px-2 py-1.5 text-left text-xs text-muted-foreground hover:border-border"
       >
         {problems
           ? `${problems} SEO check${problems === 1 ? "" : "s"} need attention →`
@@ -765,7 +770,10 @@ function SeoFields({
           testId="seo-sitemap"
         />
         {!seo.robots.index && (
-          <p className="text-xs text-amber-300" data-testid="seo-noindex-note">
+          <p
+            className="text-xs text-amber-700 dark:text-amber-300"
+            data-testid="seo-noindex-note"
+          >
             noindex pages are left out of the sitemap
             {seo.sitemap.include
               ? "; this page goes back in when it's indexed again"
@@ -821,7 +829,7 @@ function SeoFields({
         </div>
         {image ? (
           <p
-            className={`text-xs ${imageMissing || (imageSize && (imageSize.width !== 1200 || imageSize.height !== 630)) ? "text-amber-300" : "text-neutral-500"}`}
+            className={`text-xs ${imageMissing || (imageSize && (imageSize.width !== 1200 || imageSize.height !== 630)) ? "text-amber-700 dark:text-amber-300" : "text-muted-foreground"}`}
             data-testid="seo-share-size"
           >
             {imageMissing
@@ -834,7 +842,7 @@ function SeoFields({
               : ""}
           </p>
         ) : (
-          <p className="text-xs text-neutral-500">
+          <p className="text-xs text-muted-foreground">
             None: platforms get the site default image.
           </p>
         )}
@@ -856,7 +864,7 @@ function SeoFields({
         <div className="flex flex-col gap-1">
           <label
             htmlFor="seo-pageType"
-            className="text-xs font-medium text-neutral-300"
+            className="text-xs font-medium text-muted-foreground"
           >
             Page type
           </label>
@@ -984,15 +992,18 @@ function SlugHint({
     <span className="flex flex-col gap-0.5" data-testid="seo-slug-status">
       {state.status === "checking" && <span>Checking…</span>}
       {state.status === "error" && (
-        <span className="text-danger">{state.message}</span>
+        <span className="text-destructive">{state.message}</span>
       )}
       {state.status === "ok" && (
-        <span className="text-emerald-300">
+        <span className="text-emerald-700 dark:text-emerald-300">
           {slugToPath(slug)} is available.
         </span>
       )}
       {liveSlug !== null && slug !== liveSlug && state.status !== "error" && (
-        <span className="text-amber-300" data-testid="seo-redirect-note">
+        <span
+          className="text-amber-700 dark:text-amber-300"
+          data-testid="seo-redirect-note"
+        >
           Publishing adds a 301 redirect from {slugToPath(liveSlug)} to{" "}
           {slugToPath(slug)}.
         </span>
@@ -1055,23 +1066,23 @@ function ExtraJsonLd({
 
   return (
     <div className="flex flex-col gap-2" data-testid="seo-extra">
-      <span className="text-xs font-medium text-neutral-300">
+      <span className="text-xs font-medium text-muted-foreground">
         Extra schema.org nodes
       </span>
       {extra?.length ? (
         <ul
-          className="flex flex-col gap-1 text-xs text-neutral-300"
+          className="flex flex-col gap-1 text-xs text-muted-foreground"
           data-testid="seo-extra-summary"
         >
           {extra.map((node, i) => (
-            <li key={i} className="rounded bg-neutral-950 px-2 py-1">
-              <span className="font-mono text-accent">
+            <li key={i} className="rounded bg-background px-2 py-1">
+              <span className="font-mono text-primary">
                 {String(node["@type"])}
               </span>
               {typeof node.name === "string" && (
-                <span className="text-neutral-400"> · {node.name}</span>
+                <span className="text-muted-foreground"> · {node.name}</span>
               )}
-              <span className="text-neutral-500">
+              <span className="text-muted-foreground">
                 {" "}
                 · {Object.keys(node).filter((k) => !k.startsWith("@")).length}{" "}
                 fields
@@ -1080,13 +1091,13 @@ function ExtraJsonLd({
           ))}
         </ul>
       ) : (
-        <p className="text-xs text-neutral-500">
+        <p className="text-xs text-muted-foreground">
           None. Blocks add their own (e.g. FAQ → FAQPage).
         </p>
       )}
       <Collapsible open={open} onOpenChange={setOpen}>
         <CollapsibleTrigger
-          className="flex items-center gap-1 text-xs text-neutral-400 hover:text-white"
+          className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
           data-testid="seo-extra-toggle"
         >
           <ChevronRight
@@ -1109,7 +1120,7 @@ function ExtraJsonLd({
           />
           {!!error && (
             <p
-              className="text-xs text-danger"
+              className="text-xs text-destructive"
               role="alert"
               data-testid="seo-extra-error"
             >
@@ -1117,7 +1128,10 @@ function ExtraJsonLd({
             </p>
           )}
           {stale && text !== current && (
-            <p className="text-xs text-amber-300" data-testid="seo-extra-stale">
+            <p
+              className="text-xs text-amber-700 dark:text-amber-300"
+              data-testid="seo-extra-stale"
+            >
               The saved JSON changed while you were editing; Apply replaces it,
               Revert shows it.
             </p>
@@ -1158,7 +1172,7 @@ function ExtraJsonLd({
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="flex flex-col gap-3">
-      <h3 className="border-b border-neutral-800 pb-1 text-xs font-semibold uppercase tracking-wide text-neutral-400">
+      <h3 className="border-b border-border pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         {title}
       </h3>
       {children}
@@ -1208,17 +1222,20 @@ function TextInput({
   };
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={testId} className="text-xs font-medium text-neutral-300">
+      <label
+        htmlFor={testId}
+        className="text-xs font-medium text-muted-foreground"
+      >
         {label}
         {!!optional && (
-          <span className="font-normal text-neutral-500"> (optional)</span>
+          <span className="font-normal text-muted-foreground"> (optional)</span>
         )}
       </label>
       {multiline ? (
         <textarea rows={rows} {...props} />
       ) : prefix ? (
         <div className="flex items-center gap-1">
-          <span className="text-neutral-500">{prefix}</span>
+          <span className="text-muted-foreground">{prefix}</span>
           <input {...props} />
         </div>
       ) : (
@@ -1226,14 +1243,14 @@ function TextInput({
       )}
       {!!error && (
         <p
-          className="text-xs text-danger"
+          className="text-xs text-destructive"
           role="alert"
           data-testid={`${testId}-error`}
         >
           {error}
         </p>
       )}
-      {!!hint && <div className="text-xs text-neutral-500">{hint}</div>}
+      {!!hint && <div className="text-xs text-muted-foreground">{hint}</div>}
     </div>
   );
 }
@@ -1252,8 +1269,8 @@ function SwitchRow({
   testId: string;
 }) {
   return (
-    <label className="flex items-center justify-between gap-3 text-sm text-neutral-200">
-      <span className={disabled ? "text-neutral-500" : ""}>{label}</span>
+    <label className="flex items-center justify-between gap-3 text-sm text-foreground">
+      <span className={disabled ? "text-muted-foreground" : ""}>{label}</span>
       <Switch
         checked={checked}
         disabled={disabled}
@@ -1284,26 +1301,26 @@ function PixelMeter({
   const ratio = width / maxPx;
   const color = width
     ? ratio > 1
-      ? "bg-danger"
+      ? "bg-destructive"
       : ratio < 0.5
         ? "bg-amber-500"
         : "bg-emerald-500"
-    : "bg-neutral-700";
+    : "bg-accent";
   return (
     <div
       className="-mt-1 flex flex-col gap-1"
       data-testid={testId}
       data-width={width}
     >
-      <div className="h-1.5 overflow-hidden rounded bg-neutral-800">
+      <div className="h-1.5 overflow-hidden rounded bg-muted">
         <div
           className={`h-full ${color}`}
           style={{ width: `${Math.min(100, ratio * 100)}%` }}
         />
       </div>
-      <div className="flex justify-between text-[11px] text-neutral-500">
+      <div className="flex justify-between text-[11px] text-muted-foreground">
         <span>{note}</span>
-        <span className={ratio > 1 ? "text-danger" : ""}>
+        <span className={ratio > 1 ? "text-destructive" : ""}>
           {width} / {maxPx}px{ratio > 1 ? " — cut off in Google" : ""}
         </span>
       </div>

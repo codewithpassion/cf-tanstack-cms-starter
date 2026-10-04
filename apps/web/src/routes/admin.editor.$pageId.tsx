@@ -46,7 +46,7 @@ export const Route = createFileRoute("/admin/editor/$pageId")({
 
 function Loading() {
   return (
-    <div className="flex h-screen items-center justify-center bg-neutral-950 font-sans text-neutral-400">
+    <div className="flex h-screen items-center justify-center bg-background font-sans text-muted-foreground">
       Loading editor…
     </div>
   );
@@ -57,13 +57,13 @@ function EditorRoute() {
   const { pageId } = Route.useParams();
   if (!data.ok) {
     return (
-      <div className="flex h-screen flex-col items-center justify-center gap-4 bg-neutral-950 font-sans text-neutral-200">
+      <div className="flex h-screen flex-col items-center justify-center gap-4 bg-background font-sans text-foreground">
         <p>
           {data.code === "NOT_FOUND"
             ? "That page doesn't exist."
             : data.message}
         </p>
-        <Link className="text-accent underline" to="/admin/pages">
+        <Link className="text-primary underline" to="/admin/pages">
           Back to pages
         </Link>
       </div>

@@ -17,7 +17,7 @@ export const Route = createFileRoute("/admin/_shell/site")({
 function SitePage() {
   const result = Route.useLoaderData();
   if (!result.ok) {
-    return <p className="p-8 text-danger">{result.message}</p>;
+    return <p className="p-8 text-destructive">{result.message}</p>;
   }
   return <SiteEditor initial={result} />;
 }

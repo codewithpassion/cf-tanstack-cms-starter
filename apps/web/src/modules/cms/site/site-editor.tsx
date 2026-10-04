@@ -473,7 +473,7 @@ export function SiteEditor({ initial }: { initial: SiteEditorState }) {
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0 max-w-xl">
           <h1 className="font-heading text-2xl font-bold">Site</h1>
-          <p className="mt-1 text-sm text-neutral-400">
+          <p className="mt-1 text-sm text-muted-foreground">
             Navigation, footer, SEO defaults and brand colours for every page.
             Changes save as a draft; publish to put them live.
           </p>
@@ -491,7 +491,7 @@ export function SiteEditor({ initial }: { initial: SiteEditorState }) {
             Save version…
           </Button>
           <span
-            className="whitespace-nowrap text-xs text-neutral-400"
+            className="whitespace-nowrap text-xs text-muted-foreground"
             data-testid="site-unpublished"
           >
             {unpublished
@@ -513,7 +513,7 @@ export function SiteEditor({ initial }: { initial: SiteEditorState }) {
       </div>
       {!!failure && (
         <p
-          className="mb-4 rounded border border-danger/50 bg-danger/10 px-3 py-2 text-sm text-danger"
+          className="mb-4 rounded border border-destructive/50 bg-destructive/10 px-3 py-2 text-sm text-destructive"
           role="alert"
         >
           {failure.code === "STALE_DRAFT"
@@ -523,7 +523,7 @@ export function SiteEditor({ initial }: { initial: SiteEditorState }) {
       )}
       {!!notice && (
         <p
-          className="mb-4 rounded border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200"
+          className="mb-4 rounded border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700 dark:text-emerald-300"
           role="status"
         >
           {notice}
@@ -654,7 +654,7 @@ function StatusText({
   };
   return (
     <span
-      className={`whitespace-nowrap text-xs ${status === "invalid" || status === "error" ? "text-danger" : "text-neutral-400"}`}
+      className={`whitespace-nowrap text-xs ${status === "invalid" || status === "error" ? "text-destructive" : "text-muted-foreground"}`}
       data-testid="site-status"
     >
       {text[status]}
@@ -719,7 +719,7 @@ function NavSection({
                 }}
               />
               {!!link.children?.length && (
-                <div className="ml-6 border-l border-neutral-800 pl-3">
+                <div className="ml-6 border-l border-border pl-3">
                   <SortableList
                     items={link.children}
                     onReorder={(from, to) =>
@@ -758,7 +758,7 @@ function NavSection({
               )}
               <button
                 type="button"
-                className="ml-6 text-xs text-accent hover:underline"
+                className="ml-6 text-xs text-primary hover:underline"
                 onClick={() =>
                   edit(
                     (d) =>
@@ -875,7 +875,7 @@ function FooterSection({
                   }
                 />
               </div>
-              <div className="ml-6 border-l border-neutral-800 pl-3">
+              <div className="ml-6 border-l border-border pl-3">
                 <SortableList
                   items={col.links}
                   onReorder={(from, to) =>
@@ -1059,7 +1059,7 @@ function SeoSection({ doc, edit, errors }: SectionProps) {
           onChange={(v) => edit((d) => void (d.seo.titleTemplate = v))}
           testId="seo-title-template"
         />
-        <p className="text-xs text-neutral-500">
+        <p className="text-xs text-muted-foreground">
           Example: {s.titleTemplate.replace("%s", () => "About us")}
         </p>
       </Group>
@@ -1097,7 +1097,7 @@ function SeoSection({ doc, edit, errors }: SectionProps) {
         />
         {!!img.mediaId && (
           <p
-            className={`text-xs ${img.width === 1200 && img.height === 630 ? "text-neutral-500" : "text-amber-300"}`}
+            className={`text-xs ${img.width === 1200 && img.height === 630 ? "text-muted-foreground" : "text-amber-700 dark:text-amber-300"}`}
             data-testid="site-share-size"
           >
             {img.width && img.height
@@ -1189,7 +1189,9 @@ function SwatchesSection({ doc, edit, errors }: SectionProps) {
         hint="Saved custom colours, offered in the page editor's colour picker after the brand tokens."
       >
         {doc.swatches.length === 0 && (
-          <p className="text-sm text-neutral-500">No custom colours yet.</p>
+          <p className="text-sm text-muted-foreground">
+            No custom colours yet.
+          </p>
         )}
         <SortableList
           items={doc.swatches}
@@ -1202,7 +1204,7 @@ function SwatchesSection({ doc, edit, errors }: SectionProps) {
               <input
                 type="color"
                 aria-label="Pick colour"
-                className="h-9 w-10 cursor-pointer rounded border border-neutral-700 bg-transparent"
+                className="h-9 w-10 cursor-pointer rounded border border-border bg-transparent"
                 value={/^#[0-9a-f]{6}$/i.test(sw.hex) ? sw.hex : "#000000"}
                 onChange={(e) =>
                   edit((d) => void (d.swatches[i]!.hex = e.target.value))
@@ -1310,14 +1312,14 @@ function HistorySection({
   };
 
   if (error) {
-    return <p className="py-4 text-sm text-danger">{error}</p>;
+    return <p className="py-4 text-sm text-destructive">{error}</p>;
   }
   if (!items) {
-    return <p className="py-4 text-sm text-neutral-400">Loading…</p>;
+    return <p className="py-4 text-sm text-muted-foreground">Loading…</p>;
   }
   if (!items.length) {
     return (
-      <p className="py-4 text-sm text-neutral-400">
+      <p className="py-4 text-sm text-muted-foreground">
         No versions yet: the site uses its built-in defaults. Your first edit
         starts the history.
       </p>
@@ -1326,7 +1328,7 @@ function HistorySection({
   return (
     <div className="py-4">
       <ul
-        className="divide-y divide-neutral-800 rounded border border-neutral-800"
+        className="divide-y divide-border rounded border border-border"
         data-testid="site-history"
       >
         {items.map((r) => (
@@ -1337,28 +1339,30 @@ function HistorySection({
           >
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <span className="rounded bg-neutral-800 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-neutral-300">
+                <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-muted-foreground">
                   {KIND_LABEL[r.kind]}
                 </span>
                 {!!r.isLive && (
-                  <span className="rounded bg-emerald-700/60 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-emerald-100">
+                  <span className="rounded bg-emerald-700/60 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
                     Live
                   </span>
                 )}
-                <span className="text-xs text-neutral-500">
+                <span className="text-xs text-muted-foreground">
                   {new Date(r.createdAt).toLocaleString()}
                   {r.byYou ? " · you" : ""}
                 </span>
               </div>
               {!!r.label && (
                 <p
-                  className="mt-1 break-words font-semibold text-neutral-100"
+                  className="mt-1 break-words font-semibold text-foreground"
                   data-testid="site-history-label"
                 >
                   {r.label}
                 </p>
               )}
-              <p className="mt-1 break-words text-neutral-300">{r.summary}</p>
+              <p className="mt-1 break-words text-muted-foreground">
+                {r.summary}
+              </p>
             </div>
             <Button
               size="sm"
@@ -1443,7 +1447,7 @@ function PublishDialog({
             <li>No changes against the live settings.</li>
           )}
         </ul>
-        {!!error && <p className="text-sm text-danger">{error}</p>}
+        {!!error && <p className="text-sm text-destructive">{error}</p>}
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
             Cancel
@@ -1537,7 +1541,7 @@ function SaveVersionDialog({
             onChange={(e) => setLabel(e.target.value)}
             data-testid="site-save-version-input"
           />
-          {!!error && <p className="text-sm text-danger">{error}</p>}
+          {!!error && <p className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
             <Button
               type="submit"
@@ -1581,7 +1585,7 @@ function RemoveDialog({
             restore them. The live site doesn't change until you publish.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        {!!error && <p className="text-sm text-danger">{error}</p>}
+        {!!error && <p className="text-sm text-destructive">{error}</p>}
         <AlertDialogFooter>
           <AlertDialogCancel disabled={busy}>Cancel</AlertDialogCancel>
           <Button
@@ -1613,7 +1617,7 @@ function RemoveDialog({
 // --- small pieces --------------------------------------------------------------------------------
 
 const inputClass =
-  "w-full rounded border border-neutral-700 bg-neutral-950 px-2 py-1.5 text-sm text-neutral-100 focus:border-accent focus:outline-none";
+  "w-full rounded border border-border bg-background px-2 py-1.5 text-sm text-foreground focus:border-primary focus:outline-none";
 
 function Group({
   title,
@@ -1625,10 +1629,10 @@ function Group({
   children: ReactNode;
 }) {
   return (
-    <section className="space-y-3 rounded border border-neutral-800 bg-neutral-900/50 p-4">
+    <section className="space-y-3 rounded border border-border bg-card/50 p-4">
       <div>
-        <h2 className="text-sm font-semibold text-neutral-100">{title}</h2>
-        {!!hint && <p className="text-xs text-neutral-500">{hint}</p>}
+        <h2 className="text-sm font-semibold text-foreground">{title}</h2>
+        {!!hint && <p className="text-xs text-muted-foreground">{hint}</p>}
       </div>
       {children}
     </section>
@@ -1650,16 +1654,18 @@ function Text({
 }) {
   return (
     <label className="block min-w-0 flex-1 space-y-1 text-sm">
-      <span className="text-neutral-300">{label}</span>
+      <span className="text-muted-foreground">{label}</span>
       <input
         type="text"
-        className={`${inputClass} ${error ? "border-danger" : ""}`}
+        className={`${inputClass} ${error ? "border-destructive" : ""}`}
         value={value}
         aria-invalid={error ? true : undefined}
         onChange={(e) => onChange(e.target.value)}
         data-testid={testId}
       />
-      {!!error && <span className="block text-xs text-danger">{error}</span>}
+      {!!error && (
+        <span className="block text-xs text-destructive">{error}</span>
+      )}
     </label>
   );
 }
@@ -1722,7 +1728,7 @@ function LinesField({
   }, [value]);
   return (
     <label className="block space-y-1 text-sm">
-      <span className="text-neutral-300">{label}</span>
+      <span className="text-muted-foreground">{label}</span>
       <textarea
         className={`${inputClass} h-20`}
         value={text}
@@ -1733,7 +1739,7 @@ function LinesField({
         }}
       />
       {errors.map(([p, m]) => (
-        <span key={p} className="block text-xs text-danger">
+        <span key={p} className="block text-xs text-destructive">
           {m}
         </span>
       ))}
@@ -1776,7 +1782,7 @@ function RemoveButton({
       aria-label={label}
       title={label}
       onClick={onClick}
-      className="mb-1 rounded p-1.5 text-neutral-400 hover:bg-neutral-800 hover:text-danger"
+      className="mb-1 rounded p-1.5 text-muted-foreground hover:bg-muted hover:text-destructive"
     >
       <Trash2 className="h-4 w-4" />
     </button>
@@ -1852,7 +1858,7 @@ function SortableRow({ id, children }: { id: string; children: ReactNode }) {
         transition,
         zIndex: isDragging ? 10 : undefined,
       }}
-      className={`flex items-start gap-1 rounded ${isDragging ? "bg-neutral-800 opacity-80 shadow-lg" : ""}`}
+      className={`flex items-start gap-1 rounded ${isDragging ? "bg-muted opacity-80 shadow-lg" : ""}`}
       data-key={id}
     >
       <button
@@ -1861,7 +1867,7 @@ function SortableRow({ id, children }: { id: string; children: ReactNode }) {
         {...attributes}
         {...listeners}
         aria-label="Drag to reorder"
-        className="mt-7 cursor-grab rounded p-1 text-neutral-500 hover:bg-neutral-800 hover:text-neutral-200"
+        className="mt-7 cursor-grab rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
       >
         <GripVertical className="h-4 w-4" />
       </button>

@@ -191,9 +191,9 @@ export function AgentPanel({
   return (
     <div className="flex h-full flex-col text-sm" data-testid="agent-panel">
       <ScopeToggle />
-      <div className="flex shrink-0 items-center gap-2 border-b border-neutral-800 p-2">
+      <div className="flex shrink-0 items-center gap-2 border-b border-border p-2">
         <select
-          className="min-w-0 flex-1 rounded border border-neutral-700 bg-neutral-950 px-2 py-1 text-xs"
+          className="min-w-0 flex-1 rounded border border-border bg-background px-2 py-1 text-xs"
           value={state.threadId ?? ""}
           disabled={state.streaming}
           onChange={(e) => void view.openThread(e.target.value || null)}
@@ -223,7 +223,7 @@ export function AgentPanel({
       </div>
       {!state.threadId && <ModelPicker />}
       <div
-        className="shrink-0 space-y-0.5 border-b border-neutral-800 px-3 py-1 text-xs text-neutral-400"
+        className="shrink-0 space-y-0.5 border-b border-border px-3 py-1 text-xs text-muted-foreground"
         data-testid="agent-cost"
       >
         {thread && <ModelBadge thread={thread} />}
@@ -241,7 +241,7 @@ export function AgentPanel({
             {formatUsd(state.threadCostUsd)}
             {!!state.budget?.thread && <BudgetCap line={state.budget.thread} />}
             {state.usage && state.usage.cacheReadTokens > 0 && (
-              <span className="ml-2 text-neutral-500">
+              <span className="ml-2 text-muted-foreground">
                 cache {Math.round(state.usage.cacheReadTokens / 1000)}K
               </span>
             )}
@@ -249,7 +249,7 @@ export function AgentPanel({
         </div>
         {!!state.budget?.run && (
           <div
-            className="flex items-center justify-between text-neutral-500"
+            className="flex items-center justify-between text-muted-foreground"
             data-testid="agent-budget-run"
           >
             <span>This run</span>
@@ -261,7 +261,7 @@ export function AgentPanel({
         )}
         {!!state.budget && (
           <div
-            className="flex items-center justify-between text-neutral-500"
+            className="flex items-center justify-between text-muted-foreground"
             data-testid="agent-budget-day"
           >
             <span>Today</span>
@@ -281,13 +281,13 @@ export function AgentPanel({
       >
         {!(state.items.length || state.loading) &&
           (site ? <SiteHint /> : <EmptyHint />)}
-        {!!state.loading && <p className="text-neutral-500">Loading…</p>}
+        {!!state.loading && <p className="text-muted-foreground">Loading…</p>}
         {state.items.map((item) => (
           <Item key={item.id} item={item} />
         ))}
         {!!state.streaming && (
           <p
-            className="flex items-center gap-2 text-xs text-neutral-500"
+            className="flex items-center gap-2 text-xs text-muted-foreground"
             data-testid="agent-working"
           >
             <Loader2 className="h-3 w-3 animate-spin" /> Working…
@@ -304,7 +304,7 @@ export function AgentPanel({
               )
             )}
         {!!state.error && (
-          <p className="text-xs text-red-400" role="alert">
+          <p className="text-xs text-red-600 dark:text-red-400" role="alert">
             {state.error}
           </p>
         )}
@@ -317,7 +317,7 @@ export function AgentPanel({
           .map((c) => (
             <p
               key={c.id}
-              className="text-xs text-neutral-500"
+              className="text-xs text-muted-foreground"
               data-testid="agent-decided"
             >
               {c.kind === "seo" ? "SEO proposal" : "Proposal"} “{c.summary}”:{" "}
@@ -328,7 +328,7 @@ export function AgentPanel({
 
       {pending.length + fromRuns.length > 0 && (
         <div
-          className="max-h-[45%] shrink-0 space-y-2 overflow-y-auto border-t border-neutral-800 bg-neutral-950/60 p-2"
+          className="max-h-[45%] shrink-0 space-y-2 overflow-y-auto border-t border-border bg-background/60 p-2"
           data-testid="agent-proposals"
         >
           {pending.map((c) =>
@@ -340,7 +340,7 @@ export function AgentPanel({
           )}
           {fromRuns.length > 0 && (
             <p
-              className="flex items-center gap-1 pt-1 text-[11px] uppercase tracking-wide text-neutral-500"
+              className="flex items-center gap-1 pt-1 text-[11px] uppercase tracking-wide text-muted-foreground"
               data-testid="agent-run-proposals"
             >
               <Globe className="h-3 w-3" /> From site-wide runs
@@ -363,7 +363,8 @@ export function AgentPanel({
 
 const PROVIDER_STYLE: Record<AgentProviderId, string> = {
   anthropic: "bg-violet-900/60 text-violet-200",
-  "workers-ai": "bg-amber-900/60 text-amber-200",
+  "workers-ai":
+    "bg-amber-500/15 text-amber-700 dark:text-amber-700 dark:text-amber-300",
 };
 
 /** The open conversation's model and provider. */
@@ -376,7 +377,7 @@ function ModelBadge({ thread }: { thread: ThreadSummary }) {
       data-testid="agent-model-badge"
       data-provider={thread.provider}
     >
-      <span className="text-neutral-200">
+      <span className="text-foreground">
         {modelLabel(models, { provider: thread.provider, id: thread.model })}
       </span>
       <span
@@ -400,16 +401,16 @@ function ModelPicker() {
   const key = (m: { provider: string; id: string }) => `${m.provider}|${m.id}`;
   return (
     <div
-      className="shrink-0 border-b border-neutral-800 px-2 py-1.5 text-xs"
+      className="shrink-0 border-b border-border px-2 py-1.5 text-xs"
       data-testid="agent-model-picker"
     >
       <div className="flex items-center gap-2">
-        <label htmlFor="agent-model" className="text-neutral-400">
+        <label htmlFor="agent-model" className="text-muted-foreground">
           Model
         </label>
         <select
           id="agent-model"
-          className="min-w-0 flex-1 rounded border border-neutral-700 bg-neutral-950 px-2 py-1"
+          className="min-w-0 flex-1 rounded border border-border bg-background px-2 py-1"
           value={key(state.newModel)}
           disabled={state.streaming}
           onChange={(e) => {
@@ -436,7 +437,7 @@ function ModelPicker() {
       {unavailable.map((m) => (
         <p
           key={key(m)}
-          className="mt-1 text-[11px] text-amber-300/90"
+          className="mt-1 text-[11px] text-amber-700 dark:text-amber-300"
           data-testid="agent-model-unavailable"
         >
           {m.label}: {m.reason}
@@ -449,11 +450,11 @@ function ModelPicker() {
 /** " of $3.00 · $1.20 left", or " · no limit". */
 function BudgetCap({ line }: { line: BudgetLine }) {
   if (line.capUsd === null) {
-    return <span className="ml-1 text-neutral-500">· no limit</span>;
+    return <span className="ml-1 text-muted-foreground">· no limit</span>;
   }
   return (
     <span
-      className={`ml-1 ${line.remainingUsd === 0 ? "text-amber-300" : "text-neutral-500"}`}
+      className={`ml-1 ${line.remainingUsd === 0 ? "text-amber-700 dark:text-amber-300" : "text-muted-foreground"}`}
       data-testid="agent-budget-cap"
     >
       of {formatUsd(line.capUsd)} · {formatUsd(line.remainingUsd ?? 0)} left
@@ -473,7 +474,7 @@ function Overrides({ budget }: { budget: BudgetStatus }) {
   }
   return (
     <ul
-      className="text-[11px] text-neutral-500"
+      className="text-[11px] text-muted-foreground"
       data-testid="agent-budget-overrides"
     >
       {all.map((o) => (
@@ -511,12 +512,12 @@ function BudgetPause() {
   const steps = capped === "run" ? "run" : "thread";
   return (
     <div
-      className="rounded border border-amber-700/60 bg-amber-950/30 p-2 text-xs text-amber-100"
+      className="rounded border border-amber-700/60 bg-amber-950/30 p-2 text-xs text-amber-700 dark:text-amber-300"
       role="alert"
       data-testid="agent-budget-pause"
     >
       <p className="font-medium">{blocked.message}</p>
-      <p className="mt-0.5 text-amber-200/80">
+      <p className="mt-0.5 text-amber-700 dark:text-amber-300">
         {blocked.retry
           ? "Raise the limit to carry on where it stopped."
           : "Raise the limit to keep using the agent."}
@@ -582,12 +583,12 @@ function BusyPause() {
   const canTakeOver = busy.lockAgeMs >= busy.takeoverAfterMs;
   return (
     <div
-      className="rounded border border-neutral-700 bg-neutral-900 p-2 text-xs text-neutral-200"
+      className="rounded border border-border bg-card p-2 text-xs text-foreground"
       role="alert"
       data-testid="agent-busy"
     >
       <p className="font-medium">{busy.message}</p>
-      <p className="mt-0.5 text-neutral-400">
+      <p className="mt-0.5 text-muted-foreground">
         {canTakeOver
           ? `Its turn started ${Math.round(busy.lockAgeMs / 60_000)} min ago and may have been left behind.`
           : `Wait for it to finish (a turn left behind by a closed tab frees itself within a minute), or take over once it's ${Math.round(busy.takeoverAfterMs / 60_000)} minutes old.`}
@@ -613,7 +614,7 @@ function FullPause() {
   const full = useAgentState().full!;
   return (
     <div
-      className="rounded border border-neutral-700 bg-neutral-900 p-2 text-xs text-neutral-200"
+      className="rounded border border-border bg-card p-2 text-xs text-foreground"
       role="alert"
       data-testid="agent-thread-full"
     >
@@ -636,7 +637,7 @@ function ModelOffPause() {
   const off = useAgentState().modelOff!;
   return (
     <div
-      className="rounded border border-neutral-700 bg-neutral-900 p-2 text-xs text-neutral-200"
+      className="rounded border border-border bg-card p-2 text-xs text-foreground"
       role="alert"
       data-testid="agent-model-off"
     >
@@ -663,10 +664,10 @@ function usageTitle(u: NonNullable<ReturnType<typeof useAgentState>["usage"]>) {
 function EmptyHint() {
   return (
     <div
-      className="space-y-2 text-xs text-neutral-400"
+      className="space-y-2 text-xs text-muted-foreground"
       data-testid="agent-empty"
     >
-      <p className="flex items-center gap-2 text-neutral-300">
+      <p className="flex items-center gap-2 text-muted-foreground">
         <Bot className="h-4 w-4" /> Ask the agent to change this page.
       </p>
       <p>
@@ -678,7 +679,7 @@ function EmptyHint() {
         <li>Make the CTA stand out more on mobile</li>
         <li>Do the SEO for this page</li>
       </ul>
-      <p className="text-neutral-500" data-testid="agent-close-tab-hint">
+      <p className="text-muted-foreground" data-testid="agent-close-tab-hint">
         Closing the tab lets the agent finish the model call it's on, for about
         30 seconds. A slower call (Workers AI models can take longer) is cut off
         and not kept, but what it cost so far still counts.
@@ -692,7 +693,7 @@ function Item({ item }: { item: ThreadItem }) {
     case "user":
       return (
         <div
-          className="ml-6 rounded bg-neutral-800 px-3 py-2 text-neutral-100"
+          className="ml-6 rounded bg-muted px-3 py-2 text-foreground"
           data-testid="agent-user-message"
         >
           <p className="whitespace-pre-wrap">{item.text}</p>
@@ -712,10 +713,10 @@ function Item({ item }: { item: ThreadItem }) {
       );
     case "text":
       return (
-        <div className="mr-2 text-neutral-100" data-testid="agent-text">
+        <div className="mr-2 text-foreground" data-testid="agent-text">
           {!!item.fallback && (
             <span
-              className="mb-1 inline-block rounded bg-amber-600/30 px-1.5 text-[10px] text-amber-200"
+              className="mb-1 inline-block rounded bg-amber-600/30 px-1.5 text-[10px] text-amber-700 dark:text-amber-300"
               data-testid="agent-fallback-badge"
               title={item.model}
             >
@@ -727,7 +728,7 @@ function Item({ item }: { item: ThreadItem }) {
           </p>
           {!!item.partial && (
             <span
-              className="text-[10px] text-amber-300"
+              className="text-[10px] text-amber-700 dark:text-amber-300"
               data-testid="agent-partial"
             >
               (cut off)
@@ -739,7 +740,7 @@ function Item({ item }: { item: ThreadItem }) {
       if (item.reasoning) {
         return (
           <details
-            className="border-l-2 border-neutral-800 pl-2 text-xs text-neutral-500"
+            className="border-l-2 border-border pl-2 text-xs text-muted-foreground"
             data-testid="agent-reasoning"
           >
             <summary className="cursor-pointer select-none">Reasoning</summary>
@@ -749,7 +750,7 @@ function Item({ item }: { item: ThreadItem }) {
       }
       return (
         <p
-          className="border-l-2 border-neutral-700 pl-2 text-xs italic text-neutral-400"
+          className="border-l-2 border-border pl-2 text-xs italic text-muted-foreground"
           data-testid="agent-progress"
         >
           {item.text}
@@ -761,12 +762,12 @@ function Item({ item }: { item: ThreadItem }) {
           <span
             className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 ${
               item.interrupted
-                ? "border-neutral-700 text-neutral-500"
+                ? "border-border text-muted-foreground"
                 : item.ok === null
-                  ? "border-neutral-700 text-neutral-400"
+                  ? "border-border text-muted-foreground"
                   : item.ok
-                    ? "border-emerald-800 text-emerald-300"
-                    : "border-amber-700 text-amber-300"
+                    ? "border-emerald-800 text-emerald-700 dark:text-emerald-300"
+                    : "border-amber-700 text-amber-700 dark:text-amber-300"
             }`}
             title={item.summary}
             data-interrupted={item.interrupted || undefined}
@@ -782,7 +783,7 @@ function Item({ item }: { item: ThreadItem }) {
             )}
             {item.label}
             {!!item.summary && (
-              <span className="text-neutral-500">
+              <span className="text-muted-foreground">
                 · {item.summary.slice(0, 80)}
               </span>
             )}
@@ -791,7 +792,7 @@ function Item({ item }: { item: ThreadItem }) {
             <img
               src={item.image}
               alt=""
-              className="mt-1 max-h-40 rounded border border-neutral-800"
+              className="mt-1 max-h-40 rounded border border-border"
               data-testid="agent-tool-image"
             />
           )}
@@ -800,7 +801,7 @@ function Item({ item }: { item: ThreadItem }) {
     case "refusal":
       return (
         <p
-          className="flex items-center gap-1 text-xs text-amber-300"
+          className="flex items-center gap-1 text-xs text-amber-700 dark:text-amber-300"
           data-testid="agent-refusal"
         >
           <CircleSlash className="h-3 w-3" /> The model declined this request
@@ -810,25 +811,25 @@ function Item({ item }: { item: ThreadItem }) {
     case "created":
       return (
         <p
-          className="flex items-center gap-1 text-xs text-emerald-300"
+          className="flex items-center gap-1 text-xs text-emerald-700 dark:text-emerald-300"
           data-testid="agent-created"
         >
           <FilePlus2 className="h-3.5 w-3.5" /> Draft created:{" "}
           <a
             href={item.page.editorUrl}
-            className="underline hover:text-white"
+            className="underline hover:text-foreground"
             data-testid="agent-created-link"
           >
             {item.page.title || `/${item.page.slug}`}
           </a>
-          <span className="text-neutral-500">
+          <span className="text-muted-foreground">
             ({item.page.kind}, not published)
           </span>
         </p>
       );
     case "notice":
       return (
-        <p className="text-xs text-neutral-400" data-testid="agent-notice">
+        <p className="text-xs text-muted-foreground" data-testid="agent-notice">
           {item.text}
         </p>
       );
@@ -852,10 +853,11 @@ function withBold(text: string) {
 // Proposals
 
 const STATUS_STYLE: Record<BlockChange["status"], string> = {
-  added: "bg-emerald-700/40 text-emerald-200",
+  added:
+    "bg-emerald-500/15 text-emerald-700 dark:text-emerald-700 dark:text-emerald-300",
   changed: "bg-sky-700/40 text-sky-200",
-  removed: "bg-red-800/40 text-red-200",
-  moved: "bg-neutral-700 text-neutral-200",
+  removed: "bg-red-500/15 text-red-600 dark:text-red-600 dark:text-red-400",
+  moved: "bg-accent text-foreground",
 };
 
 /** A pending content/style changeset: per-block rows with their field diff and conflicts. */
@@ -893,11 +895,11 @@ function OpsCard({ cs }: { cs: Changeset }) {
 
   return (
     <div
-      className="rounded border border-sky-800/60 bg-neutral-900 p-2"
+      className="rounded border border-sky-800/60 bg-card p-2"
       data-testid="agent-ops-card"
     >
       <div className="mb-1 flex items-start justify-between gap-2">
-        <p className="font-medium text-neutral-100">{cs.summary}</p>
+        <p className="font-medium text-foreground">{cs.summary}</p>
         <span className="shrink-0 rounded bg-sky-800/50 px-1.5 text-[10px] uppercase text-sky-200">
           {fromRun ? "Run proposal" : "Proposal"}
         </span>
@@ -905,7 +907,7 @@ function OpsCard({ cs }: { cs: Changeset }) {
       {cs.warnings?.map((w, i) => (
         <p
           key={i}
-          className="flex items-center gap-1 text-xs text-amber-300"
+          className="flex items-center gap-1 text-xs text-amber-700 dark:text-amber-300"
           data-testid="agent-warning"
         >
           <AlertTriangle className="h-3 w-3" /> {w.message}
@@ -924,7 +926,7 @@ function OpsCard({ cs }: { cs: Changeset }) {
           return (
             <li
               key={g}
-              className="rounded bg-neutral-950/60 p-1.5"
+              className="rounded bg-background/60 p-1.5"
               data-testid="agent-group"
               data-group={g}
             >
@@ -952,7 +954,7 @@ function OpsCard({ cs }: { cs: Changeset }) {
                 )}
                 {conflict && (
                   <span
-                    className="rounded bg-red-800/50 px-1 text-[10px] text-red-200"
+                    className="rounded bg-red-800/50 px-1 text-[10px] text-red-600 dark:text-red-400"
                     data-testid="agent-conflict"
                     title="You edited this block after the proposal was made"
                   >
@@ -1025,12 +1027,12 @@ function OpsCard({ cs }: { cs: Changeset }) {
       </div>
       <AlertDialog open={confirmAll} onOpenChange={setConfirmAll}>
         <AlertDialogContent
-          className="border-neutral-700 bg-neutral-900 text-neutral-100"
+          className="border-border bg-card text-foreground"
           data-testid="agent-conflict-confirm"
         >
           <AlertDialogHeader>
             <AlertDialogTitle>Overwrite your edits?</AlertDialogTitle>
-            <AlertDialogDescription className="text-neutral-400">
+            <AlertDialogDescription className="text-muted-foreground">
               You changed these blocks after the agent made this proposal.
               Accepting all replaces your edits with the agent's version:
             </AlertDialogDescription>
@@ -1042,14 +1044,14 @@ function OpsCard({ cs }: { cs: Changeset }) {
             {[...conflicted].map(([g, reason]) => (
               <li key={g}>
                 {groupLabel(g)}{" "}
-                <span className="text-neutral-400">
+                <span className="text-muted-foreground">
                   ({reason === "deleted" ? "you deleted it" : "you changed it"})
                 </span>
               </li>
             ))}
           </ul>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-neutral-700 bg-neutral-800 text-neutral-100 hover:bg-neutral-700">
+            <AlertDialogCancel className="border-border bg-muted text-foreground hover:bg-accent">
               Cancel
             </AlertDialogCancel>
             {groups.length > conflicted.size && (
@@ -1060,7 +1062,7 @@ function OpsCard({ cs }: { cs: Changeset }) {
                     groups.filter((g) => !conflicted.has(g))
                   )
                 }
-                className="bg-neutral-700 hover:bg-neutral-600"
+                className="bg-accent hover:bg-accent"
                 data-testid="agent-accept-unconflicted"
               >
                 Accept the others
@@ -1085,11 +1087,11 @@ function SeoCard({ cs, onOpenSeo }: { cs: Changeset; onOpenSeo: () => void }) {
   const state = useAgentState();
   return (
     <div
-      className="rounded border border-violet-800/60 bg-neutral-900 p-2"
+      className="rounded border border-violet-800/60 bg-card p-2"
       data-testid="agent-seo-card"
     >
-      <p className="font-medium text-neutral-100">{cs.summary}</p>
-      <p className="mt-1 text-xs text-neutral-400">
+      <p className="font-medium text-foreground">{cs.summary}</p>
+      <p className="mt-1 text-xs text-muted-foreground">
         {cs.seo?.variants.length ?? 0} title/description options, social copy
         {cs.seo?.seo.social?.image ? " and a share image" : ""}.
       </p>
@@ -1186,7 +1188,7 @@ function Composer({
     // biome-ignore lint/a11y/noStaticElementInteractions: a drop zone for image files; the textarea and buttons inside are the interactive elements, and files can also be picked with the attach button.
     // biome-ignore lint/a11y/noNoninteractiveElementInteractions: as above.
     <div
-      className={`shrink-0 border-t border-neutral-800 p-2 ${dragging ? "bg-accent/10" : ""}`}
+      className={`shrink-0 border-t border-border p-2 ${dragging ? "bg-accent/10" : ""}`}
       onDragOver={(e: DragEvent) => {
         if ([...e.dataTransfer.items].some((i) => i.kind === "file")) {
           e.preventDefault();
@@ -1206,7 +1208,7 @@ function Composer({
           {files.map((f) => (
             <span
               key={f.key}
-              className={`flex items-center gap-1 rounded border px-1.5 py-0.5 text-[11px] ${f.error ? "border-red-700 text-red-300" : "border-neutral-700 text-neutral-300"}`}
+              className={`flex items-center gap-1 rounded border px-1.5 py-0.5 text-[11px] ${f.error ? "border-red-700 text-red-600 dark:text-red-400" : "border-border text-muted-foreground"}`}
               title={f.error}
               data-testid="agent-attachment"
             >
@@ -1261,13 +1263,13 @@ function Composer({
             send();
           }
         }}
-        className="resize-none border-neutral-700 bg-neutral-950 text-sm"
+        className="resize-none border-border bg-background text-sm"
         data-testid="agent-input"
         disabled={state.streaming || !!state.driving}
       />
       <div className="mt-1 flex items-center justify-between">
         <label
-          className="flex cursor-pointer items-center gap-1 text-xs text-neutral-400 hover:text-white"
+          className="flex cursor-pointer items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
           title="Attach images (or paste/drop them)"
         >
           <ImagePlus className="h-4 w-4" /> Image
@@ -1336,7 +1338,7 @@ function ScopeToggle() {
       type="button"
       disabled={locked}
       onClick={() => void view.setScope(scope)}
-      className={`flex flex-1 items-center justify-center gap-1 rounded px-2 py-1 text-xs ${state.scope === scope ? "bg-neutral-700 text-white" : "text-neutral-400 hover:text-white"} disabled:opacity-50`}
+      className={`flex flex-1 items-center justify-center gap-1 rounded px-2 py-1 text-xs ${state.scope === scope ? "bg-accent text-foreground" : "text-muted-foreground hover:text-foreground"} disabled:opacity-50`}
       aria-pressed={state.scope === scope}
       data-testid={`agent-scope-${scope}`}
     >
@@ -1346,7 +1348,7 @@ function ScopeToggle() {
   return (
     // biome-ignore lint/a11y/useSemanticElements: a bar of two toggle buttons, not a form section; a fieldset would add form semantics and a legend, as in the source.
     <div
-      className="flex shrink-0 gap-1 border-b border-neutral-800 p-1.5"
+      className="flex shrink-0 gap-1 border-b border-border p-1.5"
       role="group"
       aria-label="Scope"
     >
@@ -1359,10 +1361,10 @@ function ScopeToggle() {
 function SiteHint() {
   return (
     <div
-      className="space-y-2 text-xs text-neutral-400"
+      className="space-y-2 text-xs text-muted-foreground"
       data-testid="agent-site-empty"
     >
-      <p className="flex items-center gap-2 text-neutral-300">
+      <p className="flex items-center gap-2 text-muted-foreground">
         <Globe className="h-4 w-4" /> Work across several pages.
       </p>
       <p>
@@ -1374,7 +1376,7 @@ function SiteHint() {
         <li>Create two new service pages modelled on an existing page</li>
         <li>Fix the striking-distance pages</li>
       </ul>
-      <p className="text-neutral-500">
+      <p className="text-muted-foreground">
         Closing the tab pauses a run after the page it's on; open this
         conversation again to resume.
       </p>
@@ -1438,22 +1440,22 @@ function PlanCard({ run, device }: { run: Run; device: Device }) {
   const errorsOf = (key: string | null) => errors.filter((e) => e.key === key);
   return (
     <div
-      className="space-y-2 rounded border border-emerald-800/60 bg-neutral-900 p-2"
+      className="space-y-2 rounded border border-emerald-800/60 bg-card p-2"
       data-testid="agent-plan"
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="flex items-center gap-1.5 font-medium text-neutral-100">
-          <ListChecks className="h-4 w-4 text-emerald-300" /> Plan:{" "}
-          {run.summary}
+        <p className="flex items-center gap-1.5 font-medium text-foreground">
+          <ListChecks className="h-4 w-4 text-emerald-700 dark:text-emerald-300" />{" "}
+          Plan: {run.summary}
         </p>
         <span
-          className="shrink-0 text-[11px] text-neutral-500"
+          className="shrink-0 text-[11px] text-muted-foreground"
           title="Spend of the planning turn"
         >
           {formatUsd(run.costUsd)}
         </span>
       </div>
-      <p className="text-xs text-neutral-400">
+      <p className="text-xs text-muted-foreground">
         Untick pages to leave out, edit what each item should do, or add a page.
         Nothing changes until you approve.
       </p>
@@ -1461,7 +1463,7 @@ function PlanCard({ run, device }: { run: Run; device: Device }) {
         {items.map((i) => (
           <li
             key={i.key}
-            className={`space-y-1 rounded border p-1.5 ${i.include ? "border-neutral-700 bg-neutral-950/60" : "border-neutral-800 opacity-50"}`}
+            className={`space-y-1 rounded border p-1.5 ${i.include ? "border-border bg-background/60" : "border-border opacity-50"}`}
             data-testid="agent-plan-item"
           >
             <div className="flex items-center gap-1.5">
@@ -1477,7 +1479,7 @@ function PlanCard({ run, device }: { run: Run; device: Device }) {
                 onChange={(e) =>
                   patch(i.key, { action: e.target.value as PlanAction })
                 }
-                className="rounded border border-neutral-700 bg-neutral-950 px-1 py-0.5 text-[11px]"
+                className="rounded border border-border bg-background px-1 py-0.5 text-[11px]"
                 aria-label="Action"
               >
                 {PLAN_ACTIONS.map((a) => (
@@ -1486,22 +1488,22 @@ function PlanCard({ run, device }: { run: Run; device: Device }) {
                   </option>
                 ))}
               </select>
-              <span className="text-neutral-500">/</span>
+              <span className="text-muted-foreground">/</span>
               <input
                 value={i.slug}
                 onChange={(e) => patch(i.key, { slug: e.target.value })}
-                className="min-w-0 flex-1 rounded border border-neutral-700 bg-neutral-950 px-1 py-0.5 font-mono text-[11px]"
+                className="min-w-0 flex-1 rounded border border-border bg-background px-1 py-0.5 font-mono text-[11px]"
                 aria-label="Slug"
                 data-testid="agent-plan-slug"
               />
             </div>
             {i.action === "duplicate" && (
-              <label className="flex items-center gap-1 pl-5 text-[11px] text-neutral-400">
+              <label className="flex items-center gap-1 pl-5 text-[11px] text-muted-foreground">
                 copy of /
                 <input
                   value={i.from ?? ""}
                   onChange={(e) => patch(i.key, { from: e.target.value })}
-                  className="min-w-0 flex-1 rounded border border-neutral-700 bg-neutral-950 px-1 py-0.5 font-mono"
+                  className="min-w-0 flex-1 rounded border border-border bg-background px-1 py-0.5 font-mono"
                   aria-label="Copy from"
                 />
               </label>
@@ -1510,14 +1512,14 @@ function PlanCard({ run, device }: { run: Run; device: Device }) {
               value={i.intent}
               rows={2}
               onChange={(e) => patch(i.key, { intent: e.target.value })}
-              className="min-h-0 resize-y border-neutral-700 bg-neutral-950 text-xs"
+              className="min-h-0 resize-y border-border bg-background text-xs"
               aria-label="What to do"
               data-testid="agent-plan-intent"
             />
             {errorsOf(i.key).map((e, n) => (
               <p
                 key={n}
-                className="text-[11px] text-red-400"
+                className="text-[11px] text-red-600 dark:text-red-400"
                 data-testid="agent-plan-error"
               >
                 {e.message}
@@ -1529,7 +1531,7 @@ function PlanCard({ run, device }: { run: Run; device: Device }) {
       {errorsOf(null).map((e, n) => (
         <p
           key={n}
-          className="text-[11px] text-red-400"
+          className="text-[11px] text-red-600 dark:text-red-400"
           data-testid="agent-plan-error"
         >
           {e.message}
@@ -1582,13 +1584,15 @@ function PlanCard({ run, device }: { run: Run; device: Device }) {
 }
 
 const ITEM_STYLE: Record<RunItemStatus, string> = {
-  pending: "bg-neutral-800 text-neutral-300",
+  pending: "bg-muted text-muted-foreground",
   running: "bg-sky-800/60 text-sky-100",
   proposed: "bg-violet-800/60 text-violet-100",
-  accepted: "bg-emerald-800/60 text-emerald-100",
-  rejected: "bg-red-900/60 text-red-100",
-  skipped: "bg-neutral-800 text-neutral-500",
-  failed: "bg-amber-800/60 text-amber-100",
+  accepted:
+    "bg-emerald-500/15 text-emerald-700 dark:text-emerald-700 dark:text-emerald-300",
+  rejected: "bg-red-500/15 text-red-600 dark:text-red-600 dark:text-red-400",
+  skipped: "bg-muted text-muted-foreground",
+  failed:
+    "bg-amber-500/15 text-amber-700 dark:text-amber-700 dark:text-amber-300",
 };
 
 const ITEM_LABEL: Record<RunItemStatus, string> = {
@@ -1626,13 +1630,13 @@ function RunCard({ run, device }: { run: Run; device: Device }) {
   const ctx = { device, selectedKey: null };
   return (
     <div
-      className="space-y-2 rounded border border-violet-800/60 bg-neutral-900 p-2"
+      className="space-y-2 rounded border border-violet-800/60 bg-card p-2"
       data-testid="agent-run"
       data-run-status={run.status}
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="font-medium text-neutral-100">{run.summary}</p>
-        <span className="shrink-0 rounded bg-neutral-800 px-1.5 text-[10px] uppercase text-neutral-300">
+        <p className="font-medium text-foreground">{run.summary}</p>
+        <span className="shrink-0 rounded bg-muted px-1.5 text-[10px] uppercase text-muted-foreground">
           {run.revertedAt
             ? "reverted"
             : run.status === "active"
@@ -1643,7 +1647,7 @@ function RunCard({ run, device }: { run: Run; device: Device }) {
         </span>
       </div>
       <div
-        className="flex items-center justify-between text-xs text-neutral-400"
+        className="flex items-center justify-between text-xs text-muted-foreground"
         data-testid="agent-run-total"
       >
         <span>
@@ -1687,7 +1691,7 @@ function RunCard({ run, device }: { run: Run; device: Device }) {
         )}
         <a
           href={`/admin/agent?run=${encodeURIComponent(run.id)}`}
-          className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs text-accent hover:underline"
+          className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs text-primary hover:underline"
           data-testid="agent-run-queue"
         >
           Review queue
@@ -1726,14 +1730,16 @@ function RunItemRow({
       : null;
   return (
     <li
-      className="rounded bg-neutral-950/60 p-1.5 text-xs"
+      className="rounded bg-background/60 p-1.5 text-xs"
       data-testid="agent-run-item"
     >
       <div className="flex items-center gap-1.5">
-        <span className="text-neutral-500">{n}.</span>
-        <span className="text-neutral-400">{ACTION_LABEL[item.action]}</span>
+        <span className="text-muted-foreground">{n}.</span>
+        <span className="text-muted-foreground">
+          {ACTION_LABEL[item.action]}
+        </span>
         <span
-          className="min-w-0 flex-1 truncate font-mono text-neutral-200"
+          className="min-w-0 flex-1 truncate font-mono text-foreground"
           title={item.intent}
         >
           /{item.slug}
@@ -1743,18 +1749,22 @@ function RunItemRow({
         )}
         <ItemBadge status={item.status} />
       </div>
-      <p className="mt-0.5 line-clamp-2 text-neutral-500">{item.intent}</p>
+      <p className="mt-0.5 line-clamp-2 text-muted-foreground">{item.intent}</p>
       {!!item.note && (
-        <p className="mt-0.5 text-[11px] text-amber-200/80">{item.note}</p>
+        <p className="mt-0.5 text-[11px] text-amber-700 dark:text-amber-300">
+          {item.note}
+        </p>
       )}
       <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px]">
         {item.costUsd > 0 && (
-          <span className="text-neutral-500">{formatUsd(item.costUsd)}</span>
+          <span className="text-muted-foreground">
+            {formatUsd(item.costUsd)}
+          </span>
         )}
         {!!review && (
           <a
             href={review}
-            className="text-accent hover:underline"
+            className="text-primary hover:underline"
             data-testid="agent-run-item-review"
           >
             Review on its page
@@ -1763,7 +1773,7 @@ function RunItemRow({
         {!!item.createdPageId && (
           <a
             href={`/admin/editor/${item.createdPageId}`}
-            className="text-emerald-300 hover:underline"
+            className="text-emerald-700 dark:text-emerald-300 hover:underline"
             data-testid="agent-run-item-draft"
           >
             Draft (not published)
@@ -1774,7 +1784,7 @@ function RunItemRow({
             <button
               type="button"
               disabled={!idle}
-              className="inline-flex items-center gap-0.5 text-neutral-400 hover:text-white disabled:opacity-40"
+              className="inline-flex items-center gap-0.5 text-muted-foreground hover:text-foreground disabled:opacity-40"
               onClick={() => void view.runAction("skip", run.id, item.id)}
               data-testid="agent-run-item-skip"
             >
@@ -1787,7 +1797,7 @@ function RunItemRow({
             <button
               type="button"
               disabled={!idle}
-              className="inline-flex items-center gap-0.5 text-neutral-400 hover:text-white disabled:opacity-40"
+              className="inline-flex items-center gap-0.5 text-muted-foreground hover:text-foreground disabled:opacity-40"
               onClick={() => void view.runAction("retry", run.id, item.id)}
               data-testid="agent-run-item-retry"
             >

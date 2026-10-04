@@ -65,7 +65,7 @@ function PagesPage() {
       {result.ok ? (
         <PagesTable pages={result.pages.filter((p) => p.kind === "page")} />
       ) : (
-        <p className="text-danger">{result.message}</p>
+        <p className="text-destructive">{result.message}</p>
       )}
       <NewPageDialog onOpenChange={setOpen} open={open} />
     </div>
@@ -73,9 +73,10 @@ function PagesPage() {
 }
 
 const STATUS_CLASS: Record<PageListItem["status"], string> = {
-  draft: "bg-neutral-700 text-neutral-200",
-  published: "bg-emerald-700/60 text-emerald-100",
-  archived: "bg-neutral-800 text-neutral-500",
+  draft: "bg-accent text-foreground",
+  published:
+    "bg-emerald-500/15 text-emerald-700 dark:text-emerald-700 dark:text-emerald-300",
+  archived: "bg-muted text-muted-foreground",
 };
 
 function PagesTable({ pages }: { pages: PageListItem[] }) {
@@ -87,19 +88,19 @@ function PagesTable({ pages }: { pages: PageListItem[] }) {
   const closeUnpublish = useCallback(() => setUnpublishing(null), []);
   if (!pages.length) {
     return (
-      <p className="text-neutral-400">
+      <p className="text-muted-foreground">
         No pages yet. Create one to get started.
       </p>
     );
   }
   return (
-    <div className="relative overflow-x-auto rounded border border-neutral-800">
+    <div className="relative overflow-x-auto rounded border border-border">
       {/* The body's `overflow-wrap: anywhere` (styles.css) breaks short words mid-word in table cells. */}
       <table
         className="w-full text-left text-sm [overflow-wrap:normal]"
         data-testid="pages-table"
       >
-        <thead className="bg-neutral-900 text-neutral-400 text-xs uppercase tracking-wide">
+        <thead className="bg-card text-muted-foreground text-xs uppercase tracking-wide">
           <tr>
             <th className="px-4 py-3 font-medium">Title</th>
             <th className="px-4 py-3 font-medium">Path</th>
@@ -112,20 +113,17 @@ function PagesTable({ pages }: { pages: PageListItem[] }) {
         </thead>
         <tbody>
           {pages.map((p) => (
-            <tr
-              className="border-neutral-800 border-t hover:bg-neutral-900"
-              key={p.id}
-            >
+            <tr className="border-border border-t hover:bg-card" key={p.id}>
               <td className="px-4 py-3">
                 <Link
-                  className="font-medium text-white hover:text-accent"
+                  className="font-medium text-foreground hover:text-primary"
                   params={{ pageId: p.id }}
                   to="/admin/editor/$pageId"
                 >
                   {p.title}
                 </Link>
               </td>
-              <td className="px-4 py-3 font-mono text-neutral-400 text-xs">
+              <td className="px-4 py-3 font-mono text-muted-foreground text-xs">
                 {slugToPath(p.slug)}
               </td>
               <td className="px-4 py-3">
@@ -135,7 +133,7 @@ function PagesTable({ pages }: { pages: PageListItem[] }) {
                   {p.status}
                 </span>
               </td>
-              <td className="px-4 py-3 text-neutral-400">
+              <td className="px-4 py-3 text-muted-foreground">
                 {formatDateTime(p.updatedAt)}
               </td>
               <td className="px-4 py-3 text-right">
@@ -339,7 +337,7 @@ function NewPageDialog({
 
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
-      <DialogContent className="border-neutral-700 bg-neutral-900 text-neutral-100">
+      <DialogContent className="border-border bg-card text-foreground">
         <form className="flex flex-col gap-4" onSubmit={submit}>
           <DialogHeader>
             <DialogTitle>New page</DialogTitle>
@@ -362,7 +360,7 @@ function NewPageDialog({
           <div className="flex flex-col gap-2">
             <Label htmlFor="new-page-slug">Path</Label>
             <div className="flex items-center gap-1">
-              <span className="text-neutral-500">/</span>
+              <span className="text-muted-foreground">/</span>
               <Input
                 data-testid="new-page-slug"
                 id="new-page-slug"
@@ -371,13 +369,13 @@ function NewPageDialog({
               />
             </div>
             <p
-              className={`min-h-5 text-xs ${slugState.status === "error" ? "text-danger" : "text-neutral-400"}`}
+              className={`min-h-5 text-xs ${slugState.status === "error" ? "text-destructive" : "text-muted-foreground"}`}
               data-testid="new-page-slug-status"
             >
               {slugStatusText(slugState, slug)}
             </p>
           </div>
-          {error ? <p className="text-danger text-sm">{error}</p> : null}
+          {error ? <p className="text-destructive text-sm">{error}</p> : null}
           <DialogFooter>
             <Button onClick={close} type="button" variant="ghost">
               Cancel

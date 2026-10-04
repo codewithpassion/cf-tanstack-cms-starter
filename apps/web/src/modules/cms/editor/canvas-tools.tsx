@@ -229,7 +229,7 @@ function ToolbarButton({
       aria-label={label}
       disabled={disabled}
       onClick={onClick}
-      className="rounded p-1 hover:bg-black/15 disabled:opacity-30"
+      className="rounded p-1 hover:bg-foreground/10 disabled:opacity-30"
     >
       {children}
     </button>
@@ -263,7 +263,7 @@ function Inserter({
         transform: `translate(-50%, -50%) scale(${zoom})`,
         zIndex: 60,
       }}
-      className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-accent text-black shadow-lg hover:scale-110"
+      className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-border bg-accent text-black shadow-lg hover:scale-110"
     >
       <Plus className="h-4 w-4" />
     </button>
@@ -279,7 +279,7 @@ function EmptyCanvas({ onInsert }: { onInsert: () => void }) {
       <button
         type="button"
         onClick={onInsert}
-        className="flex items-center gap-2 border border-dashed border-white/40 px-6 py-4 font-sans text-white/70 hover:border-accent hover:text-accent"
+        className="flex items-center gap-2 border border-dashed border-border px-6 py-4 font-sans text-foreground/70 hover:border-primary hover:text-primary"
       >
         <Plus className="h-5 w-5" /> Add the first block
       </button>

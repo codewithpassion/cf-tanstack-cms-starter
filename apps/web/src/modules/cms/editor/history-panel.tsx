@@ -772,11 +772,11 @@ export function HistoryPanel() {
       className="flex h-full min-h-0 flex-col text-sm"
       data-testid="history-panel"
     >
-      <div className="flex items-center gap-2 border-b border-neutral-800 px-3 py-2">
+      <div className="flex items-center gap-2 border-b border-border px-3 py-2">
         <h2 className="font-semibold">History</h2>
         {!!state.loading && (
           <Loader2
-            className="h-3.5 w-3.5 animate-spin text-neutral-500"
+            className="h-3.5 w-3.5 animate-spin text-muted-foreground"
             aria-label="Loading"
           />
         )}
@@ -824,10 +824,10 @@ function Timeline() {
         onClick={() => view.backToDraft()}
         data-testid="history-draft"
         aria-current={!viewing}
-        className={`block w-full border-b border-neutral-800 px-3 py-2 text-left ${viewing ? "hover:bg-neutral-800/60" : "bg-accent/10"}`}
+        className={`block w-full border-b border-border px-3 py-2 text-left ${viewing ? "hover:bg-muted/60" : "bg-accent/10"}`}
       >
         <div className="font-medium">Current draft</div>
-        <div className="text-xs text-neutral-400">
+        <div className="text-xs text-muted-foreground">
           {pageStatus === "published"
             ? hasUnpublishedChanges
               ? "Has unpublished changes"
@@ -836,7 +836,7 @@ function Timeline() {
         </div>
       </button>
       {!!error && (
-        <p className="px-3 py-2 text-xs text-danger" role="alert">
+        <p className="px-3 py-2 text-xs text-destructive" role="alert">
           {error}{" "}
           <button
             type="button"
@@ -874,7 +874,7 @@ function Timeline() {
         </Group>
       ))}
       {!(loading || error) && entries.length === 0 && (
-        <p className="px-3 py-4 text-xs text-neutral-500">
+        <p className="px-3 py-4 text-xs text-muted-foreground">
           No versions yet. They appear as you work: an autosnapshot when you
           come back after a break, and one for each publish, restore and saved
           version.
@@ -901,7 +901,7 @@ function Timeline() {
 function Group({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section>
-      <h3 className="sticky top-0 z-10 bg-neutral-900 px-3 pb-1 pt-3 text-xs font-semibold uppercase tracking-wide text-neutral-500">
+      <h3 className="sticky top-0 z-10 bg-card px-3 pb-1 pt-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         {title}
       </h3>
       <ul>{children}</ul>
@@ -930,20 +930,23 @@ function Entry({
         data-rev-id={rev.id}
         data-kind={rev.kind}
         aria-current={selected}
-        className={`block w-full px-3 py-2 text-left ${selected ? "bg-accent/15 ring-1 ring-inset ring-accent/60" : "hover:bg-neutral-800/60"}`}
+        className={`block w-full px-3 py-2 text-left ${selected ? "bg-accent/15 ring-1 ring-inset ring-primary/60" : "hover:bg-muted/60"}`}
       >
         <div className="flex items-center gap-2">
           <span className="truncate font-medium">
             {rev.label ?? KIND_TITLE[rev.kind]}
           </span>
           {!!rev.pinned && (
-            <Pin className="h-3 w-3 shrink-0 text-accent" aria-label="Pinned" />
+            <Pin
+              className="h-3 w-3 shrink-0 text-primary"
+              aria-label="Pinned"
+            />
           )}
           {!!opening && (
-            <Loader2 className="h-3 w-3 shrink-0 animate-spin text-neutral-400" />
+            <Loader2 className="h-3 w-3 shrink-0 animate-spin text-muted-foreground" />
           )}
           <span
-            className="ml-auto shrink-0 text-xs text-neutral-500"
+            className="ml-auto shrink-0 text-xs text-muted-foreground"
             title={new Date(rev.createdAt).toLocaleString()}
           >
             {timeFormat.format(new Date(rev.createdAt))} ·{" "}
@@ -952,7 +955,7 @@ function Entry({
         </div>
         <Badges rev={rev} />
         {!!rev.summary && (
-          <p className="mt-1 line-clamp-2 text-xs text-neutral-400">
+          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
             {rev.summary}
           </p>
         )}
@@ -969,7 +972,7 @@ function Badges({ rev }: { rev: RevisionListItem }) {
   if (rev.kind === "published") {
     badges.push({
       text: "Published",
-      cls: "bg-emerald-700/50 text-emerald-100",
+      cls: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-700 dark:text-emerald-300",
     });
   }
   if (rev.isLive) {
@@ -978,7 +981,7 @@ function Badges({ rev }: { rev: RevisionListItem }) {
   if (rev.kind === "named") {
     badges.push({
       text: "Named",
-      cls: "bg-accent/20 text-accent",
+      cls: "bg-accent/20 text-primary",
     });
   }
   if (rev.kind === "restore") {
@@ -987,7 +990,7 @@ function Badges({ rev }: { rev: RevisionListItem }) {
   if (rev.kind === "autosnapshot") {
     badges.push({
       text: "Autosnapshot",
-      cls: "bg-neutral-700 text-neutral-300",
+      cls: "bg-accent text-muted-foreground",
     });
   }
   if (rev.kind === "agent") {
@@ -1002,7 +1005,7 @@ function Badges({ rev }: { rev: RevisionListItem }) {
   if (rev.byYou) {
     badges.push({
       text: "You",
-      cls: "border border-neutral-600 text-neutral-300",
+      cls: "border border-border text-muted-foreground",
     });
   }
   // Written over the MCP server (src/modules/cms/mcp): the author is "mcp:<key name>#<key prefix>".
@@ -1010,7 +1013,7 @@ function Badges({ rev }: { rev: RevisionListItem }) {
   if (mcp) {
     badges.push({
       text: `MCP · ${mcp.name}`,
-      cls: "border border-accent/50 text-accent",
+      cls: "border border-primary/50 text-primary",
       ...(mcp.prefix && { title: `API key ${mcp.prefix}` }),
     });
   }
@@ -1044,7 +1047,7 @@ function VersionDetails() {
 
   return (
     <div
-      className="max-h-[62%] shrink-0 overflow-y-auto border-b border-neutral-800 bg-neutral-950/60 px-3 py-3"
+      className="max-h-[62%] shrink-0 overflow-y-auto border-b border-border bg-background/60 px-3 py-3"
       data-testid="history-details"
     >
       <div className="flex items-start gap-2">
@@ -1052,7 +1055,7 @@ function VersionDetails() {
           <div className="truncate font-semibold">
             {rev.label ?? KIND_TITLE[rev.kind]}
           </div>
-          <div className="text-xs text-neutral-400">
+          <div className="text-xs text-muted-foreground">
             {new Date(rev.createdAt).toLocaleString()}
           </div>
         </div>
@@ -1079,12 +1082,12 @@ function VersionDetails() {
       </div>
       <Badges rev={rev} />
       {!!rev.summary && (
-        <p className="mt-2 text-xs text-neutral-300">{rev.summary}</p>
+        <p className="mt-2 text-xs text-muted-foreground">{rev.summary}</p>
       )}
       {isRunId(rev.agentRunId) && (
         <a
           href={`/admin/agent?run=${encodeURIComponent(rev.agentRunId)}`}
-          className="mt-1 inline-block text-xs text-accent hover:underline"
+          className="mt-1 inline-block text-xs text-primary hover:underline"
           data-testid="history-run-link"
         >
           Part of a site-wide agent run: review or revert it
@@ -1131,7 +1134,7 @@ function VersionDetails() {
         )}
       </div>
 
-      <label className="mt-3 flex items-center gap-2 text-xs text-neutral-400">
+      <label className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
         Compare with
         <select
           value={compareValue}
@@ -1141,7 +1144,7 @@ function VersionDetails() {
               ? view.setCompare("other", v.slice(4))
               : view.setCompare(v as CompareMode));
           }}
-          className="min-w-0 flex-1 rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-neutral-100"
+          className="min-w-0 flex-1 rounded border border-border bg-card px-2 py-1 text-foreground"
           data-testid="history-compare"
         >
           <option value="off">Nothing (no highlights)</option>
@@ -1185,7 +1188,7 @@ function IconButton({
       title={label}
       onClick={onClick}
       data-testid={testId}
-      className="rounded p-1.5 text-neutral-400 hover:bg-neutral-800 hover:text-white"
+      className="rounded p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
     >
       {children}
     </button>
@@ -1241,7 +1244,7 @@ function DiffList({
   const restoreButton = (key: string, label: string) => (
     <button
       type="button"
-      className="ml-auto shrink-0 rounded border border-neutral-700 px-1.5 py-0.5 text-xs text-neutral-200 hover:border-accent disabled:opacity-40"
+      className="ml-auto shrink-0 rounded border border-border px-1.5 py-0.5 text-xs text-foreground hover:border-primary disabled:opacity-40"
       disabled={disabled}
       onClick={() => void view.restoreBlock(viewing.rev, key, label)}
       data-testid="history-restore-block"
@@ -1262,7 +1265,7 @@ function DiffList({
         );
   const others = alsoDiffers.length > 0 && (
     <div className="flex flex-col gap-2" data-testid="history-draft-differs">
-      <div className="text-xs text-neutral-500">
+      <div className="text-xs text-muted-foreground">
         {mode === "off"
           ? "Blocks that differ from the draft"
           : "Also differ from the draft"}
@@ -1272,7 +1275,7 @@ function DiffList({
         return (
           <div
             key={b._key}
-            className="flex items-center gap-2 rounded border border-neutral-800 p-2"
+            className="flex items-center gap-2 rounded border border-border p-2"
             data-testid="history-diff-block"
             data-status="draft"
             data-key={b._key}
@@ -1285,7 +1288,7 @@ function DiffList({
             >
               {label}
             </button>
-            <span className="shrink-0 text-xs text-neutral-400">
+            <span className="shrink-0 text-xs text-muted-foreground">
               Differs from the draft
             </span>
             {restoreButton(b._key, label)}
@@ -1301,14 +1304,16 @@ function DiffList({
   }
   if (!diff) {
     return (
-      <p className="mt-3 text-xs text-neutral-500">Loading the comparison…</p>
+      <p className="mt-3 text-xs text-muted-foreground">
+        Loading the comparison…
+      </p>
     );
   }
   if (!diff.changed) {
     return (
       <div className="mt-3 flex flex-col gap-2">
         <p
-          className="text-xs text-neutral-400"
+          className="text-xs text-muted-foreground"
           data-testid="history-diff-empty"
         >
           {mode === "draft"
@@ -1326,7 +1331,7 @@ function DiffList({
         return (
           <div
             key={change.key}
-            className="rounded border border-neutral-800 p-2"
+            className="rounded border border-border p-2"
             data-testid="history-diff-block"
             data-status={change.status}
             data-key={change.key}
@@ -1348,7 +1353,7 @@ function DiffList({
               >
                 {label}
               </button>
-              <span className="shrink-0 text-xs text-neutral-400">
+              <span className="shrink-0 text-xs text-muted-foreground">
                 {statusText(change.status, mode)}
                 {change.status === "changed" && change.moved ? " · moved" : ""}
               </span>
@@ -1361,13 +1366,13 @@ function DiffList({
         );
       })}
       {diff.seo.length > 0 && (
-        <div className="rounded border border-neutral-800 p-2">
+        <div className="rounded border border-border p-2">
           <div className="font-medium">SEO</div>
           <FieldList fields={diff.seo} />
         </div>
       )}
       {diff.post.length > 0 && (
-        <div className="rounded border border-neutral-800 p-2">
+        <div className="rounded border border-border p-2">
           <div className="font-medium">Post details</div>
           <FieldList fields={diff.post} />
         </div>
@@ -1387,20 +1392,22 @@ export function FieldList({ fields }: { fields: FieldChange[] }) {
     >
       {fields.slice(0, MAX_FIELDS).map((f) => (
         <li key={f.path} className="min-w-0">
-          <span className="font-mono text-neutral-500">
+          <span className="font-mono text-muted-foreground">
             {fieldLabel(f.path) || "(block)"}
           </span>{" "}
           {f.words ? (
             <Words parts={f.words} />
           ) : f.formatting ? (
-            <span className="text-neutral-300">formatting changed</span>
+            <span className="text-muted-foreground">formatting changed</span>
           ) : (
             <ValueChange field={f} />
           )}
         </li>
       ))}
       {fields.length > MAX_FIELDS && (
-        <li className="text-neutral-500">+{fields.length - MAX_FIELDS} more</li>
+        <li className="text-muted-foreground">
+          +{fields.length - MAX_FIELDS} more
+        </li>
       )}
     </ul>
   );
@@ -1409,7 +1416,7 @@ export function FieldList({ fields }: { fields: FieldChange[] }) {
 function Words({ parts }: { parts: WordPart[] }) {
   return (
     <span
-      className="whitespace-pre-wrap break-words text-neutral-200"
+      className="whitespace-pre-wrap break-words text-foreground"
       data-testid="history-words"
     >
       {parts.map((p, i) =>
@@ -1418,12 +1425,15 @@ function Words({ parts }: { parts: WordPart[] }) {
         ) : p.type === "add" ? (
           <ins
             key={i}
-            className="rounded-sm bg-green-500/25 text-green-100 no-underline"
+            className="rounded-sm bg-green-500/15 text-green-700 dark:text-green-700 dark:text-green-300 no-underline"
           >
             {p.text}
           </ins>
         ) : (
-          <del key={i} className="rounded-sm bg-red-500/25 text-red-200">
+          <del
+            key={i}
+            className="rounded-sm bg-red-500/15 text-red-600 dark:text-red-600 dark:text-red-400"
+          >
             {p.text}
           </del>
         )
@@ -1435,28 +1445,28 @@ function Words({ parts }: { parts: WordPart[] }) {
 function ValueChange({ field }: { field: FieldChange }) {
   if (field.kind === "added") {
     return (
-      <span className="text-green-300">
+      <span className="text-green-700 dark:text-green-300">
         added <Value v={field.after} />
       </span>
     );
   }
   if (field.kind === "removed") {
     return (
-      <span className="text-red-300">
+      <span className="text-red-600 dark:text-red-400">
         removed <Value v={field.before} />
       </span>
     );
   }
   if (field.before === "order") {
-    return <span className="text-neutral-300">reordered</span>;
+    return <span className="text-muted-foreground">reordered</span>;
   }
   return (
-    <span className="text-neutral-300">
-      <del className="text-red-300">
+    <span className="text-muted-foreground">
+      <del className="text-red-600 dark:text-red-400">
         <Value v={field.before} />
       </del>{" "}
       →{" "}
-      <ins className="text-green-300 no-underline">
+      <ins className="text-green-700 dark:text-green-300 no-underline">
         <Value v={field.after} />
       </ins>
     </span>
@@ -1475,8 +1485,10 @@ function Value({ v }: { v: unknown }) {
       data-testid="history-color"
     >
       <span
-        className="inline-block h-3 w-3 rounded-sm border border-neutral-600"
-        style={{ background: "token" in v ? `var(--color-${v.token})` : v.hex }}
+        className="inline-block h-3 w-3 rounded-sm border border-border"
+        style={{
+          background: "token" in v ? `var(--color-brand-${v.token})` : v.hex,
+        }}
         aria-hidden="true"
       />
       {name}
@@ -1557,7 +1569,7 @@ export function HistoryViewingBar() {
   );
   return (
     <div
-      className="flex flex-wrap items-center gap-3 border-b border-accent/40 bg-accent/10 px-4 py-2 text-sm text-neutral-100"
+      className="flex flex-wrap items-center gap-3 border-b border-primary/40 bg-accent/10 px-4 py-2 text-sm text-foreground"
       role="status"
       data-testid="history-viewing-bar"
     >
@@ -1570,7 +1582,7 @@ export function HistoryViewingBar() {
         . Read-only.
       </span>
       {legend.length > 0 && (
-        <span className="flex items-center gap-3 text-xs text-neutral-300">
+        <span className="flex items-center gap-3 text-xs text-muted-foreground">
           {legend.map((s) => (
             <span key={s} className="flex items-center gap-1">
               <span
@@ -1612,7 +1624,7 @@ export function SaveVersionButton() {
     <Button
       size="sm"
       variant="ghost"
-      className="h-8 text-neutral-200 hover:bg-neutral-800 hover:text-white"
+      className="h-8 text-foreground hover:bg-muted hover:text-foreground"
       disabled={pageStatus === "archived"}
       title="Save version… (Ctrl/Cmd+Shift+S)"
       onClick={() => view.openDialog({ kind: "save" })}
@@ -1623,7 +1635,7 @@ export function SaveVersionButton() {
   );
 }
 
-const DIALOG = "border-neutral-700 bg-neutral-900 text-neutral-100";
+const DIALOG = "border-border bg-card text-foreground";
 
 /** Save-version, rename and confirmation dialogs. Mount once inside HistoryViewContext. */
 export function HistoryDialogs() {
@@ -1670,7 +1682,7 @@ export function HistoryDialogs() {
                 <AlertDialogTitle>
                   Restore {entryTitle(dialog.rev)}?
                 </AlertDialogTitle>
-                <AlertDialogDescription className="text-neutral-400">
+                <AlertDialogDescription className="text-muted-foreground">
                   The draft becomes this version. The current draft is kept in
                   History, so you can come back to it. The live page doesn't
                   change until you publish.
@@ -1678,7 +1690,7 @@ export function HistoryDialogs() {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel
-                  className="border-neutral-700 bg-transparent"
+                  className="border-border bg-transparent"
                   disabled={busy}
                 >
                   Cancel
@@ -1700,7 +1712,7 @@ export function HistoryDialogs() {
             <>
               <AlertDialogHeader>
                 <AlertDialogTitle>Roll the live page back?</AlertDialogTitle>
-                <AlertDialogDescription className="text-neutral-400">
+                <AlertDialogDescription className="text-muted-foreground">
                   The public page goes back to the content published{" "}
                   {dateTime(dialog.rev.createdAt)}, straight away, at its
                   current address (the URL doesn't change). History gets a new
@@ -1711,7 +1723,7 @@ export function HistoryDialogs() {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel
-                  className="border-neutral-700 bg-transparent"
+                  className="border-border bg-transparent"
                   disabled={busy}
                 >
                   Cancel
@@ -1782,7 +1794,7 @@ function LabelDialog({
         >
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
-            <DialogDescription className="text-neutral-400">
+            <DialogDescription className="text-muted-foreground">
               {description}
             </DialogDescription>
           </DialogHeader>
@@ -1792,7 +1804,7 @@ function LabelDialog({
             maxLength={MAX_LABEL}
             placeholder="e.g. Before the pricing rewrite"
             onChange={(e) => setLabel(e.target.value)}
-            className="border-neutral-700 bg-neutral-950"
+            className="border-border bg-background"
             data-testid={`${testId}-input`}
           />
           <DialogFooter>

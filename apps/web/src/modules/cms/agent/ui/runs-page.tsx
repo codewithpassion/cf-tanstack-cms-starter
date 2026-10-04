@@ -70,13 +70,15 @@ function failure(err: unknown): string {
 type RunActionResult = { ok: true } | { ok: false; message: string };
 
 const ITEM_STYLE: Record<RunItemStatus, string> = {
-  pending: "bg-neutral-800 text-neutral-300",
+  pending: "bg-muted text-muted-foreground",
   running: "bg-sky-800/60 text-sky-100",
   proposed: "bg-violet-800/60 text-violet-100",
-  accepted: "bg-emerald-800/60 text-emerald-100",
-  rejected: "bg-red-900/60 text-red-100",
-  skipped: "bg-neutral-800 text-neutral-500",
-  failed: "bg-amber-800/60 text-amber-100",
+  accepted:
+    "bg-emerald-500/15 text-emerald-700 dark:text-emerald-700 dark:text-emerald-300",
+  rejected: "bg-red-500/15 text-red-600 dark:text-red-600 dark:text-red-400",
+  skipped: "bg-muted text-muted-foreground",
+  failed:
+    "bg-amber-500/15 text-amber-700 dark:text-amber-700 dark:text-amber-300",
 };
 const ITEM_LABEL: Record<RunItemStatus, string> = {
   pending: "waiting",
@@ -131,19 +133,19 @@ export function RunsPage({
     <div className="p-4 md:p-8" data-testid="agent-runs-page">
       <div className="mb-6">
         <h1 className="font-heading text-2xl font-bold">Agent runs</h1>
-        <p className="mt-1 text-sm text-neutral-400">
+        <p className="mt-1 text-sm text-muted-foreground">
           Site-wide work by the AI agent: plan, progress and the review queue.
           Start a run from the AI tab of any page (switch to Site). The agent
           never publishes.
         </p>
       </div>
       {shown.length ? (
-        <div className="overflow-hidden rounded border border-neutral-800">
+        <div className="overflow-hidden rounded border border-border">
           <table
             className="w-full text-left text-sm [overflow-wrap:normal]"
             data-testid="agent-runs-table"
           >
-            <thead className="bg-neutral-900 text-neutral-400">
+            <thead className="bg-card text-muted-foreground">
               <tr>
                 <th className="px-4 py-2 font-medium">Run</th>
                 <th className="px-4 py-2 font-medium">Status</th>
@@ -164,18 +166,20 @@ export function RunsPage({
                 return (
                   <tr
                     key={r.id}
-                    className={`cursor-pointer border-t border-neutral-800 hover:bg-neutral-900 ${selected === r.id ? "bg-neutral-900" : ""}`}
+                    className={`cursor-pointer border-t border-border hover:bg-card ${selected === r.id ? "bg-card" : ""}`}
                     onClick={() => onSelect(r.id)}
                     data-testid="agent-runs-row"
                   >
                     <td className="px-4 py-2">
-                      <div className="font-medium text-white">{r.summary}</div>
-                      <div className="text-xs text-neutral-500">
+                      <div className="font-medium text-foreground">
+                        {r.summary}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
                         {plainTitle(titles.get(r.threadId) ?? "Conversation")} ·{" "}
                         {PROVIDER_LABEL[r.provider]}
                       </div>
                       {/* Below md the Pages, Total and Started columns fold into this line. */}
-                      <div className="mt-0.5 text-xs text-neutral-400 md:hidden">
+                      <div className="mt-0.5 text-xs text-muted-foreground md:hidden">
                         {r.items.length}{" "}
                         {r.items.length === 1 ? "page" : "pages"}
                         {c.proposed ? ` (${c.proposed} to review)` : ""} ·{" "}
@@ -183,11 +187,11 @@ export function RunsPage({
                       </div>
                     </td>
                     <td className="px-4 py-2">
-                      <span className="rounded bg-neutral-800 px-2 py-0.5 text-xs">
+                      <span className="rounded bg-muted px-2 py-0.5 text-xs">
                         {runLabel(r)}
                       </span>
                     </td>
-                    <td className="hidden px-4 py-2 text-neutral-300 md:table-cell">
+                    <td className="hidden px-4 py-2 text-muted-foreground md:table-cell">
                       {r.items.length}
                       {c.proposed ? (
                         <span className="ml-1 text-violet-300">
@@ -195,10 +199,10 @@ export function RunsPage({
                         </span>
                       ) : null}
                     </td>
-                    <td className="hidden px-4 py-2 text-neutral-300 md:table-cell">
+                    <td className="hidden px-4 py-2 text-muted-foreground md:table-cell">
                       {formatUsd(r.costUsd)}
                     </td>
-                    <td className="hidden px-4 py-2 text-neutral-400 md:table-cell">
+                    <td className="hidden px-4 py-2 text-muted-foreground md:table-cell">
                       {formatDateTime(r.createdAt)}
                     </td>
                   </tr>
@@ -208,7 +212,7 @@ export function RunsPage({
           </table>
         </div>
       ) : (
-        <p className="text-neutral-400" data-testid="agent-runs-empty">
+        <p className="text-muted-foreground" data-testid="agent-runs-empty">
           No runs yet.
         </p>
       )}
@@ -270,11 +274,13 @@ function RunDetail({
   };
 
   if (error && !detail) {
-    return <p className="mt-6 text-sm text-red-400">{error}</p>;
+    return (
+      <p className="mt-6 text-sm text-red-600 dark:text-red-400">{error}</p>
+    );
   }
   if (!detail) {
     return (
-      <p className="mt-6 flex items-center gap-2 text-sm text-neutral-400">
+      <p className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
         <Loader2 className="h-4 w-4 animate-spin" /> Loading the run…
       </p>
     );
@@ -297,13 +303,13 @@ function RunDetail({
 
   return (
     <section
-      className="mt-8 rounded border border-neutral-800 bg-neutral-900/40 p-5"
+      className="mt-8 rounded border border-border bg-card/40 p-5"
       data-testid="agent-run-detail"
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold">{run.summary}</h2>
-          <p className="mt-1 text-xs text-neutral-400">
+          <p className="mt-1 text-xs text-muted-foreground">
             {runLabel(run)} · {run.items.length} pages ·{" "}
             {PROVIDER_LABEL[run.provider]} {run.model} · started{" "}
             {formatDateTime(run.createdAt)}
@@ -313,7 +319,7 @@ function RunDetail({
           </p>
           {!!run.revertedAt && (
             <p
-              className="mt-1 text-xs text-amber-300"
+              className="mt-1 text-xs text-amber-700 dark:text-amber-300"
               data-testid="agent-run-reverted"
             >
               Reverted {formatDateTime(run.revertedAt)}
@@ -323,12 +329,12 @@ function RunDetail({
         </div>
         <div className="text-right">
           <div
-            className="text-sm text-neutral-200"
+            className="text-sm text-foreground"
             data-testid="agent-run-detail-total"
           >
             Run total {formatUsd(run.costUsd)}
           </div>
-          <div className="text-xs text-neutral-500">
+          <div className="text-xs text-muted-foreground">
             {counts.accepted} accepted · {counts.proposed} to review ·{" "}
             {counts.pending + counts.running} waiting
           </div>
@@ -338,7 +344,7 @@ function RunDetail({
         {!!resumeHref && (
           <a
             href={resumeHref}
-            className="inline-flex items-center gap-1 rounded border border-neutral-700 px-3 py-1.5 text-sm hover:bg-neutral-800"
+            className="inline-flex items-center gap-1 rounded border border-border px-3 py-1.5 text-sm hover:bg-muted"
             data-testid="agent-run-open-thread"
           >
             <Bot className="h-4 w-4" />{" "}
@@ -353,12 +359,12 @@ function RunDetail({
         </Button>
       </div>
       {!!error && (
-        <p className="mt-3 text-sm text-red-400" role="alert">
+        <p className="mt-3 text-sm text-red-600 dark:text-red-400" role="alert">
           {error}
         </p>
       )}
 
-      <h3 className="mt-6 mb-2 text-sm font-medium text-neutral-300">
+      <h3 className="mt-6 mb-2 text-sm font-medium text-muted-foreground">
         Review queue
       </h3>
       <ul className="space-y-2" data-testid="agent-review-queue">
@@ -430,28 +436,30 @@ function QueueItem({
   const working = busy === item.id;
   return (
     <li
-      className="rounded border border-neutral-800 bg-neutral-950/60 p-3 text-sm"
+      className="rounded border border-border bg-background/60 p-3 text-sm"
       data-testid="agent-queue-item"
       data-slug={item.slug}
       data-status={item.status}
     >
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-neutral-500">{n}.</span>
-        <span className="rounded bg-neutral-800 px-1.5 text-[11px] uppercase text-neutral-300">
+        <span className="text-muted-foreground">{n}.</span>
+        <span className="rounded bg-muted px-1.5 text-[11px] uppercase text-muted-foreground">
           {item.action}
         </span>
         {page ? (
           <a
             href={`/admin/editor/${page.id}`}
-            className="font-mono text-white hover:text-accent"
+            className="font-mono text-foreground hover:text-primary"
           >
             /{item.slug}
           </a>
         ) : (
-          <span className="font-mono text-neutral-300">/{item.slug}</span>
+          <span className="font-mono text-muted-foreground">/{item.slug}</span>
         )}
         {!!item.from && (
-          <span className="text-xs text-neutral-500">copy of /{item.from}</span>
+          <span className="text-xs text-muted-foreground">
+            copy of /{item.from}
+          </span>
         )}
         <span
           className={`ml-auto rounded px-1.5 text-[10px] uppercase ${ITEM_STYLE[item.status]}`}
@@ -459,25 +467,27 @@ function QueueItem({
           {ITEM_LABEL[item.status]}
         </span>
         {item.costUsd > 0 && (
-          <span className="text-xs text-neutral-500">
+          <span className="text-xs text-muted-foreground">
             {formatUsd(item.costUsd)}
           </span>
         )}
       </div>
-      <p className="mt-1 text-xs text-neutral-400">{item.intent}</p>
+      <p className="mt-1 text-xs text-muted-foreground">{item.intent}</p>
       {!!item.note && (
-        <p className="mt-1 text-xs text-amber-200/80">{item.note}</p>
+        <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">
+          {item.note}
+        </p>
       )}
       {!!created && (
         <p className="mt-2 text-xs" data-testid="agent-queue-draft">
-          <span className="text-neutral-400">New draft: </span>
+          <span className="text-muted-foreground">New draft: </span>
           <a
             href={`/admin/editor/${created.id}`}
-            className="text-emerald-300 hover:underline"
+            className="text-emerald-700 dark:text-emerald-300 hover:underline"
           >
             {created.title} (/{created.slug})
           </a>
-          <span className="ml-1 text-neutral-500">
+          <span className="ml-1 text-muted-foreground">
             · {created.status === "draft" ? "not published" : created.status}
           </span>
         </p>
@@ -490,15 +500,15 @@ function QueueItem({
               className="flex flex-wrap items-center gap-2"
               data-testid="agent-queue-proposal"
             >
-              <span className="rounded bg-neutral-800 px-1 text-[10px] uppercase text-neutral-400">
+              <span className="rounded bg-muted px-1 text-[10px] uppercase text-muted-foreground">
                 {c.kind === "seo" ? "SEO" : "changes"}
               </span>
-              <span className="text-neutral-200">{c.summary}</span>
-              <span className="text-neutral-500">· {c.status}</span>
+              <span className="text-foreground">{c.summary}</span>
+              <span className="text-muted-foreground">· {c.status}</span>
               {c.status === "pending" && page && c.kind === "ops" && (
                 <a
                   href={`/admin/editor/${c.pageId}?review=${encodeURIComponent(c.id)}`}
-                  className="inline-flex items-center gap-0.5 text-accent hover:underline"
+                  className="inline-flex items-center gap-0.5 text-primary hover:underline"
                   data-testid="agent-queue-open"
                 >
                   Review on canvas <ExternalLink className="h-3 w-3" />
@@ -513,13 +523,13 @@ function QueueItem({
       )}
       {!!seo && reviewable && (
         <fieldset className="mt-2 space-y-1 text-xs">
-          <legend className="mb-1 text-neutral-400">
+          <legend className="mb-1 text-muted-foreground">
             SEO title and description
           </legend>
           {seo.seo!.variants.map((v, i) => (
             <label
               key={i}
-              className={`block cursor-pointer rounded border p-1.5 ${variant === i ? "border-violet-500 bg-violet-900/20" : "border-neutral-800"}`}
+              className={`block cursor-pointer rounded border p-1.5 ${variant === i ? "border-violet-500 bg-violet-900/20" : "border-border"}`}
             >
               <input
                 type="radio"
@@ -528,7 +538,9 @@ function QueueItem({
                 onChange={() => setVariant(i)}
               />
               <span className="text-sky-300">{v.title}</span>
-              <span className="block text-neutral-400">{v.description}</span>
+              <span className="block text-muted-foreground">
+                {v.description}
+              </span>
             </label>
           ))}
         </fieldset>
@@ -562,7 +574,7 @@ function QueueItem({
           </Button>
           {seo && variant === null && (
             <span
-              className="text-xs text-neutral-400"
+              className="text-xs text-muted-foreground"
               data-testid="agent-queue-pick-seo"
             >
               Pick a title option to accept.
@@ -607,13 +619,13 @@ function ProposalDiff({ cs }: { cs: Changeset }) {
   }
   return (
     <div
-      className="w-full space-y-1 rounded border border-neutral-800 bg-neutral-900/60 p-2"
+      className="w-full space-y-1 rounded border border-border bg-card/60 p-2"
       data-testid="agent-queue-diff"
     >
       {diff.blocks.map((b) => (
         <div key={`${b.status}:${b.key}`}>
-          <span className="text-neutral-200">{b.type}</span>{" "}
-          <span className="text-neutral-500">
+          <span className="text-foreground">{b.type}</span>{" "}
+          <span className="text-muted-foreground">
             {b.status === "changed"
               ? b.moved
                 ? "changed · moved"
@@ -625,17 +637,19 @@ function ProposalDiff({ cs }: { cs: Changeset }) {
       ))}
       {diff.seo.length > 0 && (
         <div>
-          <span className="text-neutral-200">SEO</span>
+          <span className="text-foreground">SEO</span>
           <FieldList fields={diff.seo} />
         </div>
       )}
       {diff.post.length > 0 && (
         <div>
-          <span className="text-neutral-200">Post details</span>
+          <span className="text-foreground">Post details</span>
           <FieldList fields={diff.post} />
         </div>
       )}
-      {!diff.changed && <p className="text-neutral-500">No visible change.</p>}
+      {!diff.changed && (
+        <p className="text-muted-foreground">No visible change.</p>
+      )}
     </div>
   );
 }
@@ -726,19 +740,19 @@ function RevertButton({
       </Button>
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent
-          className="border-neutral-700 bg-neutral-900 text-neutral-100 sm:max-w-lg"
+          className="border-border bg-card text-foreground sm:max-w-lg"
           data-testid="agent-revert-confirm"
         >
           <AlertDialogHeader>
             <AlertDialogTitle>Revert this run?</AlertDialogTitle>
-            <AlertDialogDescription className="text-neutral-400">
+            <AlertDialogDescription className="text-muted-foreground">
               Each ticked page goes back to its version from before the run, and
               ticked drafts the run created are archived. Nothing is deleted:
               the current drafts stay in History. Live pages are not changed.
             </AlertDialogDescription>
           </AlertDialogHeader>
           {!(actions || error) && (
-            <p className="text-sm text-neutral-400">Checking the pages…</p>
+            <p className="text-sm text-muted-foreground">Checking the pages…</p>
           )}
           {!!actions && (
             <ul className="space-y-2 text-sm" data-testid="agent-revert-list">
@@ -769,14 +783,14 @@ function RevertButton({
                       <span
                         className={
                           a.kind === "skip" || !ticked.has(a.pageId)
-                            ? "text-neutral-500"
-                            : "text-neutral-100"
+                            ? "text-muted-foreground"
+                            : "text-foreground"
                         }
                       >
                         {ACTION_TEXT[a.kind]}
                       </span>{" "}
                       <span className="font-mono">/{a.slug}</span>
-                      <span className="text-neutral-400">
+                      <span className="text-muted-foreground">
                         {a.kind === "restore"
                           ? " to the version before the run"
                           : a.kind === "archive"
@@ -785,7 +799,7 @@ function RevertButton({
                       </span>
                       {a.kind !== "skip" && a.laterEdits && (
                         <span
-                          className="block text-xs text-amber-300"
+                          className="block text-xs text-amber-700 dark:text-amber-300"
                           data-testid="agent-revert-later-edits"
                         >
                           You edited this page after the run — restoring will
@@ -807,7 +821,7 @@ function RevertButton({
                 </li>
               ))}
               {!actions.length && (
-                <li className="text-neutral-400">
+                <li className="text-muted-foreground">
                   The run didn't change any page.
                 </li>
               )}
@@ -823,9 +837,11 @@ function RevertButton({
               manually after the revert.
             </p>
           )}
-          {!!error && <p className="text-sm text-red-400">{error}</p>}
+          {!!error && (
+            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+          )}
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-neutral-700 bg-neutral-800 text-neutral-100 hover:bg-neutral-700">
+            <AlertDialogCancel className="border-border bg-muted text-foreground hover:bg-accent">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction

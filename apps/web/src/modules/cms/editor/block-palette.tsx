@@ -42,7 +42,7 @@ export function BlockPalette({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-xl border-neutral-700 sm:max-w-xl bg-neutral-900 text-neutral-100"
+        className="max-w-xl border-border sm:max-w-xl bg-card text-foreground"
         data-testid="block-palette"
       >
         <DialogHeader>
@@ -54,7 +54,7 @@ export function BlockPalette({
         <div className="flex flex-col gap-4">
           {[...groups].map(([category, defs]) => (
             <section key={category}>
-              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">
+              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 {CATEGORY_LABELS[category]}
               </h3>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -64,9 +64,9 @@ export function BlockPalette({
                     type="button"
                     data-testid={`palette-${def.type}`}
                     onClick={() => onPick(def.type as BlockType)}
-                    className="flex items-center gap-2 rounded border border-neutral-700 px-3 py-3 text-left text-sm hover:border-accent hover:bg-accent/10"
+                    className="flex items-center gap-2 rounded border border-border px-3 py-3 text-left text-sm hover:border-primary hover:bg-accent/10"
                   >
-                    <def.Icon className="h-5 w-5 shrink-0 text-accent" />
+                    <def.Icon className="h-5 w-5 shrink-0 text-primary" />
                     {def.label}
                   </button>
                 ))}

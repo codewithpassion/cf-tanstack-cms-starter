@@ -73,12 +73,12 @@ function ApiKeysPage() {
   return (
     <div className="max-w-5xl p-4 md:p-8" data-testid="api-keys-page">
       <h1 className="mb-2 font-bold font-heading text-2xl">API keys</h1>
-      <p className="mb-6 text-neutral-400 text-sm">
+      <p className="mb-6 text-muted-foreground text-sm">
         Keys for the CMS MCP server at{" "}
-        <code className="text-neutral-200">{mcpUrl}</code>, for Claude Code and
+        <code className="text-foreground">{mcpUrl}</code>, for Claude Code and
         other MCP clients. A key can do everything its scope allows, on every
         page. Changes it makes are recorded as{" "}
-        <code className="text-neutral-200">
+        <code className="text-foreground">
           mcp:&lt;key name&gt;#&lt;key prefix&gt;
         </code>
         .
@@ -89,8 +89,8 @@ function ApiKeysPage() {
           className="w-full text-left text-sm [overflow-wrap:normal]"
           data-testid="api-keys-table"
         >
-          <thead className="text-neutral-400">
-            <tr className="border-neutral-800 border-b">
+          <thead className="text-muted-foreground">
+            <tr className="border-border border-b">
               <th className="py-2 pr-3 font-normal">Name</th>
               <th className="py-2 pr-3 font-normal">Scope</th>
               <th className="py-2 pr-3 font-normal">Prefix</th>
@@ -105,7 +105,7 @@ function ApiKeysPage() {
           <tbody>
             {keys.length === 0 && (
               <tr>
-                <td className="py-4 text-neutral-500" colSpan={7}>
+                <td className="py-4 text-muted-foreground" colSpan={7}>
                   No keys yet.
                 </td>
               </tr>
@@ -150,20 +150,20 @@ function ConnectedApps({
   return (
     <section className="mt-12" data-testid="connected-apps">
       <h2 className="mb-2 font-bold font-heading text-xl">Connected apps</h2>
-      <p className="mb-4 text-neutral-400 text-sm">
+      <p className="mb-4 text-muted-foreground text-sm">
         Apps that signed in with OAuth, such as Claude.ai and Claude Desktop:
-        add <code className="text-neutral-200">{mcpUrl}</code> as a custom
+        add <code className="text-foreground">{mcpUrl}</code> as a custom
         connector, sign in with this admin login and approve. Changes they make
         are recorded as{" "}
-        <code className="text-neutral-200">mcp:&lt;app name (date)&gt;</code>.
+        <code className="text-foreground">mcp:&lt;app name (date)&gt;</code>.
       </p>
       <div className="relative overflow-x-auto">
         <table
           className="w-full text-left text-sm [overflow-wrap:normal]"
           data-testid="connections-table"
         >
-          <thead className="text-neutral-400">
-            <tr className="border-neutral-800 border-b">
+          <thead className="text-muted-foreground">
+            <tr className="border-border border-b">
               <th className="py-2 pr-3 font-normal">App</th>
               <th className="py-2 pr-3 font-normal">Scope</th>
               <th className="py-2 pr-3 font-normal">Approved by</th>
@@ -178,7 +178,7 @@ function ConnectedApps({
           <tbody>
             {connections.length === 0 && (
               <tr>
-                <td className="py-4 text-neutral-500" colSpan={7}>
+                <td className="py-4 text-muted-foreground" colSpan={7}>
                   No connected apps yet.
                 </td>
               </tr>
@@ -229,29 +229,33 @@ function ConnectionRow({
   );
   return (
     <>
-      <tr className="border-neutral-900 border-b" data-testid="connection-row">
+      <tr className="border-border border-b" data-testid="connection-row">
         <td className="py-2 pr-3">
           {c.name}
-          <div className="text-neutral-500 text-xs">
+          <div className="text-muted-foreground text-xs">
             → {redirectHost(c.redirectUri)}
           </div>
         </td>
         <td className="py-2 pr-3">{c.scope}</td>
-        <td className="py-2 pr-3 text-neutral-400">{c.email}</td>
-        <td className="py-2 pr-3 text-neutral-400">{when(c.createdAt)}</td>
-        <td className="py-2 pr-3 text-neutral-400">{when(c.lastUsedAt)}</td>
+        <td className="py-2 pr-3 text-muted-foreground">{c.email}</td>
+        <td className="py-2 pr-3 text-muted-foreground">{when(c.createdAt)}</td>
+        <td className="py-2 pr-3 text-muted-foreground">
+          {when(c.lastUsedAt)}
+        </td>
         <td className="py-2 pr-3">
           {c.revokedAt ? (
-            <span className="text-neutral-500">
+            <span className="text-muted-foreground">
               Revoked {when(c.revokedAt)}
             </span>
           ) : (
-            <span className="text-emerald-300">Active</span>
+            <span className="text-emerald-700 dark:text-emerald-300">
+              Active
+            </span>
           )}
         </td>
         <td className="space-x-3 whitespace-nowrap py-2 text-right">
           <button
-            className="text-neutral-400 hover:text-white"
+            className="text-muted-foreground hover:text-foreground"
             data-testid="connection-calls-toggle"
             onClick={toggle}
             type="button"
@@ -260,7 +264,7 @@ function ConnectionRow({
           </button>
           {!c.revokedAt && (
             <button
-              className="text-danger hover:underline"
+              className="text-destructive hover:underline"
               data-testid="connection-revoke"
               onClick={revoke}
               type="button"
@@ -320,15 +324,15 @@ function CreateKey() {
 
   return (
     <section
-      className="rounded border border-neutral-800 bg-neutral-900 p-4"
+      className="rounded border border-border bg-card p-4"
       data-testid="api-key-create"
     >
       <h2 className="mb-3 font-semibold">New key</h2>
       <div className="flex flex-wrap items-end gap-3 text-sm">
         <label className="flex flex-col gap-1">
-          <span className="text-neutral-400">Name</span>
+          <span className="text-muted-foreground">Name</span>
           <input
-            className="w-64 max-w-full rounded border border-neutral-700 bg-neutral-950 px-2 py-1"
+            className="w-64 max-w-full rounded border border-border bg-background px-2 py-1"
             data-testid="api-key-name"
             maxLength={60}
             onChange={onName}
@@ -337,9 +341,9 @@ function CreateKey() {
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-neutral-400">Scope</span>
+          <span className="text-muted-foreground">Scope</span>
           <select
-            className="rounded border border-neutral-700 bg-neutral-950 px-2 py-1"
+            className="rounded border border-border bg-background px-2 py-1"
             data-testid="api-key-scope"
             onChange={onScope}
             value={scope}
@@ -360,20 +364,20 @@ function CreateKey() {
           {state.step === "saving" ? "Creating…" : "Create key"}
         </Button>
       </div>
-      <p className="mt-2 text-neutral-500 text-xs">{SCOPE_HELP[scope]}</p>
+      <p className="mt-2 text-muted-foreground text-xs">{SCOPE_HELP[scope]}</p>
       {state.step === "error" && (
-        <p className="mt-3 text-danger text-sm">{state.message}</p>
+        <p className="mt-3 text-destructive text-sm">{state.message}</p>
       )}
       {state.step === "created" && (
         <div
           className="mt-4 space-y-2 rounded border border-emerald-800 bg-emerald-950/40 p-3 text-sm"
           data-testid="api-key-created"
         >
-          <p className="text-emerald-200">
+          <p className="text-emerald-700 dark:text-emerald-300">
             Copy the key now: it isn't shown again.
           </p>
           <CopyLine testId="api-key-value" text={state.key} />
-          <p className="pt-1 text-neutral-300">Connect Claude Code:</p>
+          <p className="pt-1 text-muted-foreground">Connect Claude Code:</p>
           <CopyLine testId="api-key-command" text={state.command} />
         </div>
       )}
@@ -400,20 +404,20 @@ function CopyLine({ text, testId }: { text: string; testId: string }) {
   return (
     <div className="flex items-center gap-2">
       <code
-        className="min-w-0 flex-1 select-all break-all rounded bg-neutral-950 px-2 py-1 text-neutral-200 text-xs"
+        className="min-w-0 flex-1 select-all break-all rounded bg-background px-2 py-1 text-foreground text-xs"
         data-testid={testId}
       >
         {text}
       </code>
       <button
         aria-label="Copy"
-        className="text-neutral-400 hover:text-white"
+        className="text-muted-foreground hover:text-foreground"
         data-testid={`${testId}-copy`}
         onClick={copy}
         type="button"
       >
         {copied ? (
-          <Check className="h-4 w-4 text-emerald-300" />
+          <Check className="h-4 w-4 text-emerald-700 dark:text-emerald-300" />
         ) : (
           <Copy className="h-4 w-4" />
         )}
@@ -425,10 +429,10 @@ function CopyLine({ text, testId }: { text: string; testId: string }) {
 function KeyStatus({ k }: { k: ApiKeyInfo }) {
   if (k.revokedAt) {
     return (
-      <span className="text-neutral-500">Revoked {when(k.revokedAt)}</span>
+      <span className="text-muted-foreground">Revoked {when(k.revokedAt)}</span>
     );
   }
-  return <span className="text-emerald-300">Active</span>;
+  return <span className="text-emerald-700 dark:text-emerald-300">Active</span>;
 }
 
 function KeyRow({
@@ -452,20 +456,22 @@ function KeyRow({
   );
   return (
     <>
-      <tr className="border-neutral-900 border-b" data-testid="api-key-row">
+      <tr className="border-border border-b" data-testid="api-key-row">
         <td className="py-2 pr-3">{k.name}</td>
         <td className="py-2 pr-3">{k.scope}</td>
         <td className="py-2 pr-3">
-          <code className="text-neutral-300 text-xs">{k.prefix}…</code>
+          <code className="text-muted-foreground text-xs">{k.prefix}…</code>
         </td>
-        <td className="py-2 pr-3 text-neutral-400">{when(k.createdAt)}</td>
-        <td className="py-2 pr-3 text-neutral-400">{when(k.lastUsedAt)}</td>
+        <td className="py-2 pr-3 text-muted-foreground">{when(k.createdAt)}</td>
+        <td className="py-2 pr-3 text-muted-foreground">
+          {when(k.lastUsedAt)}
+        </td>
         <td className="py-2 pr-3">
           <KeyStatus k={k} />
         </td>
         <td className="space-x-3 whitespace-nowrap py-2 text-right">
           <button
-            className="text-neutral-400 hover:text-white"
+            className="text-muted-foreground hover:text-foreground"
             data-testid="api-key-calls-toggle"
             onClick={toggle}
             type="button"
@@ -474,7 +480,7 @@ function KeyRow({
           </button>
           {!k.revokedAt && (
             <button
-              className="text-danger hover:underline"
+              className="text-destructive hover:underline"
               data-testid="api-key-revoke"
               onClick={revoke}
               type="button"
@@ -556,21 +562,21 @@ function RevokeDialog({
   return (
     <AlertDialog onOpenChange={onOpenChange} open={target !== null}>
       <AlertDialogContent
-        className="border-neutral-700 bg-neutral-900 text-neutral-100 sm:max-w-md"
+        className="border-border bg-card text-foreground sm:max-w-md"
         data-testid="api-key-revoke-confirm"
       >
         <AlertDialogHeader>
           <AlertDialogTitle>Revoke "{target?.name}"?</AlertDialogTitle>
-          <AlertDialogDescription className="text-neutral-400">
+          <AlertDialogDescription className="text-muted-foreground">
             {target?.kind === "oauth"
               ? "The app stops working at once. To use it again, connect it again from the app."
               : "Clients using it stop working at once. Revoked keys can't be turned back on; create a new key instead."}
           </AlertDialogDescription>
-          {error ? <p className="text-danger text-sm">{error}</p> : null}
+          {error ? <p className="text-destructive text-sm">{error}</p> : null}
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel
-            className="border-neutral-700 bg-transparent"
+            className="border-border bg-transparent"
             disabled={busy}
           >
             Cancel
@@ -611,13 +617,13 @@ function KeyCalls({ id, kind = "api-key" }: { id: string; kind?: CallerKind }) {
     };
   }, [id, kind]);
   if (error) {
-    return <p className="text-danger text-sm">{error}</p>;
+    return <p className="text-destructive text-sm">{error}</p>;
   }
   if (!calls) {
-    return <p className="text-neutral-500 text-sm">Loading…</p>;
+    return <p className="text-muted-foreground text-sm">Loading…</p>;
   }
   if (!calls.length) {
-    return <p className="text-neutral-500 text-sm">No calls yet.</p>;
+    return <p className="text-muted-foreground text-sm">No calls yet.</p>;
   }
   return (
     <table
@@ -626,15 +632,21 @@ function KeyCalls({ id, kind = "api-key" }: { id: string; kind?: CallerKind }) {
     >
       <tbody>
         {calls.map((c) => (
-          <tr className="border-neutral-900 border-b" key={c.id}>
-            <td className="py-1 pr-3 text-neutral-400">{when(c.at)}</td>
+          <tr className="border-border border-b" key={c.id}>
+            <td className="py-1 pr-3 text-muted-foreground">{when(c.at)}</td>
             <td className="py-1 pr-3 font-mono">{c.tool}</td>
-            <td className="py-1 pr-3 text-neutral-300">{c.target ?? ""}</td>
+            <td className="py-1 pr-3 text-muted-foreground">
+              {c.target ?? ""}
+            </td>
             <td className="py-1">
               {c.ok ? (
-                <span className="text-emerald-300">ok</span>
+                <span className="text-emerald-700 dark:text-emerald-300">
+                  ok
+                </span>
               ) : (
-                <span className="text-danger">{c.errorCode ?? "error"}</span>
+                <span className="text-destructive">
+                  {c.errorCode ?? "error"}
+                </span>
               )}
             </td>
           </tr>

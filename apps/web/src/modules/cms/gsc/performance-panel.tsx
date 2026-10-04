@@ -136,11 +136,11 @@ export default function PerformancePanel({ pageId }: { pageId: string }) {
   return (
     <div className="flex flex-col gap-4 pt-1" data-testid="gsc-performance">
       <div className="flex items-center justify-between gap-2">
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-neutral-400">
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           Search performance
         </h3>
         <fieldset
-          className="flex rounded border border-neutral-700 text-xs"
+          className="flex rounded border border-border text-xs"
           aria-label="Date range"
         >
           {([28, 90] as const).map((d) => (
@@ -150,7 +150,7 @@ export default function PerformancePanel({ pageId }: { pageId: string }) {
               aria-pressed={days === d}
               onClick={() => setDays(d)}
               data-testid={`gsc-days-${d}`}
-              className={`px-2 py-0.5 ${days === d ? "bg-neutral-700 text-white" : "text-neutral-400 hover:text-white"}`}
+              className={`px-2 py-0.5 ${days === d ? "bg-accent text-foreground" : "text-muted-foreground hover:text-foreground"}`}
             >
               {d} days
             </button>
@@ -159,22 +159,24 @@ export default function PerformancePanel({ pageId }: { pageId: string }) {
       </div>
 
       {!!error && (
-        <p className="text-xs text-danger">
+        <p className="text-xs text-destructive">
           Search Console data couldn't be loaded: {error}
         </p>
       )}
-      {!data && loading && <p className="text-xs text-neutral-500">Loading…</p>}
+      {!data && loading && (
+        <p className="text-xs text-muted-foreground">Loading…</p>
+      )}
       {!!data && (
         <div className={`flex flex-col gap-4 ${loading ? "opacity-60" : ""}`}>
           <p
-            className="break-all font-mono text-[11px] text-neutral-500"
+            className="break-all font-mono text-[11px] text-muted-foreground"
             data-testid="gsc-url"
           >
             {data.url}
           </p>
           {!connected && (
             <p
-              className="rounded border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-200"
+              className="rounded border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-700 dark:text-amber-300"
               data-testid="gsc-not-connected"
             >
               {GSC_CONNECT_HINT}
@@ -190,16 +192,16 @@ export default function PerformancePanel({ pageId }: { pageId: string }) {
                     aria-pressed={metric === m.id}
                     onClick={() => setMetric(m.id)}
                     data-testid={`gsc-total-${m.id}`}
-                    className={`rounded border px-2 py-1.5 text-left ${metric === m.id ? "border-neutral-500 bg-neutral-800" : "border-neutral-800 bg-neutral-950 hover:border-neutral-600"}`}
+                    className={`rounded border px-2 py-1.5 text-left ${metric === m.id ? "border-border bg-muted" : "border-border bg-background hover:border-border"}`}
                   >
-                    <div className="flex items-center gap-1.5 text-[11px] text-neutral-400">
+                    <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
                       <span
                         className="h-2 w-2 rounded-full"
                         style={{ background: m.color }}
                       />
                       {m.label}
                     </div>
-                    <div className="font-heading text-lg font-bold text-white">
+                    <div className="font-heading text-lg font-bold text-foreground">
                       {m.format(data.totals[m.id])}
                     </div>
                   </button>
@@ -211,7 +213,7 @@ export default function PerformancePanel({ pageId }: { pageId: string }) {
                 markers={data.markers}
                 metric={shownMetric}
               />
-              <p className="text-[11px] text-neutral-500">
+              <p className="text-[11px] text-muted-foreground">
                 {shortDate(data.range.start)} – {shortDate(data.range.end)}{" "}
                 (Search Console days, US Pacific). Search Console data trails by
                 2–3 days (shaded: not final yet).
@@ -220,7 +222,7 @@ export default function PerformancePanel({ pageId }: { pageId: string }) {
             </>
           ) : connected ? (
             <p
-              className="rounded border border-neutral-800 bg-neutral-950 p-3 text-xs text-neutral-400"
+              className="rounded border border-border bg-background p-3 text-xs text-muted-foreground"
               data-testid="gsc-empty"
             >
               No Search Console data yet. The scheduled sync pulls it daily at
@@ -311,7 +313,7 @@ function TrendChart({
     <div className="flex flex-col gap-1">
       <svg
         viewBox={`0 0 ${W} ${H}`}
-        className="w-full rounded border border-neutral-800 bg-neutral-950"
+        className="w-full rounded border border-border bg-background"
         role="img"
         aria-label={`${metric.label} per day`}
         data-testid="gsc-chart"
@@ -357,7 +359,7 @@ function TrendChart({
                 x2={geo.x(i)}
                 y1={PAD.top}
                 y2={H - PAD.bottom}
-                stroke="var(--color-primary)"
+                stroke="var(--color-brand-primary)"
                 strokeWidth={1}
                 strokeDasharray="3 3"
               />
@@ -365,7 +367,7 @@ function TrendChart({
                 cx={geo.x(i)}
                 cy={H - PAD.bottom}
                 r={3}
-                fill="var(--color-primary)"
+                fill="var(--color-brand-primary)"
               />
             </g>
           );
@@ -400,7 +402,7 @@ function TrendChart({
         </text>
       </svg>
       <div
-        className="flex min-h-4 items-center justify-between gap-2 text-[11px] text-neutral-400"
+        className="flex min-h-4 items-center justify-between gap-2 text-[11px] text-muted-foreground"
         data-testid="gsc-chart-hover"
       >
         {hoveredDate ? (
@@ -437,7 +439,7 @@ function TrendChart({
 function TopQueries({ data }: { data: PagePerformance }) {
   return (
     <section className="flex flex-col gap-2">
-      <h4 className="text-[11px] font-semibold uppercase tracking-wide text-neutral-500">
+      <h4 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
         Top queries
       </h4>
       {data.topQueries.length ? (
@@ -446,7 +448,7 @@ function TopQueries({ data }: { data: PagePerformance }) {
           className="w-full text-xs [overflow-wrap:normal]"
           data-testid="gsc-top-queries"
         >
-          <thead className="text-[10px] uppercase text-neutral-500">
+          <thead className="text-[10px] uppercase text-muted-foreground">
             <tr>
               <th className="pb-1 text-left font-medium">Query</th>
               <th className="pb-1 text-right font-medium">Clicks</th>
@@ -456,21 +458,21 @@ function TopQueries({ data }: { data: PagePerformance }) {
           </thead>
           <tbody>
             {data.topQueries.map((q) => (
-              <tr key={q.query} className="border-t border-neutral-800">
+              <tr key={q.query} className="border-t border-border">
                 <td
-                  className="max-w-0 truncate py-1 pr-2 text-neutral-200"
+                  className="max-w-0 truncate py-1 pr-2 text-foreground"
                   title={q.query}
                   data-testid="gsc-query"
                 >
                   {q.query}
                 </td>
-                <td className="py-1 text-right tabular-nums text-neutral-300">
+                <td className="py-1 text-right tabular-nums text-muted-foreground">
                   {fmtInt(q.clicks)}
                 </td>
-                <td className="py-1 text-right tabular-nums text-neutral-300">
+                <td className="py-1 text-right tabular-nums text-muted-foreground">
                   {fmtInt(q.impressions)}
                 </td>
-                <td className="py-1 text-right tabular-nums text-neutral-300">
+                <td className="py-1 text-right tabular-nums text-muted-foreground">
                   {fmtPosition(q.position)}
                 </td>
               </tr>
@@ -478,7 +480,7 @@ function TopQueries({ data }: { data: PagePerformance }) {
           </tbody>
         </table>
       ) : (
-        <p className="text-xs text-neutral-500">
+        <p className="text-xs text-muted-foreground">
           No queries in this range. Google leaves out rare (anonymised) queries,
           so the totals above can be higher.
         </p>
@@ -494,19 +496,19 @@ function IndexStatus({ data }: { data: PagePerformance }) {
     !!i?.googleCanonical && i.googleCanonical !== data.url;
   return (
     <section className="flex flex-col gap-2" data-testid="gsc-index-status">
-      <h4 className="text-[11px] font-semibold uppercase tracking-wide text-neutral-500">
+      <h4 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
         Index status
       </h4>
       {i && verdict ? (
         <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">
-          <dt className="text-neutral-500">Verdict</dt>
+          <dt className="text-muted-foreground">Verdict</dt>
           <dd className={verdict.cls} data-testid="gsc-verdict">
             {verdict.label}
           </dd>
-          <dt className="text-neutral-500">Coverage</dt>
-          <dd className="text-neutral-300">{i.coverageState ?? "—"}</dd>
-          <dt className="text-neutral-500">Last crawl</dt>
-          <dd className="text-neutral-300">
+          <dt className="text-muted-foreground">Coverage</dt>
+          <dd className="text-muted-foreground">{i.coverageState ?? "—"}</dd>
+          <dt className="text-muted-foreground">Last crawl</dt>
+          <dd className="text-muted-foreground">
             {i.lastCrawl
               ? new Date(i.lastCrawl).toLocaleString("en-GB", {
                   dateStyle: "medium",
@@ -514,9 +516,9 @@ function IndexStatus({ data }: { data: PagePerformance }) {
                 })
               : "Never"}
           </dd>
-          <dt className="text-neutral-500">Google canonical</dt>
+          <dt className="text-muted-foreground">Google canonical</dt>
           <dd
-            className={`break-all ${canonicalDiffers ? "text-amber-300" : "text-neutral-300"}`}
+            className={`break-all ${canonicalDiffers ? "text-amber-700 dark:text-amber-300" : "text-muted-foreground"}`}
           >
             {i.googleCanonical ?? "—"}
             {!!canonicalDiffers && (
@@ -525,8 +527,8 @@ function IndexStatus({ data }: { data: PagePerformance }) {
               </span>
             )}
           </dd>
-          <dt className="text-neutral-500">Checked</dt>
-          <dd className="text-neutral-400">
+          <dt className="text-muted-foreground">Checked</dt>
+          <dd className="text-muted-foreground">
             {new Date(i.checkedAt).toLocaleString("en-GB", {
               dateStyle: "medium",
               timeStyle: "short",
@@ -534,7 +536,7 @@ function IndexStatus({ data }: { data: PagePerformance }) {
           </dd>
         </dl>
       ) : (
-        <p className="text-xs text-neutral-500">
+        <p className="text-xs text-muted-foreground">
           Not inspected yet. The nightly run inspects published CMS pages: new
           and republished ones first, then each weekly.
         </p>

@@ -64,9 +64,9 @@ const WARNING_STYLE: Record<
   PublishWarning["level"],
   { Icon: typeof Info; cls: string }
 > = {
-  error: { Icon: XCircle, cls: "text-danger" },
-  warning: { Icon: AlertTriangle, cls: "text-amber-300" },
-  info: { Icon: Info, cls: "text-neutral-300" },
+  error: { Icon: XCircle, cls: "text-destructive" },
+  warning: { Icon: AlertTriangle, cls: "text-amber-700 dark:text-amber-300" },
+  info: { Icon: Info, cls: "text-muted-foreground" },
 };
 
 export function PublishDialog({
@@ -166,19 +166,19 @@ export function PublishDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="gap-3 border-neutral-700 sm:max-w-2xl bg-neutral-900 text-neutral-100"
+        className="gap-3 border-border sm:max-w-2xl bg-card text-foreground"
         data-testid="publish-dialog"
       >
         <DialogHeader>
           <DialogTitle>
             {firstPublish ? "First publish" : "Publish changes"}
           </DialogTitle>
-          <DialogDescription className="text-neutral-400">
+          <DialogDescription className="text-muted-foreground">
             {firstPublish
               ? "This page isn't live yet. Publishing puts it"
               : "Publishing replaces the live page"}{" "}
             at{" "}
-            <span className="font-mono text-neutral-300">
+            <span className="font-mono text-muted-foreground">
               {slugToPath(doc.seo.slug)}
             </span>
             .
@@ -186,13 +186,16 @@ export function PublishDialog({
         </DialogHeader>
 
         {live.status === "loading" && (
-          <p className="flex items-center gap-2 text-sm text-neutral-400">
+          <p className="flex items-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> Comparing
             with the live page…
           </p>
         )}
         {live.status === "error" && (
-          <p className="text-sm text-amber-300" role="alert">
+          <p
+            className="text-sm text-amber-700 dark:text-amber-300"
+            role="alert"
+          >
             Couldn't load the live page to compare ({live.message}). You can
             still publish.
           </p>
@@ -210,7 +213,7 @@ export function PublishDialog({
                 {diff.blocks.map((change) => (
                   <div
                     key={change.key}
-                    className="rounded border border-neutral-800 p-2"
+                    className="rounded border border-border p-2"
                     data-testid="publish-diff-block"
                     data-status={change.status}
                   >
@@ -222,7 +225,7 @@ export function PublishDialog({
                       <span className="min-w-0 truncate font-medium">
                         {blockLabel(change.type)}
                       </span>
-                      <span className="shrink-0 text-xs text-neutral-400">
+                      <span className="shrink-0 text-xs text-muted-foreground">
                         {STATUS_TEXT[change.status]}
                         {change.status === "changed" && change.moved
                           ? " · moved"
@@ -236,7 +239,7 @@ export function PublishDialog({
                 ))}
                 {diff.seo.length > 0 && (
                   <div
-                    className="rounded border border-neutral-800 p-2"
+                    className="rounded border border-border p-2"
                     data-testid="publish-diff-seo"
                   >
                     <div className="font-medium">SEO</div>
@@ -244,7 +247,7 @@ export function PublishDialog({
                   </div>
                 )}
                 {diff.post.length > 0 && (
-                  <div className="rounded border border-neutral-800 p-2">
+                  <div className="rounded border border-border p-2">
                     <div className="font-medium">Post details</div>
                     <FieldList fields={diff.post} />
                   </div>
@@ -256,7 +259,7 @@ export function PublishDialog({
 
         {warnings.length > 0 && (
           <ul
-            className="flex flex-col gap-1 rounded border border-neutral-800 p-2 text-sm"
+            className="flex flex-col gap-1 rounded border border-border p-2 text-sm"
             data-testid="publish-warnings"
           >
             {warnings.map((w, i) => {

@@ -39,7 +39,7 @@ const MAX_TAG_LENGTH = 50;
 const NEW_CATEGORY = "__new__";
 
 const inputClass =
-  "w-full rounded border border-neutral-700 bg-neutral-950 px-2 py-1.5 text-sm text-neutral-100 focus:border-accent focus:outline-none aria-[invalid=true]:border-danger disabled:opacity-60";
+  "w-full rounded border border-border bg-background px-2 py-1.5 text-sm text-foreground focus:border-primary focus:outline-none aria-[invalid=true]:border-destructive disabled:opacity-60";
 
 type TextId =
   | "title"
@@ -226,7 +226,9 @@ export function PostPanel() {
 
   if (!post) {
     return (
-      <p className="p-3 text-sm text-neutral-400">This page isn't a post.</p>
+      <p className="p-3 text-sm text-muted-foreground">
+        This page isn't a post.
+      </p>
     );
   }
 
@@ -283,7 +285,7 @@ export function PostPanel() {
         className="flex min-w-0 flex-col gap-5 pt-3"
       >
         {readOnly && (
-          <p className="text-xs text-neutral-500">
+          <p className="text-xs text-muted-foreground">
             Archived posts are read-only.
           </p>
         )}
@@ -304,7 +306,7 @@ export function PostPanel() {
           <div className="flex flex-col gap-1">
             <label
               htmlFor="post-category"
-              className="text-xs font-medium text-neutral-300"
+              className="text-xs font-medium text-muted-foreground"
             >
               Category
             </label>
@@ -330,7 +332,7 @@ export function PostPanel() {
                 />
                 <button
                   type="button"
-                  className="text-xs text-neutral-400 hover:text-white"
+                  className="text-xs text-muted-foreground hover:text-foreground"
                   onClick={() => setNewCategory(false)}
                 >
                   Cancel
@@ -358,13 +360,15 @@ export function PostPanel() {
               </select>
             )}
             {!!fields.errors.category && (
-              <p className="text-xs text-danger">{fields.errors.category}</p>
+              <p className="text-xs text-destructive">
+                {fields.errors.category}
+              </p>
             )}
           </div>
           <div className="flex flex-col gap-1">
             <label
               htmlFor="post-tag-input"
-              className="text-xs font-medium text-neutral-300"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tags
             </label>
@@ -372,13 +376,13 @@ export function PostPanel() {
               {post.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1 rounded border border-neutral-700 bg-neutral-800 px-2 py-0.5 text-xs"
+                  className="inline-flex items-center gap-1 rounded border border-border bg-muted px-2 py-0.5 text-xs"
                 >
                   {tag}
                   <button
                     type="button"
                     aria-label={`Remove tag ${tag}`}
-                    className="text-neutral-400 hover:text-white"
+                    className="text-muted-foreground hover:text-foreground"
                     onClick={() =>
                       applyNow({ tags: post.tags.filter((t) => t !== tag) })
                     }
@@ -403,7 +407,7 @@ export function PostPanel() {
               onBlur={() => addTags(tagInput)}
               data-testid="post-tag-input"
             />
-            <p className="text-xs text-neutral-500">
+            <p className="text-xs text-muted-foreground">
               Shown under the post, linked to /blog?tag=…, and used as the
               article's keywords.
             </p>
@@ -437,15 +441,15 @@ export function PostPanel() {
             testId="post-modified"
           />
           <div className="flex flex-col gap-1">
-            <span className="text-xs font-medium text-neutral-300">
+            <span className="text-xs font-medium text-muted-foreground">
               Reading time
             </span>
             <p
-              className="text-sm text-neutral-200"
+              className="text-sm text-foreground"
               data-testid="post-reading-time"
             >
               {minutes ? formatReadingTime(minutes) : "—"}{" "}
-              <span className="text-xs text-neutral-500">
+              <span className="text-xs text-muted-foreground">
                 ({words} words; computed from the text)
               </span>
             </p>
@@ -477,7 +481,7 @@ export function PostPanel() {
           {!!post.featuredImage && (
             <TextField label="Alt text" {...bind("imageAlt")} />
           )}
-          <p className="text-xs text-neutral-500">
+          <p className="text-xs text-muted-foreground">
             Shown under the title, and as the article's image in search results.
           </p>
         </Section>
@@ -489,7 +493,7 @@ export function PostPanel() {
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="flex flex-col gap-3">
-      <h3 className="border-b border-neutral-800 pb-1 text-xs font-semibold uppercase tracking-wide text-neutral-400">
+      <h3 className="border-b border-border pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         {title}
       </h3>
       {children}
@@ -532,14 +536,17 @@ function TextField({
   };
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={testId} className="text-xs font-medium text-neutral-300">
+      <label
+        htmlFor={testId}
+        className="text-xs font-medium text-muted-foreground"
+      >
         {label}
       </label>
       {multiline ? <textarea rows={rows} {...props} /> : <input {...props} />}
       {error ? (
-        <p className="text-xs text-danger">{error}</p>
+        <p className="text-xs text-destructive">{error}</p>
       ) : (
-        hint && <p className="text-xs text-neutral-500">{hint}</p>
+        hint && <p className="text-xs text-muted-foreground">{hint}</p>
       )}
     </div>
   );
@@ -583,10 +590,13 @@ function DateField({
   };
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={testId} className="text-xs font-medium text-neutral-300">
+      <label
+        htmlFor={testId}
+        className="text-xs font-medium text-muted-foreground"
+      >
         {label}
         {!!optional && (
-          <span className="font-normal text-neutral-500"> (optional)</span>
+          <span className="font-normal text-muted-foreground"> (optional)</span>
         )}
       </label>
       <input
@@ -609,9 +619,9 @@ function DateField({
         }}
       />
       {error ? (
-        <p className="text-xs text-danger">{error}</p>
+        <p className="text-xs text-destructive">{error}</p>
       ) : (
-        hint && <p className="text-xs text-neutral-500">{hint}</p>
+        hint && <p className="text-xs text-muted-foreground">{hint}</p>
       )}
     </div>
   );

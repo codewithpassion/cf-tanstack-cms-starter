@@ -29,7 +29,7 @@ function AgentRunsRoute() {
   const { run } = Route.useSearch();
   const navigate = Route.useNavigate();
   if (!result.ok) {
-    return <p className="p-8 text-danger">{result.message}</p>;
+    return <p className="p-8 text-destructive">{result.message}</p>;
   }
   return (
     <RunsPage

@@ -99,18 +99,21 @@ export function UnpublishDialog({
   return (
     <AlertDialog onOpenChange={onOpenChange} open={target !== null}>
       <AlertDialogContent
-        className="border-neutral-700 bg-neutral-900 text-neutral-100"
+        className="border-border bg-card text-foreground"
         data-testid="unpublish-confirm"
       >
         <AlertDialogHeader>
           <AlertDialogTitle>Unpublish this {noun}?</AlertDialogTitle>
-          <AlertDialogDescription className="text-neutral-400">
+          <AlertDialogDescription className="text-muted-foreground">
             <span className="font-mono">{target?.path}</span> leaves the site
             straight away and drops out of the sitemap and llms.txt. The draft
             and its history stay, so you can publish it again.
           </AlertDialogDescription>
           {unsynced ? (
-            <p className="text-danger text-sm" data-testid="unpublish-unsynced">
+            <p
+              className="text-destructive text-sm"
+              data-testid="unpublish-unsynced"
+            >
               The {noun} is unpublished, but the site's page store didn't
               update, so it may still show. Click Unpublish to try again.
             </p>
@@ -118,7 +121,7 @@ export function UnpublishDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel
-            className="border-neutral-700 bg-transparent"
+            className="border-border bg-transparent"
             disabled={busy}
           >
             Cancel

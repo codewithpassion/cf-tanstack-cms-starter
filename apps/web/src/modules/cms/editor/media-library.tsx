@@ -255,10 +255,10 @@ export function MediaLibrary({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {/* `sm:max-w-4xl`: this repo's shadcn DialogContent sets `sm:max-w-sm`, which beats a plain max-w. */}
-      <DialogContent className="gap-3 border-neutral-700 sm:max-w-4xl bg-neutral-900 text-neutral-100">
+      <DialogContent className="gap-3 border-border sm:max-w-4xl bg-card text-foreground">
         <DialogHeader>
           <DialogTitle>Media library</DialogTitle>
-          <DialogDescription className="text-neutral-400">
+          <DialogDescription className="text-muted-foreground">
             Pick an image, or drop files here to upload (
             {accept ? formatNames(accept) : "JPEG, PNG, WebP, GIF, AVIF"}; up to
             10 MB).
@@ -511,10 +511,10 @@ export function MediaBrowser({
           maxLength={MAX_QUERY}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="h-9 flex-1 border-neutral-700 bg-neutral-950"
+          className="h-9 flex-1 border-border bg-background"
         />
         <label
-          className="flex items-center gap-1.5 text-xs text-neutral-400"
+          className="flex items-center gap-1.5 text-xs text-muted-foreground"
           title="Share images the AI agent rendered"
         >
           <input
@@ -559,9 +559,11 @@ export function MediaBrowser({
             <li key={u.key} className="flex items-center gap-2">
               <span className="w-48 truncate">{u.name}</span>
               {u.error ? (
-                <span className="text-red-400">{u.error}</span>
+                <span className="text-red-600 dark:text-red-400">
+                  {u.error}
+                </span>
               ) : u.note ? (
-                <span className="text-neutral-300">{u.note}</span>
+                <span className="text-muted-foreground">{u.note}</span>
               ) : (
                 <Progress
                   value={u.progress}
@@ -592,12 +594,16 @@ export function MediaBrowser({
           className={cn(
             "overflow-y-auto rounded-md border border-dashed p-2",
             gridClassName ?? "h-[55vh]",
-            dragging ? "border-accent bg-accent/5" : "border-neutral-700"
+            dragging ? "border-primary bg-accent/5" : "border-border"
           )}
         >
-          {!!error && <p className="p-2 text-sm text-red-400">{error}</p>}
+          {!!error && (
+            <p className="p-2 text-sm text-red-600 dark:text-red-400">
+              {error}
+            </p>
+          )}
           {!(error || loading) && shown.length === 0 && (
-            <p className="p-6 text-center text-sm text-neutral-400">
+            <p className="p-6 text-center text-sm text-muted-foreground">
               {debounced
                 ? "Nothing matches that search."
                 : "No images yet. Drop files here or use Upload."}
@@ -621,10 +627,10 @@ export function MediaBrowser({
                   }}
                   onDoubleClick={() => pick(m)}
                   className={cn(
-                    "block aspect-square w-full overflow-hidden rounded border-2 bg-neutral-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                    "block aspect-square w-full overflow-hidden rounded border-2 bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                     m.id === selected
-                      ? "border-accent"
-                      : "border-transparent hover:border-neutral-500"
+                      ? "border-primary"
+                      : "border-transparent hover:border-border"
                   )}
                 >
                   <img
@@ -639,7 +645,7 @@ export function MediaBrowser({
             ))}
           </ul>
           {!!loading && (
-            <p className="flex items-center justify-center gap-2 p-3 text-sm text-neutral-400">
+            <p className="flex items-center justify-center gap-2 p-3 text-sm text-muted-foreground">
               <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> Loading…
             </p>
           )}
@@ -675,7 +681,7 @@ export function MediaBrowser({
               {details?.(current)}
             </Fragment>
           ) : (
-            <p className="text-neutral-400">
+            <p className="text-muted-foreground">
               Select an image to edit its alt text.
             </p>
           )}
@@ -771,9 +777,9 @@ function AltEditor({
       <img
         src={media.url}
         alt=""
-        className="aspect-video w-full rounded bg-neutral-950 object-contain"
+        className="aspect-video w-full rounded bg-background object-contain"
       />
-      <p className="text-xs text-neutral-400">
+      <p className="text-xs text-muted-foreground">
         {media.width && media.height ? `${media.width}×${media.height} · ` : ""}
         {media.mime.replace("image/", "").toUpperCase()}
       </p>
@@ -784,7 +790,7 @@ function AltEditor({
             type="button"
             onClick={() => void suggest()}
             disabled={suggesting || !SUGGESTABLE_MIME.test(media.mime)}
-            className="flex items-center gap-1 text-xs text-accent hover:underline disabled:opacity-40"
+            className="flex items-center gap-1 text-xs text-primary hover:underline disabled:opacity-40"
             title="Ask the AI to describe this image (not saved until you click Save)"
             data-testid="suggest-alt"
           >
@@ -806,7 +812,7 @@ function AltEditor({
             setAlt(e.target.value);
             setState("idle");
           }}
-          className="border-neutral-700 bg-neutral-950"
+          className="border-border bg-background"
         />
       </div>
       <div className="space-y-1">
@@ -819,7 +825,7 @@ function AltEditor({
             setTags(e.target.value);
             setState("idle");
           }}
-          className="h-9 border-neutral-700 bg-neutral-950"
+          className="h-9 border-border bg-background"
         />
       </div>
       <div className="flex items-center gap-2">
@@ -832,9 +838,13 @@ function AltEditor({
           {state === "saving" ? "Saving…" : "Save"}
         </Button>
         <span aria-live="polite" className="text-xs">
-          {state === "saved" && <span className="text-neutral-400">Saved</span>}
+          {state === "saved" && (
+            <span className="text-muted-foreground">Saved</span>
+          )}
           {typeof state === "object" && (
-            <span className="text-red-400">{state.error}</span>
+            <span className="text-red-600 dark:text-red-400">
+              {state.error}
+            </span>
           )}
         </span>
       </div>
@@ -881,7 +891,7 @@ export function ImageField({
     <div className="space-y-2 text-sm" data-testid="image-field">
       {!!label && <span className="block font-medium">{label}</span>}
       <div className="flex items-start gap-3">
-        <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded border border-neutral-700 bg-neutral-950">
+        <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded border border-border bg-background">
           {value ? (
             <img
               src={mediaUrl(value.mediaId)}
@@ -890,14 +900,14 @@ export function ImageField({
               data-testid="image-field-thumb"
             />
           ) : (
-            <ImageIcon className="h-6 w-6 text-neutral-500" aria-hidden />
+            <ImageIcon className="h-6 w-6 text-muted-foreground" aria-hidden />
           )}
         </div>
         <div className="min-w-0 flex-1 space-y-1">
           <p
             className={cn(
               "line-clamp-2",
-              value?.alt && !altNote ? "" : "text-neutral-400"
+              value?.alt && !altNote ? "" : "text-muted-foreground"
             )}
             data-testid="image-field-alt"
           >

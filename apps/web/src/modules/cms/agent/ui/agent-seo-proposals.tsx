@@ -77,21 +77,21 @@ function Proposal({
       </p>
       {!!p.focusKeyphrase && (
         <p className="text-xs">
-          <span className="text-neutral-400">Focus keyphrase:</span>{" "}
+          <span className="text-muted-foreground">Focus keyphrase:</span>{" "}
           <strong data-testid="agent-seo-keyphrase">{p.focusKeyphrase}</strong>
         </p>
       )}
       {!!seo.rationale && (
-        <p className="mt-1 text-xs text-neutral-400">{seo.rationale}</p>
+        <p className="mt-1 text-xs text-muted-foreground">{seo.rationale}</p>
       )}
       <fieldset className="mt-2 space-y-1.5">
-        <legend className="mb-1 text-xs text-neutral-400">
+        <legend className="mb-1 text-xs text-muted-foreground">
           Pick a title and description
         </legend>
         {seo.variants.map((v, i) => (
           <label
             key={i}
-            className={`block cursor-pointer rounded border p-2 ${variant === i ? "border-violet-500 bg-violet-900/30" : "border-neutral-700"}`}
+            className={`block cursor-pointer rounded border p-2 ${variant === i ? "border-violet-500 bg-violet-900/30" : "border-border"}`}
             data-testid="agent-seo-variant"
           >
             <input
@@ -102,10 +102,10 @@ function Proposal({
               onChange={() => setVariant(i)}
             />
             <span className="font-medium text-sky-300">{v.title}</span>
-            <span className="mt-0.5 block text-xs text-neutral-300">
+            <span className="mt-0.5 block text-xs text-muted-foreground">
               {v.description}
             </span>
-            <span className="mt-0.5 block text-[10px] text-neutral-500">
+            <span className="mt-0.5 block text-[10px] text-muted-foreground">
               {v.title.length} / {v.description.length} characters
               {v.note ? ` · ${v.note}` : ""}
             </span>
@@ -115,28 +115,30 @@ function Proposal({
       <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-xs">
         {!!p.social?.title && (
           <>
-            <dt className="text-neutral-400">Social title</dt>
+            <dt className="text-muted-foreground">Social title</dt>
             <dd>{p.social.title}</dd>
           </>
         )}
         {!!p.social?.description && (
           <>
-            <dt className="text-neutral-400">Social text</dt>
+            <dt className="text-muted-foreground">Social text</dt>
             <dd>{p.social.description}</dd>
           </>
         )}
         {!!p.schema?.pageType && (
           <>
-            <dt className="text-neutral-400">Page type</dt>
+            <dt className="text-muted-foreground">Page type</dt>
             <dd>{p.schema.pageType}</dd>
           </>
         )}
         {(p.llms?.summary || p.llms?.include !== undefined) && (
           <>
-            <dt className="text-neutral-400">llms.txt</dt>
+            <dt className="text-muted-foreground">llms.txt</dt>
             <dd>
               {p.llms.include === false && (
-                <strong className="text-amber-300">Not listed. </strong>
+                <strong className="text-amber-700 dark:text-amber-300">
+                  Not listed.{" "}
+                </strong>
               )}
               {p.llms.include === true && <strong>Listed. </strong>}
               {p.llms.summary}
@@ -148,7 +150,7 @@ function Proposal({
         <img
           src={mediaUrl(p.social.image.mediaId)}
           alt={p.social.image.alt}
-          className="mt-2 w-full rounded border border-neutral-700"
+          className="mt-2 w-full rounded border border-border"
           data-testid="agent-seo-image"
         />
       )}

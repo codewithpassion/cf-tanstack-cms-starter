@@ -320,7 +320,7 @@ function EditorLayout({
 
   return (
     <div
-      className="flex h-screen flex-col bg-neutral-950 font-sans text-neutral-100"
+      className="flex h-screen flex-col bg-background font-sans text-foreground"
       data-testid="page-editor"
     >
       <TopBar page={page} width={width} setWidth={setWidth} device={device} />
@@ -330,7 +330,7 @@ function EditorLayout({
       <AgentReviewBar />
       {readOnly && (
         <div
-          className="border-b border-neutral-700 bg-neutral-800 px-4 py-2 text-sm text-neutral-200"
+          className="border-b border-border bg-muted px-4 py-2 text-sm text-foreground"
           role="status"
           data-testid="archived-banner"
         >
@@ -340,14 +340,14 @@ function EditorLayout({
       )}
       {/* Below md (phones) the layers hide and the side panel stacks under the canvas, full width. */}
       <div className="flex min-h-0 flex-1 flex-col md:flex-row">
-        <aside className="hidden w-64 shrink-0 border-r border-neutral-800 bg-neutral-900 md:block">
+        <aside className="hidden w-64 shrink-0 border-r border-border bg-card md:block">
           <LayersPanel
             onAdd={() => setPaletteAt(defaultInsertAt(doc, selectedKey))}
             onNotice={notice}
           />
         </aside>
         <main
-          className="min-h-0 min-w-0 flex-1 overflow-auto bg-neutral-800/40 p-4"
+          className="min-h-0 min-w-0 flex-1 overflow-auto bg-muted/40 p-4"
           data-testid="canvas-area"
         >
           <CanvasFrame
@@ -359,7 +359,7 @@ function EditorLayout({
           >
             <EditModeContext.Provider value={editMode}>
               <div
-                className="min-h-screen overflow-x-hidden bg-ink font-sans text-white"
+                className="min-h-screen overflow-x-hidden bg-background font-sans text-foreground"
                 data-testid="canvas-page"
               >
                 <CmsRenderContext.Provider value={renderData}>
@@ -388,10 +388,10 @@ function EditorLayout({
           </CanvasFrame>
         </main>
         <aside
-          className={`flex h-1/2 w-full shrink-0 flex-col border-t border-neutral-800 bg-neutral-900 md:h-auto md:border-t-0 md:border-l ${sideTab === "inspector" ? "md:w-80" : "md:w-96"}`}
+          className={`flex h-1/2 w-full shrink-0 flex-col border-t border-border bg-card md:h-auto md:border-t-0 md:border-l ${sideTab === "inspector" ? "md:w-80" : "md:w-96"}`}
         >
           <div
-            className="flex shrink-0 border-b border-neutral-800 text-sm"
+            className="flex shrink-0 border-b border-border text-sm"
             role="tablist"
           >
             {sideTabs.map((tab) => (
@@ -402,7 +402,7 @@ function EditorLayout({
                 aria-selected={sideTab === tab}
                 data-testid={`side-tab-${tab}`}
                 onClick={() => setSideTab(tab)}
-                className={`flex-1 whitespace-nowrap px-2 py-2 [overflow-wrap:normal] ${sideTab === tab ? "border-b-2 border-accent text-white" : "text-neutral-400 hover:text-white"}`}
+                className={`flex-1 whitespace-nowrap px-2 py-2 [overflow-wrap:normal] ${sideTab === tab ? "border-b-2 border-primary text-foreground" : "text-muted-foreground hover:text-foreground"}`}
               >
                 {SIDE_TAB_LABELS[tab]}
               </button>
@@ -667,17 +667,23 @@ function TopBar({
   const badge =
     pageStatus === "published"
       ? hasUnpublishedChanges
-        ? { text: "Published · changes", cls: "bg-amber-600/30 text-amber-200" }
-        : { text: "Published", cls: "bg-emerald-700/50 text-emerald-100" }
+        ? {
+            text: "Published · changes",
+            cls: "bg-amber-500/15 text-amber-700 dark:text-amber-700 dark:text-amber-300",
+          }
+        : {
+            text: "Published",
+            cls: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-700 dark:text-emerald-300",
+          }
       : pageStatus === "archived"
-        ? { text: "Archived", cls: "bg-neutral-800 text-neutral-500" }
-        : { text: "Draft", cls: "bg-neutral-700 text-neutral-200" };
+        ? { text: "Archived", cls: "bg-muted text-muted-foreground" }
+        : { text: "Draft", cls: "bg-accent text-foreground" };
 
   return (
-    <header className="flex h-12 shrink-0 items-center gap-3 overflow-x-auto border-b max-md:[&>*]:shrink-0 border-neutral-800 bg-neutral-900 px-3 text-sm">
+    <header className="flex h-12 shrink-0 items-center gap-3 overflow-x-auto border-b max-md:[&>*]:shrink-0 border-border bg-card px-3 text-sm">
       <Link
         to={page.kind === "post" ? "/admin/posts" : "/admin/pages"}
-        className="rounded p-1.5 text-neutral-400 hover:bg-neutral-800 hover:text-white"
+        className="rounded p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
         aria-label={page.kind === "post" ? "Back to posts" : "Back to pages"}
       >
         <ArrowLeft className="h-4 w-4" />
@@ -686,7 +692,7 @@ function TopBar({
         <div className="truncate font-semibold" data-testid="page-title">
           {page.title}
         </div>
-        <div className="truncate font-mono text-xs text-neutral-500">
+        <div className="truncate font-mono text-xs text-muted-foreground">
           {path}
         </div>
       </div>
@@ -698,7 +704,7 @@ function TopBar({
       </span>
 
       <div className="mx-auto flex items-center gap-2">
-        <div className="flex rounded border border-neutral-700 p-0.5">
+        <div className="flex rounded border border-border p-0.5">
           {DEVICES.map(({ id, label, Icon }) => (
             <button
               key={id}
@@ -712,8 +718,8 @@ function TopBar({
                 width === DEVICE_PRESETS[id].width
                   ? "bg-accent text-black"
                   : device === id
-                    ? "bg-neutral-700 text-white"
-                    : "text-neutral-400 hover:text-white"
+                    ? "bg-accent text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
               }`}
             >
               <Icon className="h-4 w-4" />
@@ -729,10 +735,10 @@ function TopBar({
           aria-label="Canvas width"
           data-testid="width-slider"
           onChange={(e) => setWidth(Number(e.target.value))}
-          className="w-28 accent-accent"
+          className="w-28 accent-primary"
         />
         <span
-          className="w-14 font-mono text-xs text-neutral-400"
+          className="w-14 font-mono text-xs text-muted-foreground"
           data-testid="canvas-width"
         >
           {width}px
@@ -747,7 +753,7 @@ function TopBar({
           disabled={!canUndo}
           data-testid="undo"
           onClick={() => store.undo()}
-          className="rounded p-1.5 text-neutral-300 hover:bg-neutral-800 disabled:opacity-30"
+          className="rounded p-1.5 text-muted-foreground hover:bg-muted disabled:opacity-30"
         >
           <Undo2 className="h-4 w-4" />
         </button>
@@ -758,7 +764,7 @@ function TopBar({
           disabled={!canRedo}
           data-testid="redo"
           onClick={() => store.redo()}
-          className="rounded p-1.5 text-neutral-300 hover:bg-neutral-800 disabled:opacity-30"
+          className="rounded p-1.5 text-muted-foreground hover:bg-muted disabled:opacity-30"
         >
           <Redo2 className="h-4 w-4" />
         </button>
@@ -771,8 +777,8 @@ function TopBar({
           status === "rejected" ||
           status === "signed-out" ||
           status === "error"
-            ? "text-danger"
-            : "text-neutral-400"
+            ? "text-destructive"
+            : "text-muted-foreground"
         }`}
       >
         {STATUS_TEXT[status]}
@@ -846,7 +852,7 @@ function SignedOutBanner() {
   }
   return (
     <div
-      className="flex items-center gap-3 border-b border-amber-500/40 bg-amber-500/15 px-4 py-2 text-sm text-neutral-100"
+      className="flex items-center gap-3 border-b border-amber-500/40 bg-amber-500/15 px-4 py-2 text-sm text-foreground"
       role="alert"
       data-testid="signed-out-banner"
     >
@@ -900,7 +906,7 @@ function ConflictBanner({ pageId }: { pageId: string }) {
   };
   return (
     <div
-      className="flex items-center gap-3 border-b border-danger/40 bg-danger/15 px-4 py-2 text-sm text-neutral-100"
+      className="flex items-center gap-3 border-b border-destructive/40 bg-destructive/15 px-4 py-2 text-sm text-foreground"
       role="alert"
       data-testid="conflict-banner"
     >

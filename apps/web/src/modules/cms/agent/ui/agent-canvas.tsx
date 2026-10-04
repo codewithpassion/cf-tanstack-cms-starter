@@ -195,7 +195,7 @@ export function AgentReviewBar() {
   const busy = state.deciding === cs.id;
   return (
     <div
-      className="flex flex-wrap items-center gap-3 border-b border-sky-500/40 bg-sky-500/10 px-4 py-2 text-sm text-neutral-100"
+      className="flex flex-wrap items-center gap-3 border-b border-sky-500/40 bg-sky-500/10 px-4 py-2 text-sm text-foreground"
       role="status"
       data-testid="agent-review-bar"
     >
@@ -204,7 +204,7 @@ export function AgentReviewBar() {
         {selected} of {total} block{total === 1 ? "" : "s"} selected. Read-only
         until you decide.
       </span>
-      <span className="flex items-center gap-3 text-xs text-neutral-300">
+      <span className="flex items-center gap-3 text-xs text-muted-foreground">
         {(["added", "changed", "style", "conflict"] as const).map((k) => (
           <span key={k} className="flex items-center gap-1">
             <span

@@ -58,7 +58,7 @@ export const Route = createFileRoute("/admin/_shell/posts")({
 });
 
 const selectClass =
-  "h-9 rounded-md border border-neutral-700 bg-neutral-950 px-2 text-sm text-neutral-100";
+  "h-9 rounded-md border border-border bg-background px-2 text-sm text-foreground";
 
 function PostsPage() {
   const result = Route.useLoaderData();
@@ -76,7 +76,7 @@ function PostsPage() {
       {result.ok ? (
         <PostsTable posts={posts} />
       ) : (
-        <p className="text-danger">{result.message}</p>
+        <p className="text-destructive">{result.message}</p>
       )}
       <NewPostDialog onOpenChange={setOpen} open={open} posts={posts} />
     </div>
@@ -93,9 +93,10 @@ const failureText = (err: unknown): string | null => {
 };
 
 const STATUS_CLASS: Record<PageStatus, string> = {
-  draft: "bg-neutral-700 text-neutral-200",
-  published: "bg-emerald-700/60 text-emerald-100",
-  archived: "bg-neutral-800 text-neutral-500",
+  draft: "bg-accent text-foreground",
+  published:
+    "bg-emerald-500/15 text-emerald-700 dark:text-emerald-700 dark:text-emerald-300",
+  archived: "bg-muted text-muted-foreground",
 };
 
 /** Each category once, sorted. */
@@ -130,7 +131,9 @@ function PostsTable({ posts }: { posts: PostListItem[] }) {
 
   if (!posts.length) {
     return (
-      <p className="text-neutral-400">No posts yet. Write the first one.</p>
+      <p className="text-muted-foreground">
+        No posts yet. Write the first one.
+      </p>
     );
   }
   return (
@@ -140,7 +143,7 @@ function PostsTable({ posts }: { posts: PostListItem[] }) {
         data-testid="posts-filters"
       >
         <label className="flex flex-col gap-1">
-          <span className="text-neutral-400 text-xs">Status</span>
+          <span className="text-muted-foreground text-xs">Status</span>
           <select
             className={selectClass}
             data-testid="posts-filter-status"
@@ -154,7 +157,7 @@ function PostsTable({ posts }: { posts: PostListItem[] }) {
           </select>
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-neutral-400 text-xs">Category</span>
+          <span className="text-muted-foreground text-xs">Category</span>
           <select
             className={selectClass}
             data-testid="posts-filter-category"
@@ -170,7 +173,7 @@ function PostsTable({ posts }: { posts: PostListItem[] }) {
           </select>
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-neutral-400 text-xs">Published from</span>
+          <span className="text-muted-foreground text-xs">Published from</span>
           <input
             className={selectClass}
             data-testid="posts-filter-from"
@@ -180,7 +183,7 @@ function PostsTable({ posts }: { posts: PostListItem[] }) {
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-neutral-400 text-xs">to</span>
+          <span className="text-muted-foreground text-xs">to</span>
           <input
             className={selectClass}
             data-testid="posts-filter-to"
@@ -189,17 +192,17 @@ function PostsTable({ posts }: { posts: PostListItem[] }) {
             value={to}
           />
         </label>
-        <span className="pb-2 text-neutral-500 text-xs">
+        <span className="pb-2 text-muted-foreground text-xs">
           {shown.length} of {posts.length}
         </span>
       </div>
-      <div className="relative overflow-x-auto rounded border border-neutral-800">
+      <div className="relative overflow-x-auto rounded border border-border">
         {/* The body's `[overflow-wrap:anywhere]` (__root.tsx) breaks short words mid-word in table cells. */}
         <table
           className="w-full text-left text-sm [overflow-wrap:normal]"
           data-testid="posts-table"
         >
-          <thead className="bg-neutral-900 text-neutral-400 text-xs uppercase tracking-wide">
+          <thead className="bg-card text-muted-foreground text-xs uppercase tracking-wide">
             <tr>
               <th className="px-4 py-3 font-medium">Title</th>
               <th className="px-4 py-3 font-medium">Category</th>
@@ -213,24 +216,23 @@ function PostsTable({ posts }: { posts: PostListItem[] }) {
           </thead>
           <tbody>
             {shown.map((p) => (
-              <tr
-                className="border-neutral-800 border-t hover:bg-neutral-900"
-                key={p.id}
-              >
+              <tr className="border-border border-t hover:bg-card" key={p.id}>
                 <td className="px-4 py-3">
                   <Link
-                    className="font-medium text-white hover:text-accent"
+                    className="font-medium text-foreground hover:text-primary"
                     params={{ pageId: p.id }}
                     to="/admin/editor/$pageId"
                   >
                     {p.title}
                   </Link>
-                  <div className="font-mono text-neutral-500 text-xs">
+                  <div className="font-mono text-muted-foreground text-xs">
                     {slugToPath(p.slug)}
                   </div>
                 </td>
-                <td className="px-4 py-3 text-neutral-300">{p.category}</td>
-                <td className="px-4 py-3 text-neutral-300">
+                <td className="px-4 py-3 text-muted-foreground">
+                  {p.category}
+                </td>
+                <td className="px-4 py-3 text-muted-foreground">
                   {p.publishedAt ? formatPostDate(p.publishedAt) : ""}
                 </td>
                 <td className="px-4 py-3">
@@ -241,7 +243,7 @@ function PostsTable({ posts }: { posts: PostListItem[] }) {
                   </span>
                   {!!p.draftChanges && (
                     <span
-                      className="ml-2 rounded bg-amber-500/20 px-2 py-0.5 text-amber-200 text-xs"
+                      className="ml-2 rounded bg-amber-500/20 px-2 py-0.5 text-amber-700 dark:text-amber-300 text-xs"
                       data-testid="post-draft-changes"
                       title="The draft has changes that aren't published yet; the title, category and date shown are the live ones."
                     >
@@ -249,7 +251,7 @@ function PostsTable({ posts }: { posts: PostListItem[] }) {
                     </span>
                   )}
                 </td>
-                <td className="px-4 py-3 text-neutral-400">
+                <td className="px-4 py-3 text-muted-foreground">
                   {formatDateTime(p.updatedAt)}
                 </td>
                 <td className="px-4 py-3 text-right">
@@ -436,7 +438,7 @@ function NewPostDialog({
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
       {/* `sm:max-w-md`: this repo's shadcn DialogContent sets `sm:max-w-sm`, which beats a plain max-w. */}
-      <DialogContent className="max-w-md border-neutral-700 bg-neutral-900 text-neutral-100 sm:max-w-md">
+      <DialogContent className="max-w-md border-border bg-card text-foreground sm:max-w-md">
         <form className="flex flex-col gap-4" onSubmit={submit}>
           <DialogHeader>
             <DialogTitle>New post</DialogTitle>
@@ -464,7 +466,7 @@ function NewPostDialog({
           <div className="flex flex-col gap-2">
             <Label htmlFor="new-post-slug">Path</Label>
             <div className="flex items-center gap-1">
-              <span className="text-neutral-500">/blog/</span>
+              <span className="text-muted-foreground">/blog/</span>
               <Input
                 data-testid="new-post-slug"
                 id="new-post-slug"
@@ -476,7 +478,7 @@ function NewPostDialog({
               />
             </div>
             <p
-              className={`min-h-5 text-xs ${slugState.status === "error" ? "text-danger" : "text-neutral-400"}`}
+              className={`min-h-5 text-xs ${slugState.status === "error" ? "text-destructive" : "text-muted-foreground"}`}
               data-testid="new-post-slug-status"
             >
               {slugState.status === "error"
@@ -527,7 +529,7 @@ function NewPostDialog({
               value={author}
             />
             <p
-              className={`text-xs ${author.trim() ? "text-neutral-500" : "text-amber-300"}`}
+              className={`text-xs ${author.trim() ? "text-muted-foreground" : "text-amber-700 dark:text-amber-300"}`}
               data-testid="new-post-author-hint"
               id="new-post-author-hint"
             >
@@ -536,7 +538,7 @@ function NewPostDialog({
                 : "Required: the byline under the post's title."}
             </p>
           </div>
-          {!!error && <p className="text-danger text-sm">{error}</p>}
+          {!!error && <p className="text-destructive text-sm">{error}</p>}
           <DialogFooter>
             <Button
               onClick={() => onOpenChange(false)}

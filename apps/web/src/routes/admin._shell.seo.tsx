@@ -119,19 +119,19 @@ function SeoOverviewPage() {
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="font-bold font-heading text-2xl">SEO</h1>
-            <p className="mt-1 text-neutral-400 text-sm">
+            <p className="mt-1 text-muted-foreground text-sm">
               Every page's search and share settings and checks, from the
               current drafts.
             </p>
           </div>
           <div
-            className="flex shrink-0 rounded border border-neutral-700 text-sm"
+            className="flex shrink-0 rounded border border-border text-sm"
             role="tablist"
           >
             {(["pages", "opportunities"] as const).map((v) => (
               <button
                 aria-selected={view === v}
-                className={`whitespace-nowrap px-4 py-1.5 ${view === v ? "bg-neutral-700 text-white" : "text-neutral-400 hover:text-white"}`}
+                className={`whitespace-nowrap px-4 py-1.5 ${view === v ? "bg-accent text-foreground" : "text-muted-foreground hover:text-foreground"}`}
                 data-testid={`seo-view-${v}`}
                 key={v}
                 onClick={() => pick(v)}
@@ -145,7 +145,7 @@ function SeoOverviewPage() {
         </div>
         <FixBar gsc={gsc} rows={rows} />
         {!!gscError && (
-          <p className="mb-4 text-amber-300 text-sm">
+          <p className="mb-4 text-amber-700 dark:text-amber-300 text-sm">
             Search Console data couldn't be loaded: {gscError}
           </p>
         )}
@@ -165,7 +165,7 @@ function SeoOverviewPage() {
             rows={rows}
           />
         ) : (
-          <p className="text-danger">{overview.message}</p>
+          <p className="text-destructive">{overview.message}</p>
         )}
       </div>
     </FixSelectionProvider>
@@ -256,7 +256,7 @@ function SeoTable({
   );
 
   if (!rows.length) {
-    return <p className="text-neutral-400">No pages yet.</p>;
+    return <p className="text-muted-foreground">No pages yet.</p>;
   }
   const toggle = (key: SeoSortKey) =>
     setSort((s) =>
@@ -268,7 +268,7 @@ function SeoTable({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-6 text-neutral-300 text-sm">
+      <div className="flex flex-wrap items-center gap-6 text-muted-foreground text-sm">
         <label className="flex items-center gap-2">
           <Switch
             checked={issuesOnly}
@@ -277,17 +277,20 @@ function SeoTable({
           />
           Issues only
         </label>
-        <span className="text-neutral-500" data-testid="seo-overview-count">
+        <span
+          className="text-muted-foreground"
+          data-testid="seo-overview-count"
+        >
           {shown.length} of {rows.length} pages
           {dupes > 0 && (
-            <span className="text-danger">
+            <span className="text-destructive">
               {" "}
               · {dupes} with a duplicate title
             </span>
           )}
         </span>
         <span
-          className={`text-xs ${connected ? "text-neutral-500" : "text-amber-300"}`}
+          className={`text-xs ${connected ? "text-muted-foreground" : "text-amber-700 dark:text-amber-300"}`}
           data-testid="seo-gsc-range"
         >
           {gscRange
@@ -297,14 +300,14 @@ function SeoTable({
               : GSC_CONNECT_HINT}
         </span>
       </div>
-      <div className="overflow-x-auto rounded border border-neutral-800">
+      <div className="overflow-x-auto rounded border border-border">
         {/* The body's `[overflow-wrap:anywhere]` (__root.tsx) breaks short words mid-word in table
             columns ("pag/e"); here words wrap whole, and only long text and paths break. */}
         <table
           className="w-full text-left text-sm [overflow-wrap:normal]"
           data-testid="seo-overview"
         >
-          <thead className="bg-neutral-900 text-neutral-400 text-xs uppercase tracking-wide">
+          <thead className="bg-card text-muted-foreground text-xs uppercase tracking-wide">
             <tr>
               {COLUMNS.map((c) => (
                 <th
@@ -320,7 +323,7 @@ function SeoTable({
                 >
                   {c.key ? (
                     <button
-                      className="flex items-center gap-1 uppercase hover:text-white"
+                      className="flex items-center gap-1 uppercase hover:text-foreground"
                       data-testid={`seo-sort-${c.key}`}
                       onClick={() => toggle(c.key!)}
                       type="button"
@@ -352,24 +355,25 @@ function SeoTable({
 }
 
 const STATUS_CLASS: Record<SeoOverviewRow["status"], string> = {
-  draft: "bg-neutral-700 text-neutral-200",
-  published: "bg-emerald-700/60 text-emerald-100",
+  draft: "bg-accent text-foreground",
+  published:
+    "bg-emerald-500/15 text-emerald-700 dark:text-emerald-700 dark:text-emerald-300",
 };
 
 function Row({ row: r }: { row: SeoOverviewRow }) {
   const scoreClass =
     r.score >= 80
-      ? "text-emerald-300"
+      ? "text-emerald-700 dark:text-emerald-300"
       : r.score >= 50
-        ? "text-amber-300"
-        : "text-danger";
+        ? "text-amber-700 dark:text-amber-300"
+        : "text-destructive";
   const size =
     r.shareImage.width && r.shareImage.height
       ? `${r.shareImage.width}×${r.shareImage.height}`
       : null;
   return (
     <tr
-      className="border-neutral-800 border-t align-top hover:bg-neutral-900"
+      className="border-border border-t align-top hover:bg-card"
       data-path={r.path}
       data-testid="seo-overview-row"
     >
@@ -378,7 +382,7 @@ function Row({ row: r }: { row: SeoOverviewRow }) {
       </td>
       <td className="min-w-40 px-3 py-3 [overflow-wrap:break-word]">
         <Link
-          className="font-medium text-white hover:text-accent"
+          className="font-medium text-foreground hover:text-primary"
           data-testid="seo-row-link"
           hash="seo"
           params={{ pageId: r.id }}
@@ -386,11 +390,13 @@ function Row({ row: r }: { row: SeoOverviewRow }) {
         >
           {r.pageTitle}
         </Link>
-        <div className="font-mono text-neutral-500 text-xs [overflow-wrap:anywhere]">
+        <div className="font-mono text-muted-foreground text-xs [overflow-wrap:anywhere]">
           {r.path}
         </div>
       </td>
-      <td className="whitespace-nowrap px-3 py-3 text-neutral-400">{r.kind}</td>
+      <td className="whitespace-nowrap px-3 py-3 text-muted-foreground">
+        {r.kind}
+      </td>
       <td className="whitespace-nowrap px-3 py-3">
         <span
           className={`rounded px-2 py-0.5 text-xs ${STATUS_CLASS[r.status]}`}
@@ -399,12 +405,14 @@ function Row({ row: r }: { row: SeoOverviewRow }) {
         </span>
       </td>
       <td className="min-w-36 max-w-64 px-3 py-3 [overflow-wrap:break-word]">
-        <span className={r.duplicateTitle ? "text-danger" : "text-neutral-200"}>
+        <span
+          className={r.duplicateTitle ? "text-destructive" : "text-foreground"}
+        >
           {r.seoTitle}
         </span>
         {!!r.duplicateTitle && (
           <span
-            className="mt-1 flex items-center gap-1 text-danger text-xs"
+            className="mt-1 flex items-center gap-1 text-destructive text-xs"
             data-testid="seo-dup-title"
           >
             <Copy className="h-3 w-3" /> Duplicate title
@@ -413,13 +421,13 @@ function Row({ row: r }: { row: SeoOverviewRow }) {
       </td>
       <td className="min-w-40 max-w-72 px-3 py-3 [overflow-wrap:break-word]">
         <span
-          className={`line-clamp-3 ${r.description ? "text-neutral-400" : "text-neutral-600 italic"}`}
+          className={`line-clamp-3 ${r.description ? "text-muted-foreground" : "text-muted-foreground italic"}`}
         >
           {r.description || "No description"}
         </span>
         {!!r.duplicateDescription && (
           <span
-            className="mt-1 flex items-center gap-1 text-amber-300 text-xs"
+            className="mt-1 flex items-center gap-1 text-amber-700 dark:text-amber-300 text-xs"
             data-testid="seo-dup-description"
           >
             <Copy className="h-3 w-3" /> Duplicate description
@@ -428,49 +436,49 @@ function Row({ row: r }: { row: SeoOverviewRow }) {
       </td>
       <td className="whitespace-nowrap px-3 py-3 text-xs">
         {r.index ? (
-          <span className="text-emerald-300">index</span>
+          <span className="text-emerald-700 dark:text-emerald-300">index</span>
         ) : (
-          <span className="text-amber-300">noindex</span>
+          <span className="text-amber-700 dark:text-amber-300">noindex</span>
         )}
-        <div className="text-neutral-500">
+        <div className="text-muted-foreground">
           {r.sitemap ? "in sitemap" : "not in sitemap"}
         </div>
       </td>
       <td className="whitespace-nowrap px-3 py-3">
         <img
           alt=""
-          className="h-[42px] w-20 rounded border border-neutral-700 object-cover"
+          className="h-[42px] w-20 rounded border border-border object-cover"
           height={42}
           loading="lazy"
           src={r.shareImage.src}
           width={80}
         />
-        <div className="mt-1 text-[11px] text-neutral-500">
+        <div className="mt-1 text-[11px] text-muted-foreground">
           {r.shareImage.isDefault ? "site default" : (size ?? "size unknown")}
         </div>
       </td>
       <td
-        className="whitespace-nowrap px-3 py-3 text-right text-neutral-200 tabular-nums"
+        className="whitespace-nowrap px-3 py-3 text-right text-foreground tabular-nums"
         data-testid="seo-row-clicks"
       >
         {r.gsc ? (
           fmtInt(r.gsc.clicks)
         ) : (
-          <span className="text-neutral-600">—</span>
+          <span className="text-muted-foreground">—</span>
         )}
       </td>
-      <td className="whitespace-nowrap px-3 py-3 text-right text-neutral-300 tabular-nums">
+      <td className="whitespace-nowrap px-3 py-3 text-right text-muted-foreground tabular-nums">
         {r.gsc ? (
           fmtInt(r.gsc.impressions)
         ) : (
-          <span className="text-neutral-600">—</span>
+          <span className="text-muted-foreground">—</span>
         )}
       </td>
-      <td className="whitespace-nowrap px-3 py-3 text-right text-neutral-300 tabular-nums">
+      <td className="whitespace-nowrap px-3 py-3 text-right text-muted-foreground tabular-nums">
         {r.gsc ? (
           fmtPosition(r.gsc.position)
         ) : (
-          <span className="text-neutral-600">—</span>
+          <span className="text-muted-foreground">—</span>
         )}
       </td>
       <td
@@ -482,14 +490,14 @@ function Row({ row: r }: { row: SeoOverviewRow }) {
       <td className="px-3 py-3 text-xs">
         {r.issues.length ? (
           <details>
-            <summary className="cursor-pointer whitespace-nowrap text-neutral-300">
+            <summary className="cursor-pointer whitespace-nowrap text-muted-foreground">
               {r.fails > 0 && (
-                <span className="mr-2 inline-flex items-center gap-1 text-danger">
+                <span className="mr-2 inline-flex items-center gap-1 text-destructive">
                   <CircleX className="h-3 w-3" /> {r.fails}
                 </span>
               )}
               {r.warns > 0 && (
-                <span className="inline-flex items-center gap-1 text-amber-300">
+                <span className="inline-flex items-center gap-1 text-amber-700 dark:text-amber-300">
                   <TriangleAlert className="h-3 w-3" /> {r.warns}
                 </span>
               )}
@@ -498,19 +506,21 @@ function Row({ row: r }: { row: SeoOverviewRow }) {
               {r.issues.map((i) => (
                 <li
                   className={
-                    i.status === "fail" ? "text-danger" : "text-amber-200"
+                    i.status === "fail"
+                      ? "text-destructive"
+                      : "text-amber-700 dark:text-amber-300"
                   }
                   key={i.id}
                 >
                   <IssueCheckbox issueId={i.id} pageId={r.id} />
                   <span className="font-medium">{i.label}:</span>{" "}
-                  <span className="text-neutral-400">{i.message}</span>
+                  <span className="text-muted-foreground">{i.message}</span>
                 </li>
               ))}
             </ul>
           </details>
         ) : (
-          <span className="text-emerald-300">None</span>
+          <span className="text-emerald-700 dark:text-emerald-300">None</span>
         )}
       </td>
     </tr>

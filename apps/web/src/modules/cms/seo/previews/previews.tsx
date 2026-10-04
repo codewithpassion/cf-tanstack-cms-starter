@@ -176,13 +176,11 @@ function ShareImage({
     <img
       src={seo.image.src}
       alt={seo.image.alt}
-      className={`${className} bg-neutral-800 object-cover`}
+      className={`${className} bg-muted object-cover`}
     />
   ) : (
-    <div
-      className={`${className} flex items-center justify-center bg-neutral-800`}
-    >
-      <Globe className="h-8 w-8 text-neutral-500" />
+    <div className={`${className} flex items-center justify-center bg-muted`}>
+      <Globe className="h-8 w-8 text-muted-foreground" />
     </div>
   );
 }
@@ -279,7 +277,7 @@ export function SeoPreviews({
         </Scaled>
       </PreviewSection>
       {!!seo.image.isDefault && (
-        <p className="text-xs text-neutral-500">
+        <p className="text-xs text-muted-foreground">
           No share image set: platforms get the site default.
         </p>
       )}
@@ -296,7 +294,7 @@ function PreviewSection({
 }) {
   return (
     <section className="flex flex-col gap-2">
-      <h3 className="text-xs font-medium uppercase tracking-wide text-neutral-400">
+      <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
         {title}
       </h3>
       {children}

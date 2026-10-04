@@ -96,7 +96,7 @@ export function StylePanel({
   useEffect(() => setErrors({}), [block.style]);
   if (!def) {
     return (
-      <p className="p-2 text-sm text-danger">
+      <p className="p-2 text-sm text-destructive">
         Unknown block type "{block._type}".
       </p>
     );
@@ -146,15 +146,15 @@ export function StylePanel({
         data-testid="style-panel"
         data-device={device}
       >
-        <div className="flex items-center gap-2 text-sm font-semibold text-neutral-200">
-          <def.Icon className="h-4 w-4 text-accent" /> {def.label}
+        <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <def.Icon className="h-4 w-4 text-primary" /> {def.label}
         </div>
         <p
-          className="rounded bg-neutral-800/70 px-2 py-1.5 text-xs text-neutral-300"
+          className="rounded bg-muted/70 px-2 py-1.5 text-xs text-muted-foreground"
           data-testid="style-device"
         >
           Editing{" "}
-          <strong className="text-accent">{DEVICE_LABEL[device]}</strong>.
+          <strong className="text-primary">{DEVICE_LABEL[device]}</strong>.
           Values cascade Desktop → Tablet → Mobile; a smaller device inherits
           until you set it there.
         </p>
@@ -215,7 +215,7 @@ export function StylePanel({
             path="border"
             options={[
               ["none", "None"],
-              ["cyber", "Cyber"],
+              ["glow", "Glow"],
               ["subtle", "Subtle"],
             ]}
           />
@@ -251,13 +251,13 @@ function Section({
 }) {
   return (
     <section
-      className="flex flex-col gap-3 border-t border-neutral-800 pt-3"
+      className="flex flex-col gap-3 border-t border-border pt-3"
       data-testid={`style-section-${title.toLowerCase()}`}
     >
-      <h3 className="flex items-baseline justify-between text-xs font-semibold uppercase tracking-wide text-neutral-400">
+      <h3 className="flex items-baseline justify-between text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         {title}
         {!!hint && (
-          <span className="font-normal normal-case tracking-normal text-neutral-500">
+          <span className="font-normal normal-case tracking-normal text-muted-foreground">
             {hint}
           </span>
         )}
@@ -298,9 +298,9 @@ function Row({
             data-testid="set-dot"
           />
         )}
-        <span className="font-medium text-neutral-300">{label}</span>
+        <span className="font-medium text-muted-foreground">{label}</span>
         <span
-          className="ml-auto truncate text-neutral-500"
+          className="ml-auto truncate text-muted-foreground"
           data-testid="style-source"
         >
           {here && onReset
@@ -314,7 +314,7 @@ function Row({
             aria-label={`Reset ${label}`}
             data-testid={`reset-${id}`}
             onClick={onReset}
-            className="rounded p-0.5 text-neutral-400 hover:bg-neutral-700 hover:text-white"
+            className="rounded p-0.5 text-muted-foreground hover:bg-accent hover:text-foreground"
           >
             <RotateCcw className="h-3 w-3" />
           </button>
@@ -323,12 +323,12 @@ function Row({
       {children}
       {!!error && (
         <p
-          className="text-xs text-danger"
+          className="text-xs text-destructive"
           role="alert"
           data-testid="style-error"
         >
           {error}
-          <span className="block text-neutral-500">Not applied.</span>
+          <span className="block text-muted-foreground">Not applied.</span>
         </p>
       )}
     </div>
@@ -363,9 +363,9 @@ function FlatRow({
             data-testid="set-dot"
           />
         )}
-        <span className="font-medium text-neutral-300">{label}</span>
+        <span className="font-medium text-muted-foreground">{label}</span>
         <span
-          className="ml-auto truncate text-neutral-500"
+          className="ml-auto truncate text-muted-foreground"
           data-testid="style-source"
         >
           {eff.source.kind === "here" ? "Set" : sourceLabel(eff.source)}
@@ -377,7 +377,7 @@ function FlatRow({
             aria-label={`Reset ${label}`}
             data-testid={`reset-${id}`}
             onClick={() => commit(id, resetFlatPatch(block.style, path))}
-            className="rounded p-0.5 text-neutral-400 hover:bg-neutral-700 hover:text-white"
+            className="rounded p-0.5 text-muted-foreground hover:bg-accent hover:text-foreground"
           >
             <RotateCcw className="h-3 w-3" />
           </button>
@@ -395,15 +395,19 @@ function ErrorText({ id }: { id: string }) {
     return null;
   }
   return (
-    <p className="text-xs text-danger" role="alert" data-testid="style-error">
+    <p
+      className="text-xs text-destructive"
+      role="alert"
+      data-testid="style-error"
+    >
       {error}
-      <span className="block text-neutral-500">Not applied.</span>
+      <span className="block text-muted-foreground">Not applied.</span>
     </p>
   );
 }
 
 const inputClass =
-  "w-full rounded border border-neutral-700 bg-neutral-950 px-2 py-1 text-sm text-neutral-100 focus:border-accent focus:outline-none aria-[invalid=true]:border-danger";
+  "w-full rounded border border-border bg-background px-2 py-1 text-sm text-foreground focus:border-primary focus:outline-none aria-[invalid=true]:border-destructive";
 
 function useResponsive<T>(path: ResponsivePath) {
   const { block, defaults, device, commit, clearError } = useCtx();
@@ -564,7 +568,7 @@ function StepButton({
       title={label}
       disabled={disabled}
       onClick={onClick}
-      className="shrink-0 rounded border border-neutral-700 p-1.5 text-neutral-300 hover:border-accent hover:text-white disabled:opacity-30"
+      className="shrink-0 rounded border border-border p-1.5 text-muted-foreground hover:border-primary hover:text-foreground disabled:opacity-30"
     >
       {children}
     </button>
@@ -635,7 +639,7 @@ function Segmented<T extends string>({
 }) {
   return (
     <div
-      className="flex rounded border border-neutral-700 p-0.5"
+      className="flex rounded border border-border p-0.5"
       role="group"
       data-testid={`style-${id}`}
     >
@@ -646,7 +650,7 @@ function Segmented<T extends string>({
           aria-pressed={value === v}
           data-value={v}
           onClick={() => onPick(v)}
-          className={`flex-1 rounded px-2 py-1 text-xs ${value === v ? "bg-accent text-black" : "text-neutral-300 hover:text-white"}`}
+          className={`flex-1 rounded px-2 py-1 text-xs ${value === v ? "bg-accent text-black" : "text-muted-foreground hover:text-foreground"}`}
         >
           {text}
         </button>
@@ -714,7 +718,7 @@ function VisibilityControl({
             data-testid={`style-${id}`}
             aria-label={`${label} on ${DEVICE_LABEL[device]}`}
           />
-          <span className="text-xs text-neutral-400">
+          <span className="text-xs text-muted-foreground">
             {eff.source.kind === "inherited"
               ? `${hidden ? "Hidden" : "Shown"} because ${DEVICE_LABEL[eff.source.from]} is${hidden ? "" : " not"} hidden. Switch to override.`
               : hidden
@@ -731,8 +735,8 @@ function VisibilityControl({
               key={s.d}
               data-device={s.d}
               data-hidden={s.hidden ? "" : undefined}
-              className={`rounded px-1.5 py-0.5 ${s.hidden ? "bg-neutral-700 text-neutral-400 line-through" : "bg-neutral-800 text-neutral-200"} ${
-                s.d === device ? "ring-1 ring-accent" : ""
+              className={`rounded px-1.5 py-0.5 ${s.hidden ? "bg-accent text-muted-foreground line-through" : "bg-muted text-foreground"} ${
+                s.d === device ? "ring-1 ring-primary" : ""
               }`}
             >
               {DEVICE_LABEL[s.d]}
@@ -741,7 +745,7 @@ function VisibilityControl({
         </div>
       </Row>
       {isBlock && (
-        <label className="flex items-center gap-2 text-xs text-neutral-400">
+        <label className="flex items-center gap-2 text-xs text-muted-foreground">
           <Switch
             checked={showHidden}
             onCheckedChange={setShowHiddenBlocks}
@@ -808,8 +812,8 @@ function ColorPicker({
               aria-pressed={selected}
               data-token={token}
               onClick={() => onPick({ token })}
-              style={{ background: `var(--color-${token})` }}
-              className={`h-6 w-6 rounded border ${selected ? "border-accent ring-2 ring-accent" : "border-neutral-600"}`}
+              style={{ background: `var(--color-brand-${token})` }}
+              className={`h-6 w-6 rounded border ${selected ? "border-primary ring-2 ring-primary" : "border-border"}`}
             />
           );
         })}
@@ -825,7 +829,7 @@ function ColorPicker({
               data-swatch={sw.hex}
               onClick={() => onPick({ hex: sw.hex })}
               style={{ background: sw.hex }}
-              className={`h-6 w-6 rounded-full border ${selected ? "border-accent ring-2 ring-accent" : "border-neutral-600"}`}
+              className={`h-6 w-6 rounded-full border ${selected ? "border-primary ring-2 ring-primary" : "border-border"}`}
             />
           );
         })}
@@ -858,7 +862,7 @@ function ColorPicker({
         }}
       />
       {!!invalid && (
-        <p className="text-xs text-danger">
+        <p className="text-xs text-destructive">
           Use #rgb, #rgba, #rrggbb or #rrggbbaa.
         </p>
       )}
@@ -895,7 +899,7 @@ function ContrastBadge({ rating }: { rating: ContrastRating }) {
   if (rating.kind === "unknown") {
     return (
       <span
-        className="w-fit rounded bg-neutral-800 px-1.5 py-0.5 text-[11px] text-neutral-400"
+        className="w-fit rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foreground"
         title={rating.reason}
         data-testid="contrast-badge"
         data-state="unknown"
@@ -907,7 +911,7 @@ function ContrastBadge({ rating }: { rating: ContrastRating }) {
   const ratio = `${rating.ratio.toFixed(2)}:1`;
   return rating.pass ? (
     <span
-      className="w-fit rounded bg-emerald-800/60 px-1.5 py-0.5 text-[11px] text-emerald-100"
+      className="w-fit rounded bg-emerald-800/60 px-1.5 py-0.5 text-[11px] text-emerald-700 dark:text-emerald-300"
       data-testid="contrast-badge"
       data-state="pass"
     >
@@ -915,7 +919,7 @@ function ContrastBadge({ rating }: { rating: ContrastRating }) {
     </span>
   ) : (
     <span
-      className="w-fit rounded bg-danger/80 px-1.5 py-0.5 text-[11px] font-semibold text-white"
+      className="w-fit rounded bg-destructive/80 px-1.5 py-0.5 text-[11px] font-semibold text-white"
       data-testid="contrast-badge"
       data-state="fail"
     >
@@ -1014,14 +1018,14 @@ function BackgroundControls() {
                   )
                 )
               }
-              className="accent-accent"
+              className="accent-primary"
             />
           </FlatRow>
         </>
       )}
       {"reason" in solid && solid.reason !== "No background colour set" && (
         <p
-          className="text-xs text-neutral-500"
+          className="text-xs text-muted-foreground"
           data-testid="background-contrast-note"
         >
           Contrast can't be rated: {solid.reason.toLowerCase()}.
@@ -1059,10 +1063,10 @@ function ElementControls({
   ).value;
   return (
     <fieldset
-      className="flex flex-col gap-3 rounded border border-neutral-800 p-2"
+      className="flex flex-col gap-3 rounded border border-border p-2"
       data-testid={`style-element-${name}`}
     >
-      <legend className="px-1 text-xs font-medium text-neutral-300">
+      <legend className="px-1 text-xs font-medium text-muted-foreground">
         {humanize(name)}
       </legend>
       {props.includes("color") && (

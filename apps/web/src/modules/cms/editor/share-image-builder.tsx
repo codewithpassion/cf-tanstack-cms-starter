@@ -68,7 +68,7 @@ const GRADIENT_LABEL: Record<ShareGradient, string> = {
 const MAX = { eyebrow: 60, headline: 140, category: 40, author: 80, alt: 300 };
 
 const inputClass =
-  "w-full rounded border border-neutral-700 bg-neutral-950 px-2 py-1.5 text-sm text-neutral-100 focus:border-accent focus:outline-none";
+  "w-full rounded border border-border bg-background px-2 py-1.5 text-sm text-foreground focus:border-primary focus:outline-none";
 
 type Result = MediaInfo & { quality: number; bytes: number; alt: string };
 type Phase =
@@ -258,7 +258,7 @@ export function ShareImageBuilder({
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
       <DialogContent
-        className="max-h-[92vh] overflow-y-auto border-neutral-700 sm:max-w-5xl bg-neutral-900 text-neutral-100"
+        className="max-h-[92vh] overflow-y-auto border-border sm:max-w-5xl bg-card text-foreground"
         data-testid="share-builder"
       >
         <DialogHeader>
@@ -272,13 +272,13 @@ export function ShareImageBuilder({
         <div className="grid gap-6 md:grid-cols-[300px_1fr]">
           <div className="flex flex-col gap-4">
             <fieldset className="flex flex-col gap-2" disabled={busy}>
-              <legend className="mb-1 text-xs font-medium text-neutral-300">
+              <legend className="mb-1 text-xs font-medium text-muted-foreground">
                 Template
               </legend>
               {SHARE_TEMPLATES.map((t) => (
                 <label
                   key={t}
-                  className={`flex cursor-pointer gap-2 rounded border p-2 text-sm ${template === t ? "border-accent bg-neutral-800" : "border-neutral-700"}`}
+                  className={`flex cursor-pointer gap-2 rounded border p-2 text-sm ${template === t ? "border-primary bg-muted" : "border-border"}`}
                 >
                   <input
                     type="radio"
@@ -286,14 +286,14 @@ export function ShareImageBuilder({
                     value={t}
                     checked={template === t}
                     onChange={() => setTemplate(t)}
-                    className="mt-1 accent-accent"
+                    className="mt-1 accent-primary"
                     data-testid={`share-template-${t}`}
                   />
                   <span>
                     <span className="font-medium">
                       {TEMPLATE_INFO[t].label}
                     </span>
-                    <span className="block text-xs text-neutral-400">
+                    <span className="block text-xs text-muted-foreground">
                       {t === "hero" && !hasHero
                         ? "This page has no hero: renders as Card."
                         : TEMPLATE_INFO[t].hint}
@@ -366,7 +366,7 @@ export function ShareImageBuilder({
               )}
               {template !== "hero" && (
                 <div className="flex flex-col gap-2">
-                  <span className="text-xs font-medium text-neutral-300">
+                  <span className="text-xs font-medium text-muted-foreground">
                     Background
                   </span>
                   <div className="flex flex-wrap gap-2">
@@ -378,7 +378,7 @@ export function ShareImageBuilder({
                           setBg(null);
                           setGradient(g);
                         }}
-                        className={`rounded border px-2 py-1 text-xs ${!bg && gradient === g ? "border-accent text-white" : "border-neutral-700 text-neutral-400"}`}
+                        className={`rounded border px-2 py-1 text-xs ${!bg && gradient === g ? "border-primary text-foreground" : "border-border text-muted-foreground"}`}
                         data-testid={`share-gradient-${g}`}
                       >
                         {GRADIENT_LABEL[g]}
@@ -387,7 +387,7 @@ export function ShareImageBuilder({
                     <button
                       type="button"
                       onClick={() => setLibraryOpen(true)}
-                      className={`rounded border px-2 py-1 text-xs ${bg ? "border-accent text-white" : "border-neutral-700 text-neutral-400"}`}
+                      className={`rounded border px-2 py-1 text-xs ${bg ? "border-primary text-foreground" : "border-border text-muted-foreground"}`}
                     >
                       {bg ? "Image ✓ (change)" : "Library image…"}
                     </button>
@@ -438,24 +438,24 @@ export function ShareImageBuilder({
           >
             {phase.kind === "generating" && (
               <div
-                className="flex flex-col gap-2 rounded border border-neutral-800 p-4"
+                className="flex flex-col gap-2 rounded border border-border p-4"
                 role="status"
               >
-                <span className="text-sm text-neutral-300">
+                <span className="text-sm text-muted-foreground">
                   Rendering and screenshotting… {elapsed.toFixed(1)}s
                 </span>
                 <Progress
                   value={Math.min(95, (elapsed / 4) * 100)}
                   className="h-1.5"
                 />
-                <span className="text-xs text-neutral-500">
+                <span className="text-xs text-muted-foreground">
                   Usually about 3 seconds.
                 </span>
               </div>
             )}
             {phase.kind === "error" && (
               <p
-                className="rounded border border-danger/40 bg-danger/10 p-3 text-sm"
+                className="rounded border border-destructive/40 bg-destructive/10 p-3 text-sm"
                 role="alert"
                 data-testid="share-error"
               >
@@ -465,7 +465,7 @@ export function ShareImageBuilder({
             {result && previewSeo ? (
               <>
                 <p
-                  className="text-xs text-neutral-400"
+                  className="text-xs text-muted-foreground"
                   data-testid="share-result-info"
                 >
                   {result.width}×{result.height} ·{" "}
@@ -484,9 +484,9 @@ export function ShareImageBuilder({
                       alt={result.alt}
                       width={300}
                       height={158}
-                      className="rounded border border-neutral-700"
+                      className="rounded border border-border"
                     />
-                    <figcaption className="text-[11px] text-neutral-500">
+                    <figcaption className="text-[11px] text-muted-foreground">
                       At 300px wide: is the text still readable?
                     </figcaption>
                   </figure>
@@ -494,7 +494,7 @@ export function ShareImageBuilder({
               </>
             ) : (
               phase.kind !== "generating" && (
-                <div className="flex aspect-[1200/630] items-center justify-center rounded border border-dashed border-neutral-700 text-sm text-neutral-500">
+                <div className="flex aspect-[1200/630] items-center justify-center rounded border border-dashed border-border text-sm text-muted-foreground">
                   Generate to see the image on each platform.
                 </div>
               )
@@ -541,7 +541,7 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="text-xs font-medium text-neutral-300">
+      <label htmlFor={id} className="text-xs font-medium text-muted-foreground">
         {label}
       </label>
       {children}

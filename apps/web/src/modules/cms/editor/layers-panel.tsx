@@ -71,8 +71,8 @@ export function LayersPanel({
 
   return (
     <div className="flex h-full flex-col" data-testid="layers-panel">
-      <div className="flex items-center justify-between border-b border-neutral-800 px-3 py-2">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-400">
+      <div className="flex items-center justify-between border-b border-border px-3 py-2">
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           Layers
         </h2>
         <button
@@ -86,7 +86,7 @@ export function LayersPanel({
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-2">
         {doc.blocks.length === 0 && (
-          <p className="p-2 text-xs text-neutral-500">No blocks yet.</p>
+          <p className="p-2 text-xs text-muted-foreground">No blocks yet.</p>
         )}
         <DndContext
           sensors={sensors}
@@ -192,8 +192,8 @@ function LayerRow({
       data-key={block._key}
       className={`group flex items-center gap-1 rounded border px-1 py-1 text-sm ${
         selected
-          ? "border-accent bg-accent/10"
-          : "border-transparent hover:bg-neutral-800"
+          ? "border-primary bg-accent/10"
+          : "border-transparent hover:bg-muted"
       } ${isDragging ? "opacity-70 shadow-lg" : ""}`}
     >
       <button
@@ -202,7 +202,7 @@ function LayerRow({
         {...attributes}
         {...listeners}
         aria-label={`Drag ${label}`}
-        className="cursor-grab touch-none p-0.5 text-neutral-500 hover:text-neutral-200"
+        className="cursor-grab touch-none p-0.5 text-muted-foreground hover:text-foreground"
       >
         <GripVertical className="h-4 w-4" />
       </button>
@@ -212,10 +212,12 @@ function LayerRow({
         className="flex min-w-0 flex-1 items-center gap-2 text-left"
         data-testid="layer-select"
       >
-        {!!Icon && <Icon className="h-4 w-4 shrink-0 text-neutral-400" />}
+        {!!Icon && <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />}
         <span className="min-w-0 truncate">
-          <span className="text-neutral-100">{label}</span>
-          {!!detail && <span className="text-neutral-500"> · {detail}</span>}
+          <span className="text-foreground">{label}</span>
+          {!!detail && (
+            <span className="text-muted-foreground"> · {detail}</span>
+          )}
         </span>
       </button>
       <div
@@ -264,7 +266,7 @@ function RowButton({
       aria-label={label}
       disabled={disabled}
       onClick={onClick}
-      className="rounded p-1 text-neutral-400 hover:bg-neutral-700 hover:text-white disabled:opacity-30"
+      className="rounded p-1 text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-30"
     >
       {children}
     </button>

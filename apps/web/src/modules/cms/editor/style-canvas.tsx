@@ -73,7 +73,7 @@ const HIDDEN_CSS = (Object.keys(MEDIA) as Device[])
 [data-cms-key][data-cms-hide-${SUFFIX[d]}] { display: block; }
 [data-cms-key][data-cms-hide-${SUFFIX[d]}] > .cms-inner { opacity: 0.35; }
 [data-cms-key][data-cms-hide-${SUFFIX[d]}]::after { content: "Hidden on ${d}"; }
-[data-cms-field][data-cms-hide-${SUFFIX[d]}] { display: revert-layer; opacity: 0.35; outline: 1px dashed rgb(255 255 255 / 0.5); outline-offset: 2px; }
+[data-cms-field][data-cms-hide-${SUFFIX[d]}] { display: revert-layer; opacity: 0.35; outline: 1px dashed currentColor; outline-offset: 2px; }
 [data-cms-collapses][data-cms-hide-${SUFFIX[d]}] { display: revert-layer; }
 }`
   )
@@ -337,9 +337,9 @@ function PaddingHandles({ onNotice }: { onNotice: (message: string) => void }) {
               }}
               className="group flex items-center gap-1 font-sans rounded-full outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
-              <span className="block h-2 w-10 rounded-full border border-white bg-accent shadow" />
+              <span className="block h-2 w-10 rounded-full border border-border bg-accent shadow" />
               <span
-                className={`whitespace-nowrap rounded bg-black/80 px-1.5 py-0.5 text-[11px] text-accent ${
+                className={`whitespace-nowrap rounded bg-background/90 px-1.5 py-0.5 text-[11px] text-primary ${
                   active
                     ? ""
                     : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
