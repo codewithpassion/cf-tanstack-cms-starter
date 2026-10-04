@@ -34,9 +34,9 @@ bun run create-dev-user
 CF_REMOTE_BINDINGS=0 bun run dev
 ```
 
-Open <http://localhost:3000/login> and use "Dev login (local only)", then go to `/admin`. Open `/admin/setup` and click "Import starter content". It shows a dry run first, then creates the sample pages and posts as drafts. Publish them from the editor.
+Open <http://localhost:3000/login> and use "Dev login (local only)", then go to `/admin`. Open `/admin/setup` and click "Import starter content". It shows a dry run first, then creates the sample pages and posts as drafts. Publish them from the editor. From `apps/web`, `bun run seed` runs the same import against the local database without the browser (run `bun run dev` once first, so the migrations are applied).
 
-`bun run dev` applies the D1 migrations to a local database first. The local database, KV and R2 are simulated by Miniflare under `apps/web/.wrangler`; delete that folder for a clean slate. `CF_REMOTE_BINDINGS=0` skips the one remote binding (Workers AI) so dev starts without a Cloudflare login; the agent then offers Claude models only.
+`bun run dev` applies the D1 migrations to a local database first. The local database, KV and R2 are simulated by Miniflare under `apps/web/.wrangler`; delete that folder for a clean slate. `CF_REMOTE_BINDINGS=0` skips the one remote binding (Workers AI) so dev starts without a Cloudflare login; the agent then offers Claude models only, and those need `ANTHROPIC_API_KEY`.
 
 ## Deploy
 
@@ -74,7 +74,7 @@ At the root, through Turborepo:
 - `bun run test` runs every workspace's tests
 - `bun run check` and `bun run fix` lint and format with [Ultracite](https://ultracite.ai), and `check` also typechecks
 
-In `apps/web`: `bun run create-dev-user`, `bun run gsc:auth`, `gsc:backfill` and `gsc:sync` (Search Console). In `packages/db`: `bun run generate` after a schema change.
+In `apps/web`: `bun run create-dev-user`, `bun run seed`, `bun run gsc:auth`, `gsc:backfill` and `gsc:sync` (Search Console). In `packages/db`: `bun run generate` after a schema change.
 
 ## Docs
 
