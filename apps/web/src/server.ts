@@ -5,13 +5,62 @@ import handler from "@tanstack/react-start/server-entry";
 import { Hono } from "hono";
 import { csrf } from "hono/csrf";
 import { skipsClerk } from "#/lib/clerk-skip";
+import { withHandlerCookies } from "#/lib/handler-cookies";
+import { DEFAULT_SIGN_IN_TARGET, safeRedirectPath } from "#/lib/sign-in-target";
+import { scheduled } from "./scheduled.ts";
 import { createHonoContext } from "./server/trpc/context.ts";
 import { appRouter } from "./server/trpc/router.ts";
 
 const app = new Hono<{ Bindings: Env }>();
 
+// Security headers on every HTML response. SAMEORIGIN, not DENY: the editor's canvas frames the
+// site's own pages. The MCP consent page (/oauth/authorize) sends its own DENY.
+app.use("*", async (c, next) => {
+  await next();
+  if (c.res.headers.get("Content-Type")?.startsWith("text/html")) {
+    if (!c.res.headers.has("X-Frame-Options")) {
+      c.header("X-Frame-Options", "SAMEORIGIN");
+    }
+    c.header("X-Content-Type-Options", "nosniff");
+    c.header("Referrer-Policy", "strict-origin-when-cross-origin");
+  }
+});
+
+// One URL per page: /foo/ permanently redirects to /foo (query kept). The router's own
+// trailing-slash redirect is a 307, which search engines treat as temporary.
+const TRAILING_SLASHES_RE = /\/+$/;
+
+app.use("*", async (c, next) => {
+  const url = new URL(c.req.url);
+  const isRead = c.req.method === "GET" || c.req.method === "HEAD";
+  if (isRead && url.pathname.length > 1 && url.pathname.endsWith("/")) {
+    url.pathname = url.pathname.replace(TRAILING_SLASHES_RE, "") || "/";
+    return new Response(null, {
+      headers: { Location: url.toString() },
+      status: 301,
+    });
+  }
+  await next();
+});
+
 // Before the Clerk middleware on purpose: the health check works without Clerk keys.
 app.get("/api/health", (c) => c.json({ status: "ok" }));
+
+// MCP OAuth: the authorization server's metadata, token and registration endpoints and /mcp's
+// RFC 9728 metadata, answered by @cloudflare/workers-oauth-provider before Clerk and TanStack
+// (all cookieless). /oauth/authorize and /mcp are TanStack routes. Imported lazily so page
+// requests never load the library.
+app.use("*", async (c, next) => {
+  const { path } = c.req;
+  if (path.startsWith("/.well-known/oauth-") || path.startsWith("/oauth/")) {
+    const { handleOAuthEndpoint } = await import("./server/mcp/oauth.ts");
+    const res = await handleOAuthEndpoint(c.env, c.req.raw);
+    if (res) {
+      return res;
+    }
+  }
+  await next();
+});
 
 // Clerk on every request except the public ones in lib/clerk-skip.ts, which go
 // straight to TanStack Start.
@@ -47,7 +96,12 @@ app.get("/api/dev-login", async (c) => {
     userId: user.id,
   });
 
-  return c.redirect(`/dev-login?token=${encodeURIComponent(token)}`);
+  // Back to the page that asked for a sign-in (`/login?redirect_url=...`), else the admin.
+  const target =
+    safeRedirectPath(c.req.query("redirect_url")) ?? DEFAULT_SIGN_IN_TARGET;
+  return c.redirect(
+    `/dev-login?token=${encodeURIComponent(token)}&redirect_url=${encodeURIComponent(target)}`
+  );
 });
 
 // tRPC: queries and mutations for the browser. During SSR the loaders call the
@@ -73,18 +127,14 @@ app.use(
   })
 );
 
-// Everything else is handled by TanStack Start (SSR pages and assets).
-app.all("*", (c) => handler.fetch(c.req.raw));
+// Everything else is handled by TanStack Start (SSR pages, raw routes and assets). Its cookies are
+// kept alongside any Clerk set while refreshing the session (lib/handler-cookies.ts).
+app.all("*", async (c) =>
+  withHandlerCookies(c, await handler.fetch(c.req.raw))
+);
 
 export default {
   fetch: app.fetch,
-  /**
-   * Cron Trigger (wrangler.jsonc `triggers.crons`, daily). Empty on purpose.
-   * TODO(cms-port): the daily Search Console sync and MCP call-log cleanup.
-   */
-  scheduled: (
-    _controller: ScheduledController,
-    _env: Env,
-    _ctx: ExecutionContext
-  ): Promise<void> => Promise.resolve(),
+  /** Cron Trigger (wrangler.jsonc `triggers.crons`, daily): see scheduled.ts. */
+  scheduled,
 } satisfies ExportedHandler<Env>;

@@ -42,7 +42,7 @@ One row per item of the build. Tick a row only with proof: the command that was 
 
 | Done | Item | Proof |
 | --- | --- | --- |
-| [ ] | tRPC routers, context, adapters, Hono/server routes (`router.ts`, `context.ts`, `server.ts`, `wrangler.jsonc`) | |
+| [x] | Phase 3A: server side of `apps/web` (wiring, 11 CMS tRPC routers under `cms.*`, adapters, raw routes, MCP + OAuth, CSRF, login redirect, auth-redirect helper). Agent and Search Console routers, `admin.api.agent`, `og-render-agent`, GSC cron and 17 agent-backed MCP tools are stubbed with `TODO(cms-port-agent)` for the next phase | `apps/web`: `bunx tsc --noEmit` clean; `bun test` 175 pass, 0 fail; `bunx ultracite check` clean on server, lib, routes, integrations; `bun run build` ok and `grep -rli drizzle apps/web/dist/client` empty; dev with `CF_REMOTE_BINDINGS=0` (dummy Clerk keys in the gitignored `.env.local`): `/api/health`, `/sitemap.xml`, `/robots.txt`, `/llms.txt`, `/llms-full.txt` 200, `/media/x` 404, `/mcp` 401, anonymous `cms.pages.listPages` 401, anonymous upload 401; brand grep over `apps/web/src` empty. Details: scratchpad `report-3a.md` |
 | [ ] | Blocks, renderer, editor, admin UI on `getTrpc()` | |
 | [ ] | Agent UI, Search Console UI, MCP and OAuth | |
 | [ ] | Gate: typecheck, build, `grep -r drizzle apps/web/dist/client` empty, `bun test` | |

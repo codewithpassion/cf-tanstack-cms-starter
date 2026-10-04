@@ -1,0 +1,3 @@
+[test]
+# Stands in for `cloudflare:workers`, which @cloudflare/workers-oauth-provider imports.
+preload = ["./src/test-support/cloudflare-workers.ts"]

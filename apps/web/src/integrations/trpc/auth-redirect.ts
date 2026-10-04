@@ -10,8 +10,9 @@
 //   );
 // In a component, on a failed query or mutation:
 //   onError: (error) => { if (isUnauthorized(error)) { goToLogin(window.location.pathname + window.location.search); } }
-import { TRPCClientError } from "@trpc/client";
+
 import { redirect } from "@tanstack/react-router";
+import { TRPCClientError } from "@trpc/client";
 
 const UNAUTHORIZED = "UNAUTHORIZED";
 

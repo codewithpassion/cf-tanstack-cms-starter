@@ -7,6 +7,7 @@ import { getAuth } from "@clerk/hono";
 import { auth } from "@clerk/tanstack-react-start/server";
 import { getRequest } from "@tanstack/react-start/server";
 import type { Context as HonoContext } from "hono";
+import { skipsClerk } from "#/lib/clerk-skip";
 import { lookupVerifiedEmails } from "../cms/admin.ts";
 import { parseAdminEmails } from "../cms/admin-match.ts";
 import { type CmsServices, cmsServices } from "../cms/wiring.ts";
@@ -67,6 +68,11 @@ export const createHonoContext = (
  * auth() reads the session the Clerk request middleware in src/start.ts set.
  */
 export const createSsrContext = async (): Promise<Context> => {
-  const { userId } = await auth();
-  return createContext(env, userId, getRequest());
+  const request = getRequest();
+  // Clerk's auth() throws on requests that skip its middleware (e.g. /og-render/*, which loads
+  // data through this context), so those are anonymous.
+  const userId = skipsClerk(new URL(request.url).pathname)
+    ? null
+    : (await auth()).userId;
+  return createContext(env, userId, request);
 };

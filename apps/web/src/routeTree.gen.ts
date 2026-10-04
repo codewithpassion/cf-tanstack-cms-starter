@@ -12,7 +12,16 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as DevLoginRouteImport } from './routes/dev-login'
+import { Route as LlmsFullDottxtRouteImport } from './routes/llms-full[.]txt'
+import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as McpRouteImport } from './routes/mcp'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as MediaIdRouteImport } from './routes/media.$id'
+import { Route as OauthAuthorizeRouteImport } from './routes/oauth.authorize'
+import { Route as OgRenderSplatRouteImport } from './routes/og-render.$'
+import { Route as AdminApiMediaRouteImport } from './routes/admin.api.media'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,9 +38,54 @@ const DevLoginRoute = DevLoginRouteImport.update({
   path: '/dev-login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LlmsFullDottxtRoute = LlmsFullDottxtRouteImport.update({
+  id: '/llms-full.txt',
+  path: '/llms-full.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
+  id: '/llms.txt',
+  path: '/llms.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MediaIdRoute = MediaIdRouteImport.update({
+  id: '/media/$id',
+  path: '/media/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OauthAuthorizeRoute = OauthAuthorizeRouteImport.update({
+  id: '/oauth/authorize',
+  path: '/oauth/authorize',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OgRenderSplatRoute = OgRenderSplatRouteImport.update({
+  id: '/og-render/$',
+  path: '/og-render/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminApiMediaRoute = AdminApiMediaRouteImport.update({
+  id: '/admin/api/media',
+  path: '/admin/api/media',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -39,34 +93,110 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/dev-login': typeof DevLoginRoute
+  '/llms-full.txt': typeof LlmsFullDottxtRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/login': typeof LoginRoute
+  '/mcp': typeof McpRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/media/$id': typeof MediaIdRoute
+  '/oauth/authorize': typeof OauthAuthorizeRoute
+  '/og-render/$': typeof OgRenderSplatRoute
+  '/admin/api/media': typeof AdminApiMediaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/dev-login': typeof DevLoginRoute
+  '/llms-full.txt': typeof LlmsFullDottxtRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/login': typeof LoginRoute
+  '/mcp': typeof McpRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/media/$id': typeof MediaIdRoute
+  '/oauth/authorize': typeof OauthAuthorizeRoute
+  '/og-render/$': typeof OgRenderSplatRoute
+  '/admin/api/media': typeof AdminApiMediaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/dev-login': typeof DevLoginRoute
+  '/llms-full.txt': typeof LlmsFullDottxtRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/login': typeof LoginRoute
+  '/mcp': typeof McpRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/media/$id': typeof MediaIdRoute
+  '/oauth/authorize': typeof OauthAuthorizeRoute
+  '/og-render/$': typeof OgRenderSplatRoute
+  '/admin/api/media': typeof AdminApiMediaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/dev-login' | '/login'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/dev-login'
+    | '/llms-full.txt'
+    | '/llms.txt'
+    | '/login'
+    | '/mcp'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/media/$id'
+    | '/oauth/authorize'
+    | '/og-render/$'
+    | '/admin/api/media'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/dev-login' | '/login'
-  id: '__root__' | '/' | '/about' | '/dev-login' | '/login'
+  to:
+    | '/'
+    | '/about'
+    | '/dev-login'
+    | '/llms-full.txt'
+    | '/llms.txt'
+    | '/login'
+    | '/mcp'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/media/$id'
+    | '/oauth/authorize'
+    | '/og-render/$'
+    | '/admin/api/media'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/dev-login'
+    | '/llms-full.txt'
+    | '/llms.txt'
+    | '/login'
+    | '/mcp'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/media/$id'
+    | '/oauth/authorize'
+    | '/og-render/$'
+    | '/admin/api/media'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   DevLoginRoute: typeof DevLoginRoute
+  LlmsFullDottxtRoute: typeof LlmsFullDottxtRoute
+  LlmsDottxtRoute: typeof LlmsDottxtRoute
   LoginRoute: typeof LoginRoute
+  McpRoute: typeof McpRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  MediaIdRoute: typeof MediaIdRoute
+  OauthAuthorizeRoute: typeof OauthAuthorizeRoute
+  OgRenderSplatRoute: typeof OgRenderSplatRoute
+  AdminApiMediaRoute: typeof AdminApiMediaRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -92,11 +222,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DevLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/llms-full.txt': {
+      id: '/llms-full.txt'
+      path: '/llms-full.txt'
+      fullPath: '/llms-full.txt'
+      preLoaderRoute: typeof LlmsFullDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/llms.txt': {
+      id: '/llms.txt'
+      path: '/llms.txt'
+      fullPath: '/llms.txt'
+      preLoaderRoute: typeof LlmsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/media/$id': {
+      id: '/media/$id'
+      path: '/media/$id'
+      fullPath: '/media/$id'
+      preLoaderRoute: typeof MediaIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/oauth/authorize': {
+      id: '/oauth/authorize'
+      path: '/oauth/authorize'
+      fullPath: '/oauth/authorize'
+      preLoaderRoute: typeof OauthAuthorizeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/og-render/$': {
+      id: '/og-render/$'
+      path: '/og-render/$'
+      fullPath: '/og-render/$'
+      preLoaderRoute: typeof OgRenderSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/api/media': {
+      id: '/admin/api/media'
+      path: '/admin/api/media'
+      fullPath: '/admin/api/media'
+      preLoaderRoute: typeof AdminApiMediaRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -106,7 +299,16 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   DevLoginRoute: DevLoginRoute,
+  LlmsFullDottxtRoute: LlmsFullDottxtRoute,
+  LlmsDottxtRoute: LlmsDottxtRoute,
   LoginRoute: LoginRoute,
+  McpRoute: McpRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  MediaIdRoute: MediaIdRoute,
+  OauthAuthorizeRoute: OauthAuthorizeRoute,
+  OgRenderSplatRoute: OgRenderSplatRoute,
+  AdminApiMediaRoute: AdminApiMediaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
