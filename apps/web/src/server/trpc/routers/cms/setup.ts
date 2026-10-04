@@ -6,22 +6,19 @@ import {
 } from "@repo/cms-core/gsc/shape";
 import { adminResult } from "@repo/services/cms/admin-errors";
 import type { AdminResult } from "@repo/services/cms/admin-result";
+import {
+  importStarterContent,
+  type StarterImportResult,
+} from "@repo/services/cms/starter-import";
 import { createD1GscStore } from "@repo/services/gsc/d1";
 import { type SyncSummary, syncSearchAnalytics } from "@repo/services/gsc/sync";
 import { z } from "zod";
-import {
-  type ImportItem,
-  planImport,
-  runImport,
-  SETUP_IMPORT_NAMES,
-  SETUP_IMPORTS,
-} from "../../../cms/doc-import.ts";
 import { adminProcedure, router } from "../../init.ts";
 
 /**
  * /admin/setup: one-off setup steps run inside the deployed Worker, so a new environment can be
- * filled from the browser without local access to its D1 and KV. The import creates missing pages
- * as drafts and never overwrites one (cms/doc-import.ts).
+ * filled from the browser without local access to its D1 and KV. The starter import creates and
+ * publishes missing pages and never overwrites one (services cms/starter-import.ts).
  */
 
 export type SetupStatus = {
@@ -29,12 +26,6 @@ export type SetupStatus = {
   published: number;
   gscConfigured: boolean;
 };
-
-const importInput = z.object({
-  which: z.enum(SETUP_IMPORT_NAMES, {
-    error: `Expected "which" to be one of: ${SETUP_IMPORT_NAMES.join(", ")}`,
-  }),
-});
 
 /** Search Console backfill: the month windows to pull, oldest first, and whether Search Console is connected. */
 export type BackfillPlan = {
@@ -84,26 +75,20 @@ export const setupRouter = router({
       })
   ),
 
-  /** A dry run: what the import would do, page by page. Writes nothing. */
-  planSetupImport: adminProcedure.input(importInput).query(
-    ({ ctx, input }): Promise<AdminResult<{ items: ImportItem[] }>> =>
-      adminResult(async () => ({
-        items: await planImport(
-          ctx.services.cms.pagesDeps,
-          SETUP_IMPORTS[input.which]()
-        ),
-      }))
-  ),
-
-  /** Runs the import: creates missing pages as drafts, skips existing ones (idempotent). */
-  runSetupImport: adminProcedure.input(importInput).mutation(
-    ({ ctx, input }): Promise<AdminResult<{ items: ImportItem[] }>> =>
-      adminResult(async () => ({
-        items: await runImport(
-          ctx.services.cms.pagesDeps,
-          SETUP_IMPORTS[input.which]()
-        ),
-      }))
+  /**
+   * Creates and publishes the starter pages, posts and site settings (lorem ipsum, for a new site
+   * to edit). Idempotent: existing pages are skipped and edited site settings are left alone.
+   */
+  importStarterContent: adminProcedure.mutation(
+    ({ ctx }): Promise<AdminResult<StarterImportResult>> =>
+      adminResult(async () => {
+        const { pagesDeps, siteDeps, mediaDeps } = ctx.services.cms;
+        return await importStarterContent({
+          pages: pagesDeps,
+          site: siteDeps,
+          media: mediaDeps,
+        });
+      })
   ),
 
   /** The backfill's month windows (Search Console's own day, Pacific time), oldest first. */

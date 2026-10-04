@@ -13,14 +13,20 @@ import { createD1Repo, createPageQueries } from "@repo/db/pages";
 import { createSiteD1Repo } from "@repo/db/site";
 import { createHistoryAdmin } from "@repo/services/cms/history-admin";
 import { type CmsPageResult, loadCmsPage } from "@repo/services/cms/load-page";
-import { createMediaService } from "@repo/services/cms/media-service";
+import {
+  createMediaService,
+  type MediaDeps,
+} from "@repo/services/cms/media-service";
 import {
   createPagesService,
   type ServiceDeps,
 } from "@repo/services/cms/pages-service";
 import { createPostsAdmin } from "@repo/services/cms/posts-admin";
 import type { RenderSigner } from "@repo/services/cms/render-token";
-import { createSiteService } from "@repo/services/cms/site-service";
+import {
+  createSiteService,
+  type SiteDeps,
+} from "@repo/services/cms/site-service";
 import { createGscAdmin } from "@repo/services/gsc/admin";
 import { createD1GscQueries, createD1GscStore } from "@repo/services/gsc/d1";
 import { createConnectionsService } from "@repo/services/mcp/connections";
@@ -76,6 +82,16 @@ export const cmsServices = (env: Env, options: CmsWiringOptions = {}) => {
     labelFor,
     author,
   };
+  const siteDeps: SiteDeps = {
+    repo: createSiteD1Repo(db),
+    kv,
+    config,
+    author,
+  };
+  const mediaDeps: MediaDeps = {
+    repo: createD1MediaRepo(db),
+    blobs: env.CMS_MEDIA,
+  };
   const queries = createPageQueries(db);
   const gscClient = gscClientFor(env);
   const keys = createApiKeysService({
@@ -89,6 +105,8 @@ export const cmsServices = (env: Env, options: CmsWiringOptions = {}) => {
     kv,
     signer,
     pagesDeps,
+    siteDeps,
+    mediaDeps,
     queries,
     agentStore,
     /** The origin the browser used, for MCP URLs and key environments. Null outside a request. */
@@ -97,22 +115,14 @@ export const cmsServices = (env: Env, options: CmsWiringOptions = {}) => {
     siteOriginVar: env.SITE_ORIGIN,
     pages: createPagesService(pagesDeps),
     history: createHistoryAdmin(pagesDeps),
-    site: createSiteService({
-      repo: createSiteD1Repo(db),
-      kv,
-      config,
-      author,
-    }),
+    site: createSiteService(siteDeps),
     posts: createPostsAdmin({
       pages: pagesDeps,
       queries,
       kv,
       timeZone: config.timeZone,
     }),
-    media: createMediaService({
-      repo: createD1MediaRepo(db),
-      blobs: env.CMS_MEDIA,
-    }),
+    media: createMediaService(mediaDeps),
     apiKeys: keys,
     connections: createConnectionsService({
       connections: createOauthConnectionTable(db),

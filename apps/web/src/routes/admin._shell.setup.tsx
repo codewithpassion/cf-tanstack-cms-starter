@@ -8,6 +8,10 @@ import {
   PROVIDER_LABEL,
   WORKERS_AI_MODEL_ID,
 } from "@repo/cms-core/agent/models";
+import type {
+  StarterImportItem,
+  StarterImportResult,
+} from "@repo/services/cms/starter-import";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { type ReactNode, useCallback, useEffect, useState } from "react";
 
@@ -18,13 +22,12 @@ import {
   redirectOnUnauthorized,
 } from "#/integrations/trpc/auth-redirect";
 import { getTrpc } from "#/integrations/trpc/client";
-import type { ImportItem, SetupImport } from "#/server/cms/doc-import";
 
 /**
  * /admin/setup: one-off steps that fill a new environment from inside its own Worker (no local
- * access to remote D1 or KV needed): import the starter content as CMS drafts. The import shows a
- * dry run first and needs a second click; it is idempotent. Also the AI agent's settings (stored in D1): default spending limits and the models a new
- * conversation can use.
+ * access to remote D1 or KV needed): import the starter content (published pages, posts and site
+ * settings; idempotent). Also the AI agent's settings (stored in D1): default spending limits and
+ * the models a new conversation can use.
  */
 export const Route = createFileRoute("/admin/_shell/setup")({
   head: () => ({ meta: [{ title: "Setup | Admin" }] }),
@@ -79,12 +82,7 @@ function SetupPage() {
         <p className="mb-8 text-danger">{status.message}</p>
       )}
       <div className="flex flex-col gap-6">
-        <ImportCard
-          description="Creates the starter pages as CMS drafts, so a new site has something to edit. Pages that already exist are skipped, never overwritten."
-          title="Import starter content"
-          warning="Never publishes. Nothing is public until you publish a draft from the editor."
-          which="starter"
-        />
+        <StarterImportCard />
         {/* TODO(cms-port-agent): cms.setup.planGscBackfill / runGscBackfillMonth. The source's
             "Backfill Search Console history" card returns here once the setup router has them. */}
         <AiSettingsCard />
@@ -468,48 +466,21 @@ function Card({
 
 type ImportState =
   | { step: "idle" }
-  | { step: "busy"; label: string }
-  | { step: "planned"; items: ImportItem[] }
-  | { step: "done"; items: ImportItem[] }
+  | { step: "busy" }
+  | { step: "done"; result: StarterImportResult }
   | { step: "error"; message: string };
 
-/** Dry run → table of what would happen → Import → results. */
-function ImportCard({
-  which,
-  title,
-  description,
-  warning,
-}: {
-  which: SetupImport;
-  title: string;
-  description: string;
-  warning: string;
-}) {
+/** One button: creates and publishes the starter content, then lists what happened. */
+function StarterImportCard() {
   const [state, setState] = useState<ImportState>({ step: "idle" });
 
-  const plan = useCallback(async () => {
-    setState({ step: "busy", label: "Checking…" });
-    try {
-      const res = await getTrpc().cms.setup.planSetupImport.query({ which });
-      setState(
-        res.ok
-          ? { step: "planned", items: res.items }
-          : { step: "error", message: res.message }
-      );
-    } catch (err) {
-      const message = failureText(err);
-      if (message !== null) {
-        setState({ step: "error", message });
-      }
-    }
-  }, [which]);
   const run = useCallback(async () => {
-    setState({ step: "busy", label: "Importing…" });
+    setState({ step: "busy" });
     try {
-      const res = await getTrpc().cms.setup.runSetupImport.mutate({ which });
+      const res = await getTrpc().cms.setup.importStarterContent.mutate();
       setState(
         res.ok
-          ? { step: "done", items: res.items }
+          ? { step: "done", result: res }
           : { step: "error", message: res.message }
       );
     } catch (err) {
@@ -518,53 +489,24 @@ function ImportCard({
         setState({ step: "error", message });
       }
     }
-  }, [which]);
-  const reset = useCallback(() => setState({ step: "idle" }), []);
-
-  const creates =
-    state.step === "planned" &&
-    state.items.some((item) => item.action === "create");
+  }, []);
 
   return (
-    <Card description={description} testId={`import-${which}`} title={title}>
-      <p className="mb-4 text-amber-300/90 text-sm">{warning}</p>
-      {(state.step === "planned" || state.step === "done") && (
-        <ImportTable done={state.step === "done"} items={state.items} />
-      )}
+    <Card
+      description="Creates and publishes a home page, About, Pricing, Contact and three blog posts with placeholder text and images, plus the site menu and footer. Pages that already exist are skipped and edited site settings are left alone, so it is safe to run again."
+      testId="import-starter"
+      title="Import starter content"
+    >
+      {state.step === "done" && <ImportTable result={state.result} />}
       <div className="flex flex-wrap items-center gap-3">
-        {state.step === "planned" ? (
-          <>
-            <Button
-              data-testid={`import-${which}-run`}
-              disabled={!creates}
-              onClick={run}
-              size="sm"
-            >
-              Import
-            </Button>
-            <Button onClick={reset} size="sm" variant="ghost">
-              Cancel
-            </Button>
-            {!creates && (
-              <span className="text-neutral-400 text-sm">
-                Nothing to import: every page already exists.
-              </span>
-            )}
-          </>
-        ) : (
-          <Button
-            data-testid={`import-${which}-plan`}
-            disabled={state.step === "busy"}
-            onClick={plan}
-            size="sm"
-            variant="secondary"
-          >
-            {state.step === "done" ? "Check again" : "Dry run"}
-          </Button>
-        )}
-        {state.step === "busy" && (
-          <span className="text-neutral-400 text-sm">{state.label}</span>
-        )}
+        <Button
+          data-testid="import-starter-run"
+          disabled={state.step === "busy"}
+          onClick={run}
+          size="sm"
+        >
+          {state.step === "busy" ? "Importing…" : "Import starter content"}
+        </Button>
         {state.step === "error" && (
           <span className="text-danger text-sm">{state.message}</span>
         )}
@@ -573,48 +515,50 @@ function ImportCard({
   );
 }
 
-function ImportTable({ items, done }: { items: ImportItem[]; done: boolean }) {
-  const actionText = (item: ImportItem): string => {
-    if (item.action === "create") {
-      return done ? "Created as a draft" : "Will be created as a draft";
-    }
-    return `Exists (${item.status ?? "unknown"}), skipped`;
-  };
+function ImportTable({ result }: { result: StarterImportResult }) {
+  const actionText = (item: StarterImportItem): string =>
+    item.action === "create"
+      ? "Created and published"
+      : "Already exists, skipped";
   return (
-    <table
-      className="mb-4 w-full text-sm [overflow-wrap:normal]"
-      data-testid="import-table"
-    >
-      <thead className="text-left text-neutral-500 text-xs">
-        <tr>
-          <th className="py-1 font-normal">Page</th>
-          <th className="py-1 font-normal">Path</th>
-          <th className="py-1 font-normal">{done ? "Result" : "Would do"}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {items.map((item) => (
-          <tr className="border-neutral-800 border-t" key={item.path}>
-            <td className="py-1.5 pr-3">
-              {item.pageId ? (
+    <>
+      <table
+        className="mb-4 w-full text-sm [overflow-wrap:normal]"
+        data-testid="import-table"
+      >
+        <thead className="text-left text-muted-foreground text-xs">
+          <tr>
+            <th className="py-1 font-normal">Page</th>
+            <th className="py-1 font-normal">Path</th>
+            <th className="py-1 font-normal">Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          {result.items.map((item) => (
+            <tr className="border-border border-t" key={item.path}>
+              <td className="py-1.5 pr-3">
                 <Link
-                  className="text-accent hover:underline"
+                  className="text-primary hover:underline"
                   params={{ pageId: item.pageId }}
                   to="/admin/editor/$pageId"
                 >
                   {item.title}
                 </Link>
-              ) : (
-                item.title
-              )}
-            </td>
-            <td className="py-1.5 pr-3">
-              <code className="text-neutral-300 text-xs">{item.path}</code>
-            </td>
-            <td className="py-1.5">{actionText(item)}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+              </td>
+              <td className="py-1.5 pr-3">
+                <code className="text-xs">{item.path}</code>
+              </td>
+              <td className="py-1.5">{actionText(item)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="mb-4 text-muted-foreground text-sm">
+        Site menu and footer:{" "}
+        {result.site === "created"
+          ? "created and published."
+          : "left as they are (already edited)."}
+      </p>
+    </>
   );
 }

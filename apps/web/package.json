@@ -16,6 +16,7 @@
     "gsc:backfill": "bun scripts/gsc-backfill.ts",
     "gsc:sync": "bun scripts/gsc-sync.ts",
     "preview": "vite preview",
+    "seed": "bun scripts/seed.ts",
     "test": "bun test",
     "typecheck": "tsc --noEmit"
   },
