@@ -40,9 +40,6 @@ export type MediaSource = (typeof MEDIA_SOURCES)[number];
 /** The single `site` row's id. */
 export const SITE_ID = "site";
 
-/** MCP API key and OAuth connection scopes, weakest first. Defined in cms-core so the browser can use the rest of the scope helpers. */
-export { API_SCOPES, type ApiScope } from "@repo/cms-core/mcp/scopes";
-
 /** `last_used_at` of a key or connection is written at most this often. */
 export const LAST_USED_EVERY_MS = 60_000;
 

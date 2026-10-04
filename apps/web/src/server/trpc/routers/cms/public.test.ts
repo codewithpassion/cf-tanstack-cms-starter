@@ -32,7 +32,9 @@ describe("public router", () => {
 
   it("reads the site doc: null until published", async () => {
     const { site, public: pub } = setup();
-    expect(await pub.getRootSite()).toEqual({ site: null });
+    const first = await pub.getRootSite();
+    expect(first.site).toBeNull();
+    expect(first.config.name).toBeTruthy();
     const state = await site.getSite();
     await site.saveSiteDraft({
       draftVersion: 0,

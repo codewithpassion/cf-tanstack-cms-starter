@@ -17,10 +17,12 @@ export const publicRouter = router({
 
   /**
    * The published site doc (nav, footer, SEO defaults; docs/cms-plan.md §3.7), one KV read per
-   * request, or null for the defaults (nothing published, KV down).
+   * request, or null for the defaults (nothing published, KV down). `config` is the deployment's
+   * SiteConfig (name, origin, gscProperty), which browser code cannot read from the env.
    */
   getRootSite: publicProcedure.query(async ({ ctx }) => ({
     site: await readSite(ctx.services.cms.kv),
+    config: ctx.services.cms.config,
   })),
 
   /** The published posts for /blog (KV `posts:index`, newest first). Missing index: no posts. */
