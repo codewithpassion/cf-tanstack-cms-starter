@@ -60,7 +60,7 @@ Check right after:
 
 ### Custom domain
 
-The Worker answers on `https://<name>.<subdomain>.workers.dev`. To use your own domain, attach it in the dashboard (Workers & Pages, the Worker, Settings, Domains & Routes), set `SITE_ORIGIN` to it and deploy again. MCP OAuth tokens are bound to the host that issued them, so reconnect Claude.ai and other OAuth apps afterwards. API keys keep working.
+The Worker answers on `https://<name>.<subdomain>.workers.dev`. To use your own domain, attach it in the dashboard (Workers & Pages, the Worker, Settings, Domains & Routes), set `SITE_ORIGIN` to it, then build and deploy again (the deployed vars come from the build's copy of `wrangler.jsonc`). MCP OAuth tokens are bound to the host that issued them, so reconnect Claude.ai and other OAuth apps afterwards. API keys keep working.
 
 ## 3. First run in the admin
 

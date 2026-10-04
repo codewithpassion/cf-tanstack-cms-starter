@@ -20,6 +20,12 @@ finds `wrangler.jsonc` and reads `apps/web/.env.local`. Change `.env.local` and
 `wrangler.jsonc` only through `env.ts`; reading `.env.local` would put secrets
 in the transcript. Local values never go in `.dev.vars`, only `.env.local`.
 
+`vite build` leaves a copy of `wrangler.jsonc` in `apps/web/dist/server/` and a
+redirect to it in `apps/web/.wrangler/deploy/`, and wrangler then reads the copy
+instead of the source. A stale copy still has `local` ids and an empty
+`SITE_ORIGIN`. So step 4 removes the redirect, and every deploy is preceded by a
+fresh build.
+
 Every step checks the current state first, so a re-run picks up where the last
 one stopped. `bun .claude/skills/setup-cloudflare/env.ts status` lists what is
 still unset (ids that are `local`, empty vars, which keys have a value, names
@@ -87,9 +93,12 @@ every preview link.
 
 ## 4. Database
 
-`<db>` is the `database_name` already in the `d1_databases` binding.
+`<db>` is the `database_name` already in the `d1_databases` binding. First
+remove any redirect left by an earlier build, so wrangler reads the source
+config:
 
 ```bash
+rm -rf apps/web/.wrangler/deploy
 bun x wrangler --cwd apps/web d1 info <db> --json
 ```
 
@@ -114,8 +123,8 @@ bun x wrangler --cwd apps/web kv namespace create <name>-cms-pages
 bun x wrangler --cwd apps/web kv namespace create <name>-cms-oauth
 ```
 
-Create only the ones `list` does not show. A namespace's title can carry a
-prefix, so match on the suffix when checking `list`. Take each id from the
+Create only the ones `list` does not show; the title is exactly the name you
+pass. Take each id from the
 `create` output (or the `list` entry) and record it:
 
 ```bash
@@ -176,8 +185,9 @@ fails until it is set** (only `/api/health`, `/media/*`, `/mcp` and
 
 1. Take the `https://<name>.<subdomain>.workers.dev` URL from the deploy output.
 2. `bun .claude/skills/setup-cloudflare/env.ts var SITE_ORIGIN <that URL>`
-3. `bun x wrangler --cwd apps/web deploy` again (no rebuild needed: vars are
-   read at runtime).
+3. Build again and deploy again, because the deployed vars come from the build's
+   copy of `wrangler.jsonc`, not the source:
+   `bun run --cwd apps/web build`, then `bun x wrangler --cwd apps/web deploy`.
 
 With a custom domain, `SITE_ORIGIN` was set in step 3 and one deploy is enough.
 The user attaches the domain in the dashboard (Workers & Pages, the Worker,

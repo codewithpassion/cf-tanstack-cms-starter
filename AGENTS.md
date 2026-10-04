@@ -84,7 +84,7 @@ These are not tRPC, on purpose: multipart media upload (`admin/api/media`), the 
 
 ## Deploy and project setup
 
-A copy of the starter becomes a project through `/project-init` (the user types it; the skill disables model invocation). It runs `rename-project`, connects Clerk, then `setup-cloudflare` (D1, two KV namespaces, R2, secrets, vars, deploy), then tells the user to import the starter content at `/admin/setup`. When asked how to start or deploy, point to `/project-init` and don't redo its steps by hand. Signs a copy is not initialised: the workspace is still named `boilerplate` in `package.json`, and `database_id` in `wrangler.jsonc` is `"local"`.
+A copy of the starter becomes a project through `/project-init` (the user types it; the skill disables model invocation). It runs `rename-project`, connects Clerk, then `setup-cloudflare` (D1, two KV namespaces, R2, secrets, vars, deploy), then tells the user to import the starter content at `/admin/setup`. When asked how to start or deploy, point to `/project-init` and don't redo its steps by hand. A sign a copy is not set up on Cloudflare yet: `database_id` and the KV ids in `wrangler.jsonc` are still `"local"`.
 
 `bun run deploy` in `apps/web` builds, applies remote D1 migrations, then runs `wrangler deploy`. `docs/cms-go-live.md` is the checklist before going public. Pull request previews are not part of this repo.
 

@@ -75,7 +75,7 @@ Per-PR previews are not part of this repo: a preview would need its own KV names
 
 ## 11. Home page
 
-The CMS owns `/`. With nothing published, `/` shows a generic "Nothing published yet. Sign in to /admin and import the starter content." page. `/admin/setup` ("Import starter content") creates the sample pages, posts, nav, footer and swatches as drafts; nothing is public until published.
+The CMS owns `/`. With nothing published, `/` shows a generic "Nothing published yet. Sign in to /admin and import the starter content." page. `/admin/setup` ("Import starter content") creates the sample pages, posts, nav, footer and swatches as drafts; nothing is public until published. `bun run seed` (in `apps/web`) does the same against the local database.
 
 ## 12. Design knobs
 
