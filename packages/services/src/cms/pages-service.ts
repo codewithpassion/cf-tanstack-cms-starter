@@ -1,4 +1,5 @@
 // biome-ignore-all lint/style/noExportedImports: re-exports `PageSummary` (cms-core) as the service always has.
+import type { CmsErrorCode } from "@repo/cms-core/admin-result";
 import { MAX_DOC_BYTES } from "@repo/cms-core/limits";
 import { applyOps, OpError } from "@repo/cms-core/ops/apply-ops";
 import { deepEqual } from "@repo/cms-core/ops/json";
@@ -58,20 +59,7 @@ export type ServiceDeps = {
   migrateDoc?: (doc: unknown) => unknown;
 };
 
-export type CmsErrorCode =
-  | "NOT_FOUND"
-  | "STALE_DRAFT"
-  | "INVALID_DOC"
-  | "INVALID_OPS"
-  | "INVALID_SLUG"
-  | "DOC_TOO_LARGE"
-  | "SLUG_TAKEN"
-  | "SLUG_RESERVED"
-  | "NOT_PUBLISHED"
-  | "ARCHIVED"
-  | "NOT_ARCHIVED"
-  | "BAD_KIND"
-  | "LIVE_CHANGED";
+export type { CmsErrorCode };
 
 export class CmsError extends Error {
   readonly code: CmsErrorCode;
