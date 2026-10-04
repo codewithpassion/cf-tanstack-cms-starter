@@ -9,7 +9,7 @@ The starter looks like a clean neutral SaaS site: white and zinc surfaces, Inter
 | Fonts | `apps/web/src/styles.css` | The Google Fonts `@import` at the top, then `--font-sans` and `--font-heading` in `@theme inline` |
 | Theme colours, light | `apps/web/src/styles.css`, `:root, .light` | `--background`, `--foreground`, `--primary`, `--border`, `--muted-foreground` and the rest. The public site's default text and surfaces, and the whole admin, read these |
 | Theme colours, dark | `apps/web/src/styles.css`, `.dark` | The same variables |
-| Radius and shadows | `apps/web/src/styles.css`, `:root` | `--radius` (0.5rem is 8px), `--shadow-soft`, `--shadow-lift` |
+| Radius and shadows | `apps/web/src/styles.css`, `:root` | `--radius` (0.5rem is 8px), `--elevation-soft`, `--elevation-lift` (exposed as the `shadow-soft` and `shadow-lift` utilities) |
 | CMS brand tokens | `apps/web/src/styles.css`, `@theme static` and `packages/cms-core/src/editor/style-model.ts`, `TOKEN_CSS` | The eight colours the editor offers: `primary`, `primary-soft`, `accent`, `danger`, `ink`, `ink-soft`, `muted`, `white`. Change each hex in both files |
 | Gradient presets | `packages/cms-core/src/style/vars.ts`, `GRADIENTS` | The CSS behind each preset name |
 | Card surface and border styles | `apps/web/src/modules/cms/style/cms.css`, `.cms-card` | The default card, plus the `subtle` and `glow` border rules |

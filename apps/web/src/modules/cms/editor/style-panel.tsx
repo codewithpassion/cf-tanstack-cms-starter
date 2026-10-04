@@ -930,8 +930,8 @@ function ContrastBadge({ rating }: { rating: ContrastRating }) {
 
 const GRADIENTS: [GradientPreset, string][] = [
   ["none", "None"],
-  ["dark", "Dark fade"],
-  ["ink-rise", "Ink rise"],
+  ["dark", "Fade to grey"],
+  ["ink-rise", "Fade from grey"],
   ["primary-glow", "Primary glow"],
   ["accent-glow", "Accent glow"],
   ["accent-edge", "Accent edge"],
