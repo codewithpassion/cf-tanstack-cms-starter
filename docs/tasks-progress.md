@@ -33,7 +33,7 @@ One row per item of the build. Tick a row only with proof: the command that was 
 
 | Done | Item | Proof |
 | --- | --- | --- |
-| [x] | pages, site, posts, history, preview, render tokens, publish (2A) | `packages/services`: `bun test` 238 pass, 0 fail (15 files; pages-service, history-admin, site-service, read-page, pages-index, render-token, preview-link, posts, `loadCmsPage` and the bound factories against the real `@repo/db` modules); `bunx tsc --noEmit` clean (incl. `ports.typecheck.ts`: each db factory satisfies its port); `bunx ultracite check packages/services` clean; `rg -l "cloudflare:workers\|from \"react\"\|apps/web" packages/services/src` empty; brand grep over `packages/services` empty |
+| [x] | pages, site, posts, history, preview, render tokens, publish (2A) | `packages/services`: `bun test` 238 pass, 0 fail (15 files; pages-service, history-admin, site-service, read-page, pages-index, render-token, preview-link, posts, `loadCmsPage` and the bound factories against the real `@repo/db` modules); `bunx tsc --noEmit` clean (incl. `ports.typecheck.ts`: each db factory satisfies its port); `bunx ultracite check packages/services` clean; `rg -l "cloudflare:workers\|from "react"\|apps/web" packages/services/src` empty; brand grep over `packages/services` empty |
 | [x] | media, api keys, MCP calls, OAuth connections (2A) | same run: media-service/media-bytes tests, `mcp/keys` (`cms_live_`/`cms_dev_`, hashing, 90-day prune) and `mcp/connections` (grant revoke through the `OAuthGrants` port) on `createTestDb()`; media-usage SQL stays covered by `@repo/db` `media-usage.test.ts` |
 | [ ] | agent runs, Search Console sync | |
 | [ ] | Gate: `bun test` in `packages/services` | |

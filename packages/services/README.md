@@ -11,7 +11,7 @@ import { createPagesService } from "@repo/services/cms/pages-service";
 import { createApiKeysService } from "@repo/services/mcp/keys";
 ```
 
-Everything here is server-only (services import `@repo/db`). Two modules are also what the browser needs, and import only `@repo/db/shared`: `mcp/scopes` and `mcp/author`.
+Everything here is server-only (services import `@repo/db`). Three modules are also what the browser needs and import only `@repo/db/shared` or types: `mcp/scopes`, `mcp/author` and `cms/admin-result`.
 
 | Module | Contents |
 | --- | --- |
@@ -26,7 +26,7 @@ Everything here is server-only (services import `@repo/db`). Two modules are als
 | `mcp/keys` | API keys (`cms_live_` / `cms_dev_`, SHA-256 only), the call log and its 90-day retention; `createApiKeysService(deps)` |
 | `mcp/connections` | OAuth connections: client label, `<client> (<date>)` name, token check, revoke; `createConnectionsService(deps)` |
 | `mcp/scopes`, `mcp/author` | Scope helpers, OAuth scopes, `claudeMcpAddCommand`, `mcpServerName`; the `mcp:<name>#<prefix>` revision author |
-| `kv`-style ports: `cms/kv`, `cms/repo`, `cms/site-repo`, `cms/media-repo`, `mcp/ports` | The port types (below) |
+| Port types: `cms/kv`, `cms/repo`, `cms/site-repo`, `cms/media-repo`, `mcp/ports` | The port types (below) |
 | `clock` | `Clock`, `systemClock` |
 | `testing/*` | In-memory fakes for tests: `memory-repo` (`CmsRepo`), `site-memory-repo`, `media-memory-repo`, `memory-kv`, `media-fixtures` |
 
@@ -71,6 +71,8 @@ const pages = createPagesService(pagesDeps);
 const media = createMediaService({ repo: createD1MediaRepo(db), blobs: env.CMS_MEDIA });
 const keys = createApiKeysService({ keys: createApiKeyTable(db), calls: createMcpCallLog(db) });
 ```
+
+Pass the raw `env.SITE_ORIGIN ?? ""` to `keyEnvFor(requestOrigin, siteOrigin)`, not `config.origin` (which falls back to the request origin): an empty site origin makes every key `cms_dev_`.
 
 `author` is the admin's user id, recorded on the revisions a call writes. Admin gating is the tRPC `adminProcedure`; services take no redirect or `href`, and a failure the editor shows comes back as an `adminResult` union.
 
