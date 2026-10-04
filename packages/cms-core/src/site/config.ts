@@ -29,7 +29,8 @@ export function siteConfig(input: {
   const { gscProperty, name } = input;
   const timeZone = input.timeZone?.trim() || "UTC";
   try {
-    new Intl.DateTimeFormat("en", { timeZone });
+    // Throws a RangeError on an unknown zone; the formatter itself is not needed.
+    Intl.DateTimeFormat("en", { timeZone }).resolvedOptions();
   } catch (error) {
     throw new Error(
       `SITE_TIME_ZONE is not an IANA time zone: ${JSON.stringify(timeZone)}`,
