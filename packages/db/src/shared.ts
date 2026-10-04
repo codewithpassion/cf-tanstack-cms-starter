@@ -1,13 +1,10 @@
 // Safe to import from browser code: no drizzle, no driver, no Node APIs. Everything the UI
 // needs from this package lives here; the other entries pull drizzle in.
 
-// TODO(cms-port): PageDoc. The documents are typed in `@repo/cms-core` (`types.ts`, `site/types.ts`),
-// which exports its modules separately and was still being written when this package was.
-// Until the services phase swaps these two aliases for `import type { PageDoc } from
-// "@repo/cms-core/types"` and `SiteDoc`, the stored documents are plain JSON objects here and
-// callers cast on read. Any cms-core `PageDoc`/`SiteDoc` (a `type` alias) is assignable to them.
-export type PageDoc = Record<string, unknown>;
-export type SiteDoc = Record<string, unknown>;
+export type { SiteDoc } from "@repo/cms-core/site/types";
+// The stored documents are typed in `@repo/cms-core`. Type-only imports, so this file stays
+// free of runtime code and safe for the browser.
+export type { PageDoc } from "@repo/cms-core/types";
 
 export const PAGE_KINDS = ["page", "post"] as const;
 export type PageKind = (typeof PAGE_KINDS)[number];

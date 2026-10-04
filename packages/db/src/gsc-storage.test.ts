@@ -149,7 +149,7 @@ describe("inspections and published pages", () => {
       status: "draft" | "published",
       index: boolean
     ) => {
-      const doc = { seo: { robots: { index } } };
+      const doc = { seo: { robots: { index } } } as never;
       await db.insert(pages).values({
         id,
         kind: "page",

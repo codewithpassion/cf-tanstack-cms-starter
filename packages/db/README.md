@@ -8,7 +8,7 @@ One entry per module in `package.json` `exports`, no barrel file. Only `@repo/se
 
 | Import | Contents | Where it may run |
 | --- | --- | --- |
-| `@repo/db/shared` | Browser-safe constants and unions (`PAGE_STATUSES`, `API_SCOPES`, `SITE_ID`, `D1_MAX_PARAMS`, ...) and the `PageDoc`/`SiteDoc` aliases. No drizzle. | Anywhere, including React components |
+| `@repo/db/shared` | Browser-safe constants and unions (`PAGE_STATUSES`, `API_SCOPES`, `SITE_ID`, `D1_MAX_PARAMS`, ...) and the `PageDoc`/`SiteDoc` types (re-exported from `@repo/cms-core`, type-only). No drizzle. | Anywhere, including React components |
 | `@repo/db` | The 19 tables, the inferred row types (`PageRow`, `RevisionRow`, `MediaRow`, `ApiKeyRow`, ...), the `Database` and `D1Db` types | Server only |
 | `@repo/db/pages` | Pages, posts and their append-only revisions: `createD1Repo` (the page service's repo), `createPageQueries` (posts list, SEO summaries, slug owners), `ChangesetDecided` | Server, D1 only |
 | `@repo/db/site` | The single `site` row and `site_revisions`: `createSiteD1Repo` | Server, D1 only |

@@ -9,7 +9,8 @@ import {
 } from "./schema.ts";
 import { createTestDb } from "./test-utils.ts";
 
-const doc = (title: string) => ({ seo: { title, slug: title } });
+// Documents here only need the fields the SQL reads (seo, post); cast past the full PageDoc shape.
+const doc = (title: string) => ({ seo: { title, slug: title } }) as never;
 const at = (ms: number) => new Date(ms);
 
 const page = (over: Partial<PageRow> = {}): PageRow => ({
@@ -230,7 +231,7 @@ describe("revisions", () => {
       revision: rev(`${id}-r`, {
         pageId: id,
         kind: "published",
-        docJson: { post: { publishedAt } },
+        docJson: { post: { publishedAt } } as never,
       }),
     });
     // Sequential: each page is inserted before the revision that points at it.

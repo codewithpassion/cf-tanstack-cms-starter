@@ -4,6 +4,8 @@
 // biome-ignore-all lint/style/useConsistentMethodSignatures: ported verbatim; method signatures as in the source (kept diffable).
 // biome-ignore-all lint/suspicious/noEvolvingTypes: ported verbatim; the insert list is typed by its pushes, as in the source.
 // biome-ignore-all lint/suspicious/useAwait: async to satisfy promise-returning interfaces and callbacks; kept as in the source.
+
+import type { BudgetOverride } from "@repo/cms-core/agent/budget-types";
 import {
   DEFAULT_DAILY_CAP_USD,
   DEFAULT_THREAD_CAP_USD,
@@ -60,8 +62,9 @@ import type { PageDoc } from "./shared.ts";
  * produced depends on them). Each thread's rows are in its provider's format.
  */
 
-// TODO(cms-port): BudgetSettings. The budget types live with the budget rules (they were mixed
-// with the store port in the source). Declared here until the services phase moves them.
+// TODO(cms-port): BudgetSettings. `BudgetOverride` is in cms-core (`agent/budget-types`); the
+// settings shape and its defaults were mixed with the store port in the source, so they are
+// declared here until the services phase moves them.
 export type BudgetSettings = {
   threadCapUsd: number | null;
   dailyCapUsd: number | null;
@@ -70,18 +73,6 @@ export type BudgetSettings = {
 export const DEFAULT_BUDGET_SETTINGS: BudgetSettings = {
   threadCapUsd: DEFAULT_THREAD_CAP_USD,
   dailyCapUsd: DEFAULT_DAILY_CAP_USD,
-};
-
-/** A raised limit: `amountUsd` null = no limit (for that thread, or that day). */
-export type BudgetOverride = {
-  id: string;
-  /** `run`: a site-wide run's cap; `threadId` then holds the run id. */
-  scope: "thread" | "day" | "run";
-  threadId: string | null;
-  day: string | null;
-  amountUsd: number | null;
-  createdBy: string | null;
-  createdAt: string;
 };
 
 export type StoredMessage = {

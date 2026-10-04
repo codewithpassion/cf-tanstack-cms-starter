@@ -4,10 +4,12 @@ import { SITE_ID } from "./shared.ts";
 import { createSiteD1Repo } from "./site.ts";
 import { createTestDb } from "./test-utils.ts";
 
+// Site docs here only need to round-trip; cast past the full SiteDoc shape.
+const siteDoc = (name: string) => ({ name }) as never;
 const at = (ms: number) => new Date(ms);
 const row = (): SiteRow => ({
   id: SITE_ID,
-  draftDoc: { name: "v0" },
+  draftDoc: siteDoc("v0"),
   draftVersion: 0,
   draftBaseRevId: null,
   liveRevId: null,
@@ -17,7 +19,7 @@ const row = (): SiteRow => ({
 const rev = (id: string, createdAt = 10): SiteRevisionRow => ({
   id,
   parentRevId: null,
-  docJson: { name: id },
+  docJson: siteDoc(id),
   kind: "autosnapshot",
   label: null,
   summary: null,
@@ -41,24 +43,24 @@ describe("site repo", () => {
     await repo.create(row(), []);
     expect(
       await repo.commit([rev("r1")], {
-        draftDoc: { name: "v1" },
+        draftDoc: siteDoc("v1"),
         bumpDraftVersion: true,
         ifDraftVersion: 0,
       })
     ).toBe(true);
     expect(await repo.get()).toMatchObject({
       draftVersion: 1,
-      draftDoc: { name: "v1" },
+      draftDoc: siteDoc("v1"),
     });
     // Stale: nothing written, not even the revision.
     expect(
       await repo.commit([rev("r2")], {
-        draftDoc: { name: "v2" },
+        draftDoc: siteDoc("v2"),
         ifDraftVersion: 0,
       })
     ).toBe(false);
     expect(await repo.getRevision("r2")).toBeNull();
-    expect((await repo.get())?.draftDoc).toEqual({ name: "v1" });
+    expect((await repo.get())?.draftDoc).toEqual(siteDoc("v1"));
   });
 
   it("rethrows a failure that is not a stale version", async () => {
@@ -66,7 +68,7 @@ describe("site repo", () => {
     const repo = createSiteD1Repo(db);
     await repo.create(row(), [rev("r1")]);
     await expect(
-      repo.commit([rev("r1")], { draftDoc: { name: "x" }, ifDraftVersion: 0 })
+      repo.commit([rev("r1")], { draftDoc: siteDoc("x"), ifDraftVersion: 0 })
     ).rejects.toThrow();
   });
 
