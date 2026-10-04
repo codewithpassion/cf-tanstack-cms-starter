@@ -59,9 +59,9 @@ One row per item of the build. Tick a row only with proof: the command that was 
 
 | Done | Item | Proof |
 | --- | --- | --- |
-| [ ] | `project-init`, `setup-cloudflare` (D1, 2 KV, R2, secrets), `rename-project` (resource names, MCP prefix, `SITE_NAME`) | |
-| [ ] | README, CLAUDE.md, AGENTS.md, CMS docs (go-live, MCP) | |
-| [ ] | Resolve every `TODO(cms-port)` | `grep -rn "TODO(cms-port)" .` returns nothing |
+| [x] | `project-init`, `setup-cloudflare` (D1, 2 KV, R2, secrets), `rename-project` (resource names, MCP prefix, `SITE_NAME`) | `rename.ts` run on a scratch worktree twice (`boilerplate` to `acme-site` to `other-name`): Worker name, D1 and R2 names, `SITE_NAME`, `.cta.json`, README headings, lockfile rewritten, `bun install --frozen-lockfile` in sync; `env.ts` commands (`status`, `database`, `kv`, `var`, `set ADMIN_EMAILS`, `signing-key`, `secrets-file`) run on the same copy, `signing-key` keeps an existing key; `bunx ultracite check` clean on both scripts. The wrangler create and deploy steps were not run against a real account |
+| [x] | README, CLAUDE.md, AGENTS.md, CMS docs (go-live, MCP) | `README.md`, `AGENTS.md` (`CLAUDE.md` imports it), `docs/cms.md`, `docs/cms-go-live.md`, `docs/architecture.md`, `apps/web/README.md`, `packages/services/README.md`; brand grep over these files empty; `docs/image.png` removed (nothing referenced it) |
+| [x] | Resolve every cms-port TODO marker outside `apps/web/src` and `packages/*/src` | the brief's gate (`rg` for the marker, excluding those two trees) returns nothing. The markers left in `apps/web/src` (the starter content list in `server/cms/doc-import.ts`, the setup route) belong to Phase 4 |
 
 ## Phase 6: Verify
 

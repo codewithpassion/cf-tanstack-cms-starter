@@ -60,12 +60,15 @@ const appFiles = async (pattern: string) => {
 // `"database_name":`, which gets its own rewrite below.
 const nameField = new RegExp(`("name":\\s*)"${oldName}"`);
 const heading = new RegExp(`^# ${oldTitle}$`, "m");
-// The D1 database is `<name>-cms`.
-// TODO(cms-port): phase 5 extends this to the R2 bucket `<name>-cms-media` and the KV namespaces.
-const databaseNameField = new RegExp(
-  `("database_name":\\s*)"${oldName}(-cms)?"`,
+// Cloudflare resources named after the project: the D1 database `<name>-cms` and the R2 bucket
+// `<name>-cms-media`. The two KV namespaces have no name in any file: setup-cloudflare creates them
+// as `<name>-cms-pages` and `<name>-cms-oauth`.
+const resourceNameField = new RegExp(
+  `("(?:database_name|bucket_name)":\\s*)"${oldName}(-cms(?:-media)?)"`,
   "g"
 );
+// vars.SITE_NAME is the site chrome, the browser tab title fallback and, as a slug, the MCP server name.
+const siteNameField = new RegExp(`("SITE_NAME":\\s*)"${oldTitle}"`);
 
 const rewrites: Rewrite[] = [
   {
@@ -93,9 +96,15 @@ for (const path of await appFiles("apps/*/wrangler.jsonc")) {
   });
   rewrites.push({
     file: path,
-    find: databaseNameField,
+    find: resourceNameField,
     to: `$1"${newName}$2"`,
-    what: "D1 database name",
+    what: "D1 database and R2 bucket names",
+  });
+  rewrites.push({
+    file: path,
+    find: siteNameField,
+    to: `$1"${newTitle}"`,
+    what: "SITE_NAME var",
   });
 }
 for (const path of await appFiles("apps/*/.cta.json")) {
@@ -114,16 +123,6 @@ for (const path of await appFiles("apps/*/README.md")) {
     what: "heading",
   });
 }
-for (const path of await appFiles("apps/*/src/routes/__root.tsx")) {
-  rewrites.push({
-    file: path,
-    // The scaffold ships a placeholder title, so match any title, not the old name.
-    find: /(title:\s*)"[^"]*"/,
-    to: `$1"${newTitle}"`,
-    what: "browser tab title",
-  });
-}
-
 /** Every rewrite for one file, in one read and one write. */
 const apply = async (path: string, forFile: Rewrite[]) => {
   const handle = file(`${root}/${path}`);
@@ -144,8 +143,8 @@ const apply = async (path: string, forFile: Rewrite[]) => {
   return results;
 };
 
-// Grouped by file, because wrangler.jsonc carries both the Worker name and the
-// D1 database name and the two rewrites must not race each other.
+// Grouped by file, because wrangler.jsonc takes several rewrites (Worker name, resource names,
+// SITE_NAME) and they must not race each other.
 const byFile = new Map<string, Rewrite[]>();
 for (const rewrite of rewrites) {
   const forFile = byFile.get(rewrite.file) ?? [];

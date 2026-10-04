@@ -1,109 +1,92 @@
 # Boilerplate
 
-A [Turborepo](https://turborepo.com) monorepo, managed with Bun workspaces.
+A starter for a website with a built-in CMS, on [Cloudflare](https://developers.cloudflare.com) Workers. You edit pages and blog posts in an in-browser editor, publish them, and an AI agent and an MCP server can edit alongside you. There is no separate CMS service to run: the CMS is part of the app.
 
-## Apps
+It is a [Turborepo](https://turborepo.com) monorepo managed with [Bun](https://bun.sh) workspaces. The web app is [TanStack Start](https://tanstack.com/start) on Vite, served by [Hono](https://hono.dev). Auth is [Clerk](https://clerk.com).
 
-- [`apps/web`](apps/web) — the [TanStack Start](https://tanstack.com/start) front end, deployed on Cloudflare Workers, with [Cloudflare D1](https://developers.cloudflare.com/d1/) for data. See its [README](apps/web/README.md) for architecture and setup.
+## What you get
 
-Auth is [Clerk](https://clerk.com): `/login` signs in, the header shows the signed-in user. `/admin` is limited to the emails in `ADMIN_EMAILS`.
+- Pages built from 14 blocks (hero, feature grid, pricing, FAQ, call to action, stats, steps, testimonial, logos, image, rich text, callout, checklist, post list), edited on a live canvas with an inspector, layers, undo and a style panel.
+- Draft and publish. Publishing writes a snapshot to KV, so public pages are served without touching the database. Revision history, named versions, restore, rollback and signed preview links.
+- An SEO tab per page (title and description pixel widths, checks, structured data), generated share images, `sitemap.xml`, `llms.txt`, `llms-full.txt` and `robots.txt`.
+- Site settings: navigation, footer, color swatches, default SEO.
+- A blog with a post list block and an index page.
+- Media library on R2, with upload, alt text and "used on" tracking.
+- An AI page agent that proposes changes you accept or reject, plus site-wide runs with spending caps. Claude through an API key, or Workers AI.
+- Search Console sync with a per-page performance view and SEO opportunities.
+- An MCP server at `/mcp`, with API keys and OAuth sign-in, so Claude Code and Claude.ai can read and edit the site.
+- Starter design: neutral white and zinc, Inter, an indigo accent, dark mode. See [docs/design.md](docs/design.md) to change it.
 
-## Packages
+## Quick start (local)
 
-- [`packages/db`](packages/db) — `@repo/db`: the Drizzle schema for D1, the generated migrations, and the table modules. See its [README](packages/db/README.md).
-- [`packages/cms-core`](packages/cms-core) — `@repo/cms-core`: isomorphic, pure CMS code (page documents, ops engine, paths). No drizzle, no React, no Cloudflare.
-- [`packages/services`](packages/services) — `@repo/services`: the service layer. Business rules and validation, on top of `@repo/db`. The web app calls it through [tRPC](https://trpc.io). See its [README](packages/services/README.md).
-
-## Start a new project
-
-You need [Bun](https://bun.sh) 1.3 or newer and [Claude Code](https://claude.com/claude-code). Deploying also needs a free [Cloudflare](https://dash.cloudflare.com/sign-up) account.
-
-1. Create your repo from the template and clone it. This makes a new private GitHub repo with a fresh history:
-
-   ```bash
-   gh repo create my-app --template codewithpassion/cf-tanstack-boilerplate --private --clone
-   cd my-app
-   bun install
-   ```
-
-   Without the `gh` CLI, press "Use this template" on the [template's GitHub page](https://github.com/codewithpassion/cf-tanstack-boilerplate) and clone the repo it creates.
-
-2. Start Claude Code in that folder and type `/project-init`. It asks for a name, renames the project to it and commits. It connects your Clerk application, then signs you in to Cloudflare, creates the D1 database, applies the migrations and does the first deploy. It asks before creating anything on your account. When it finishes you have a `https://my-app.<subdomain>.workers.dev` URL. Open `/api/health` on it to check the Worker is up.
-
-3. Commit what `/project-init` left uncommitted and push. That includes the D1 `database_id` in `apps/web/wrangler.jsonc`. It is not a secret, and without it a fresh clone deploys against the `"local"` placeholder.
-
-After that, deploying is two commands from `apps/web`. Run the first one only when `packages/db` has a new migration:
-
-```bash
-bunx wrangler d1 migrations apply DB --remote
-bun run deploy
-```
-
-No Claude Code? `bun .claude/skills/rename-project/rename.ts my-app` does the rename, and [Deploy](#deploy) below has the Cloudflare steps by hand.
-
-## Develop
+You need [Bun](https://bun.sh) 1.3 or newer and a free [Clerk](https://clerk.com) application. No Cloudflare account is needed to develop.
 
 ```bash
 bun install
-bun run dev
+cp apps/web/.env.example apps/web/.env.local
 ```
 
-`bun run dev` applies the D1 migrations to a local database and starts the web app. The local database is SQLite, run by [Miniflare](https://developers.cloudflare.com/workers/testing/miniflare/) under the Cloudflare Vite plugin, and lives in `apps/web/.wrangler`. No account and no Docker needed.
+Fill in `apps/web/.env.local`: the three Clerk keys, `ADMIN_EMAILS` (your email), `PREVIEW_SIGNING_KEY` (any long random string, for example `openssl rand -hex 32`), and for the one-click dev login `DEV_LOGIN_EMAIL` and `DEV_LOGIN_PASSWORD`. Without Clerk keys the pages fail with a server error; only `/api/health` answers.
 
-Commands at the root run across all apps via [Turborepo](https://turborepo.com):
+```bash
+cd apps/web
+bun run create-dev-user
+CF_REMOTE_BINDINGS=0 bun run dev
+```
 
-- `bun run dev` — start all apps in dev mode
-- `bun run build` — build all apps
-- `bun run deploy` — build and deploy all apps
-- `bun run preview` — preview production builds
-- `bun run check` / `bun run fix` — lint/format the whole repo with [Ultracite](https://ultracite.ai)
-- `bun run test` — run every workspace's tests
+Open <http://localhost:3000/login> and use "Dev login (local only)", then go to `/admin`. Open `/admin/setup` and click "Import starter content". It shows a dry run first, then creates the sample pages and posts as drafts. Publish them from the editor.
 
-To run a command for a single app, use turbo's filter flag, e.g. `bunx turbo run dev --filter=web`, or `cd apps/web && bun run dev`.
+`bun run dev` applies the D1 migrations to a local database first. The local database, KV and R2 are simulated by Miniflare under `apps/web/.wrangler`; delete that folder for a clean slate. `CF_REMOTE_BINDINGS=0` skips the one remote binding (Workers AI) so dev starts without a Cloudflare login; the agent then offers Claude models only.
 
 ## Deploy
 
-Local development needs none of this. You only need the accounts below when you want the app running on the internet.
+You need [Claude Code](https://claude.com/claude-code) and a free Cloudflare account. Start Claude Code in the repo and type `/project-init`. It:
 
-### 1. A Cloudflare account
+1. asks for a name and renames the project,
+2. connects your Clerk application,
+3. signs you in to Cloudflare, creates the D1 database, two KV namespaces and the R2 bucket, sets the secrets and the `SITE_*` vars, applies the migrations and deploys,
+4. tells you to open `/admin` on the new `workers.dev` URL and import the starter content.
 
-The web app deploys to [Cloudflare Workers](https://workers.cloudflare.com). The free plan is enough. Sign in once from the terminal:
+It asks before creating anything on your account, and it is safe to run again. Afterwards, commit the resource ids it wrote to `apps/web/wrangler.jsonc`.
 
-```bash
-cd apps/web
-bunx wrangler login
+Without Claude Code, `bun .claude/skills/rename-project/rename.ts my-app` does the rename, and `.claude/skills/setup-cloudflare/SKILL.md` lists the wrangler steps in order. Before the site goes public, work through [docs/cms-go-live.md](docs/cms-go-live.md).
+
+Later deploys, from `apps/web`: `bun run deploy` builds, applies pending D1 migrations to the remote database and deploys.
+
+## Layout
+
+```
+apps/web            TanStack Start app, Hono server, tRPC routers, adapters, the CMS UI
+packages/cms-core   pure, isomorphic code: page documents, block definitions, ops engine, SEO checks
+packages/db         Drizzle schema, the migration, D1 table modules
+packages/services   business rules, written against ports (repos, KV, R2, AI providers)
+docs/               architecture, how the CMS works, go-live checklist, design
+.claude/skills/     project-init, setup-cloudflare, rename-project, restyle
 ```
 
-If you belong to more than one Cloudflare account, `wrangler deploy` will ask which one to use; set `CLOUDFLARE_ACCOUNT_ID` in `apps/web/.env.local` to skip the prompt. The Worker's name comes from `apps/web/wrangler.jsonc` (the `rename-project` skill sets it).
+A request goes route, then tRPC router, then service, then table module. See [docs/architecture.md](docs/architecture.md).
 
-### 2. A D1 database
+## Commands
 
-The local database only exists on your machine, so a deployed Worker needs a real [D1](https://developers.cloudflare.com/d1/) database. It is on the same free plan as the Worker:
+At the root, through Turborepo:
 
-```bash
-cd apps/web
-bunx wrangler d1 create boilerplate
-```
+- `bun run dev`, `bun run build`, `bun run preview`, `bun run deploy`
+- `bun run test` runs every workspace's tests
+- `bun run check` and `bun run fix` lint and format with [Ultracite](https://ultracite.ai), and `check` also typechecks
 
-That prints a `database_id`. Put it in the `d1_databases` entry in `apps/web/wrangler.jsonc`, replacing the `"local"` placeholder, then create the tables:
+In `apps/web`: `bun run create-dev-user`, `bun run gsc:auth`, `gsc:backfill` and `gsc:sync` (Search Console). In `packages/db`: `bun run generate` after a schema change.
 
-```bash
-bunx wrangler d1 migrations apply DB --remote
-```
+## Docs
 
-Repeat the `migrations apply --remote` whenever `packages/db` gains a new migration.
+- [docs/cms.md](docs/cms.md): how the CMS works, for the people using it
+- [docs/cms-go-live.md](docs/cms-go-live.md): the checklist before going public
+- [docs/architecture.md](docs/architecture.md): the fixed design decisions
+- [docs/design.md](docs/design.md): where the look lives and how to change it
+- [apps/web/README.md](apps/web/README.md), and one README per package
 
-### 3. Ship it
+## Not included
 
-```bash
-bun run deploy
-```
-
-That builds and runs `wrangler deploy`. The URL is printed at the end; open `/api/health` on it to confirm the Worker is up.
-
-## Pull request previews
-
-Per-PR previews are not part of this starter. TODO(cms-port): say here that they could be added as a follow-up (each preview would need its own KV namespaces and R2 bucket as well as a D1 database).
+Pull request previews. Each preview would need its own D1 database, KV namespaces and R2 bucket, so it was left out. It is a possible follow-up.
 
 ## License
 

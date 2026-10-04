@@ -30,7 +30,7 @@ Everything here is server-only (services import `@repo/db`). Three modules are a
 | `clock` | `Clock`, `systemClock` |
 | `testing/*` | In-memory fakes for tests: `memory-repo` (`CmsRepo`), `site-memory-repo`, `media-memory-repo`, `memory-kv`, `media-fixtures` |
 
-The AI agent runs and the Search Console sync are added by phase 2 C; the `AgentStore` port will live in `src/agent/store-port.ts`. TODO(cms-port): agent and gsc modules.
+The AI agent (`agent/`: the turn loop, run orchestration, tool executors, budget, model providers, and the `AgentStore` port in `agent/store-port.ts`) and the Search Console sync (`gsc/`: client, sync, cron, admin calls) are in the same package.
 
 ## The port pattern
 
@@ -56,7 +56,7 @@ Site name, origin and Search Console property are a `SiteConfig` (`@repo/cms-cor
 
 ## How the web app wires it
 
-`apps/web/src/server/trpc/context.ts` builds the adapters from `env` once per call and puts the services on `ctx.services`:
+`apps/web/src/server/cms/wiring.ts` builds the adapters from `env` once per request (`cmsServices(env, ...)`), and the tRPC context puts the result on `ctx.services.cms`. In outline:
 
 ```ts
 const db = drizzle(env.DB, { schema });
@@ -82,7 +82,7 @@ Pass the raw `env.SITE_ORIGIN ?? ""` to `keyEnvFor(requestOrigin, siteOrigin)`, 
 - Use `@repo/cms-core/*` for pure logic and `import type` row types from `@repo/db` (D4).
 - Methods are `async`, so a validation error rejects the promise rather than throwing synchronously.
 - Expected failures (`CmsError`, `OpError`) go through `adminResult`; only auth failures are `TRPCError`, in the router (D8).
-- Add the factory to `bind.ts`-style `create*Service` and a line in `apps/web/src/server/trpc/context.ts`.
+- Add the factory to `bind.ts`-style `create*Service` and a line in `apps/web/src/server/cms/wiring.ts`.
 
 ## Tests
 
