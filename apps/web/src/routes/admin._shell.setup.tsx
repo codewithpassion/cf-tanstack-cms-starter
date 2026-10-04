@@ -13,7 +13,7 @@ import type {
   StarterImportItem,
   StarterImportResult,
 } from "@repo/services/cms/starter-import";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { type ReactNode, useCallback, useEffect, useState } from "react";
 
 import { Button } from "#/components/ui/button";
@@ -570,6 +570,7 @@ type ImportState =
 
 /** One button: creates and publishes the starter content, then lists what happened. */
 function StarterImportCard() {
+  const router = useRouter();
   const [state, setState] = useState<ImportState>({ step: "idle" });
 
   const run = useCallback(async () => {
@@ -581,13 +582,17 @@ function StarterImportCard() {
           ? { step: "done", result: res }
           : { step: "error", message: res.message }
       );
+      if (res.ok) {
+        // Reload the loader's page and publish counts at the top of the page.
+        await router.invalidate();
+      }
     } catch (err) {
       const message = failureText(err);
       if (message !== null) {
         setState({ step: "error", message });
       }
     }
-  }, []);
+  }, [router]);
 
   return (
     <Card
@@ -657,7 +662,7 @@ function ImportTable({ result }: { result: StarterImportResult }) {
         Site menu and footer:{" "}
         {result.site === "created"
           ? "created and published."
-          : "left as they are (already edited)."}
+          : "already set up, skipped (existing site settings are never overwritten)."}
       </p>
     </>
   );
