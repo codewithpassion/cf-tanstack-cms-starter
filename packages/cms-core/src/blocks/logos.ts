@@ -60,7 +60,7 @@ export const logos = defineBlock({
       icon: "check" as const,
     })),
   }),
-  // py-24 md:py-32 over bg-ink-soft/30 with a cyan wash from the left.
+  // py-24 md:py-32 over bg-ink-soft/30 with an accent wash from the left.
   defaultStyle: {
     padding: {
       desktop: { top: 128, bottom: 128 },

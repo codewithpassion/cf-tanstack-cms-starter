@@ -15,7 +15,7 @@ const schema = z.strictObject({
       price: z.string().min(1).max(60),
       /** After the price, e.g. "per 40-hour block". */
       unit: z.string().max(80).optional(),
-      /** Emphasise this plan (orange border). */
+      /** Emphasise this plan (accent border). */
       highlight: z.boolean().optional(),
       inclusions: keyedArray(
         z.strictObject({

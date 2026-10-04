@@ -17,8 +17,8 @@ import type {
 } from "../richtext/schema";
 
 /**
- * The restricted rich-text schema (app/cms/richtext/schema.ts) ↔ Markdown, for the AI page agent
- *: `get_page` shows rich text as Markdown and the write tools accept it.
+ * The restricted rich-text schema (richtext/schema.ts) ↔ Markdown, for the AI page agent:
+ * `get_page` shows rich text as Markdown and the write tools accept it.
  *
  * Supported: paragraphs, `##`/`###` headings, `-` and `1.` lists (nested, ordered lists keep their
  * start number), `>` blockquotes holding paragraphs and lists, `**bold**`, `*italic*`, `` `code` ``

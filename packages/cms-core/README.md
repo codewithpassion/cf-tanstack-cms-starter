@@ -11,6 +11,10 @@ Nothing here imports React, drizzle, `cloudflare:workers`, `@tanstack/*` or read
 key takes it as a parameter (`SiteConfig` from `site/config`). If code needs one of those
 imports, it belongs in `@repo/services` (server), `@repo/db` (rows) or `apps/web` (UI).
 
+`SiteConfig` must always be built with `siteConfig()` from `site/config` (never an object literal
+from raw vars): it trims, strips trailing slashes from the origin and throws on an empty or
+non-http(s) origin, so no builder has to re-check it.
+
 ## Entry points
 
 No barrel file. `exports` is the pattern `"./*": "./src/*.ts"`, so import a module by path:

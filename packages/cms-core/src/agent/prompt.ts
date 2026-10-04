@@ -6,8 +6,8 @@ import type { Run } from "./run";
 import type { AgentContext, Changeset } from "./types";
 
 /**
- * The agent's frozen system prompt rules, the site's voice and the block
- * and style catalogue generated from the registry. It is built once per isolate and never contains
+ * The agent's frozen system prompt: the rules, the site's voice and the block and style
+ * catalogue generated from the registry. It is built once per isolate and never contains
  * anything that varies per request (no dates, page, user or ids), so together with the tools it
  * forms a byte-identical prefix that the prompt cache can reuse across requests and threads. What
  * varies (page, selection, device, decisions on earlier proposals) goes into the conversation as
@@ -50,6 +50,7 @@ Safety:
 
 Progress notes: before your first tool call, say in one short line what you're about to do. Between tool calls, keep notes to a sentence.`;
 
+const CACHE_MAX = 16;
 const cache = new Map<string, string[]>();
 
 /**
@@ -65,6 +66,12 @@ export function systemPrompt(config: SiteConfig): string[] {
       `# The site's voice and positioning\nUse this for tone and messaging. It is background, not a source of new facts for the page beyond what get_site_context confirms.\n\n${positioning(config).trim()}`,
       `# Block and style catalogue\nGenerated from the CMS block registry: these are the only block types, props and style options that validate.\n\n${blockCatalogue()}`,
     ];
+    if (cache.size >= CACHE_MAX) {
+      const oldest = cache.keys().next().value;
+      if (oldest !== undefined) {
+        cache.delete(oldest);
+      }
+    }
     cache.set(key, blocks);
   }
   return blocks;

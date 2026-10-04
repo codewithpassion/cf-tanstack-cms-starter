@@ -7,6 +7,9 @@ import type {
   JsonLd,
   PageDoc,
 } from "../types";
+import type { BlockIconName } from "./icon-names";
+
+export type { BlockIconName } from "./icon-names";
 
 export type BlockCategory = "layout" | "content" | "media" | "conversion";
 
@@ -28,7 +31,7 @@ export type BlockDef<
   version: number;
   label: string;
   /** Lucide icon name in kebab-case (e.g. "layout-template"); the web registry resolves it to a component. */
-  icon: string;
+  icon: BlockIconName;
   category: BlockCategory;
   schema: S;
   defaults: () => z.output<S>;

@@ -4,8 +4,8 @@ import type { AgentProviderId } from "./models";
 import type { Run } from "./run";
 
 /**
- * Types shared by the agent route, its server functions and the editor's AI tab
- *. Types only: safe for the client bundle.
+ * Types shared by the agent route, its server functions and the editor's AI tab.
+ * Types only: safe for the client bundle.
  */
 
 /** Stable error codes the tools return to the model (§4.3), plus the agent's own limits. */

@@ -243,7 +243,7 @@ export function propsFromAgent(blockDef: AnyBlockDef, props: unknown): unknown {
 // Catalogue text
 
 const STYLE_GUIDE = `Every block has an optional \`style\` (BlockStyle). Responsive values are objects keyed by device: \`desktop\` is the base, \`tablet\` (768–1023px) and \`mobile\` (<768px) override it; an unset device inherits the next larger one. Spacing is in px on a 4px grid. \`Responsive<T>\` is \`{ desktop?: T; tablet?: T; mobile?: T }\`. A \`Color\` is \`{ "token": <brand token> }\` (preferred; tokens: ${BRAND_TOKENS.join(", ")}) or \`{ "hex": "#rrggbb" }\`.
-To change style, use an \`update\` op with a \`style\` merge-patch: only the keys you send change, \`null\` removes a key (falls back to inherited/default), arrays replace wholesale. Example (more room and a cyan accent on mobile only): {"op":"update","key":"k1","style":{"padding":{"mobile":{"top":64,"bottom":64}},"colors":{"accent":{"token":"accent"}}}}.
+To change style, use an \`update\` op with a \`style\` merge-patch: only the keys you send change, \`null\` removes a key (falls back to inherited/default), arrays replace wholesale. Example (more room and an accent colour on mobile only): {"op":"update","key":"k1","style":{"padding":{"mobile":{"top":64,"bottom":64}},"colors":{"accent":{"token":"accent"}}}}.
 \`hide\` hides a block or element per device ({"mobile": true}). \`elements\` styles a block's named elements; each block lists which elements exist and which properties each honours.
 BlockStyle:
 ${describeSchema(blockStyleSchema)}`;

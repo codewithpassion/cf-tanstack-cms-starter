@@ -80,4 +80,20 @@ describe("agent cost", () => {
     expect(formatUsd(0.0421)).toBe("$0.042");
     expect(formatUsd(1.2)).toBe("$1.20");
   });
+
+  it("prices a fallback iteration without a model at the requested model's rates, not the answering model's", () => {
+    const usage = {
+      iterations: [
+        { type: "message", model: null, input_tokens: 1_000_000 },
+        {
+          type: "fallback_message",
+          model: "claude-opus-4-8",
+          output_tokens: 1_000_000,
+        },
+      ],
+    };
+    expect(
+      summarizeUsage(usage, "claude-opus-4-8", "claude-opus-5-5").costUsd
+    ).toBe(4 + 25);
+  });
 });

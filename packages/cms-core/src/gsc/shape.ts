@@ -1,15 +1,14 @@
 import type { SiteConfig } from "../site/config";
 
 /**
- * Search Console shaping shared by the server (src/modules/cms/server/gsc-*.ts) and the admin UI
- *: page URLs, totals, the daily series with publish markers, striking-
+ * Search Console shaping shared by the server and the admin UI: page URLs, totals, the daily series with publish markers, striking-
  * distance grouping and inspection target picking. Pure and dependency-free, so the editor's lazy
  * performance chunk and /admin/seo can import it.
  */
 
 /** How to connect Search Console here: shown wherever its data or actions are missing. */
 export const GSC_CONNECT_HINT =
-  "Search Console not connected: run `bun scripts/gsc-auth.ts` in apps/web, then set GSC_REFRESH_TOKEN (see .env.example).";
+  "Search Console not connected: run `bun run gsc:auth` in apps/web, then set GSC_REFRESH_TOKEN (see .env.example).";
 
 /** The URL Search Console uses for a page slug ("" is the home page, reported as `https://host/`). The origin is `SiteConfig.origin`. */
 export function pageUrl(

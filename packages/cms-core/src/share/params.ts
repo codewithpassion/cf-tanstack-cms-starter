@@ -6,7 +6,7 @@ import { mediaIdSchema } from "../media-schema";
 import { isValidSlug } from "../paths";
 
 /**
- * Share-image templates and their text overrides The overrides travel as
+ * Share-image templates and their text overrides. The overrides travel as
  * query parameters of `/og-render/<slug>`, so they are validated on the server before rendering.
  * Every field is optional: without overrides a template takes its text from the page document.
  */
