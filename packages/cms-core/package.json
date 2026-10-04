@@ -3,11 +3,15 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./version": "./src/version.ts"
+    "./*": "./src/*.ts"
   },
   "scripts": {
     "test": "bun test",
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "nanoid": "^5.1.7",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/bun": "latest",
