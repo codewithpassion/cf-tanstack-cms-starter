@@ -172,7 +172,7 @@ const at = (el: El, prop: string) =>
 
 describe("cms.css", () => {
   // Only the --cms-* chains: a block or element may leave any of them unset. Theme colours
-  // (var(--color-primary)) are always declared by styles.css `@theme`.
+  // (var(--color-brand-primary)) are always declared by styles.css `@theme`.
   it("ends every var(--cms-*) chain in a literal", () => {
     const src = cmsCss.replace(/\/\*[\s\S]*?\*\//g, "");
     let count = 0;

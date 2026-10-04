@@ -11,8 +11,7 @@ import {
   accentedField,
   type BlockComponentProps,
   Eyebrow,
-  headingPrimary,
-  headingWhite,
+  headingColor,
   textColor,
 } from "./ui";
 
@@ -61,14 +60,14 @@ export function FeatureGridBlock({ props }: BlockComponentProps<Props>) {
         {services ? (
           <h2
             {...accentedField(f("heading"), props.heading, props.headingAccent)}
-            className={`font-heading font-black text-4xl md:text-5xl ${headingWhite} leading-tight`}
+            className={`font-heading font-semibold tracking-tight text-4xl md:text-5xl ${headingColor} leading-tight`}
           >
             {heading}
           </h2>
         ) : (
           <h2
             {...accentedField(f("heading"), props.heading, props.headingAccent)}
-            className={`font-heading font-bold text-2xl md:text-3xl ${headingWhite} mb-8`}
+            className={`font-heading font-semibold tracking-tight text-2xl md:text-3xl ${headingColor} mb-8`}
           >
             {heading}
           </h2>
@@ -133,14 +132,14 @@ function Card({ item, cards, f }: { item: Item; cards: boolean; f: F }) {
   return (
     <div
       {...f("items")}
-      className={
-        cards ? "cms-card bg-ink-soft/50 backdrop-blur-sm p-6 h-full" : "h-full"
-      }
+      className={cards ? "cms-card bg-card p-6 h-full" : "h-full"}
     >
       {!!Icon && (
         <Icon className={`w-8 h-8 ${accentColor} mb-4`} aria-hidden="true" />
       )}
-      <h3 className={`font-heading font-bold text-lg ${headingPrimary} mb-2`}>
+      <h3
+        className={`font-heading font-semibold tracking-tight text-lg ${headingColor} mb-2`}
+      >
         {item.title}
       </h3>
       {!!item.body && (
@@ -165,7 +164,7 @@ function ServiceCard({ item, f }: { item: Item; f: F }) {
   return (
     <div
       {...f("items")}
-      className="cms-card relative text-left bg-ink-soft/30 p-8 backdrop-blur-sm hover:bg-ink-soft/50 hover:scale-[1.03] transition-all group block rounded-lg h-full"
+      className="cms-card relative text-left bg-card p-8 hover:shadow-lift hover:-translate-y-0.5 transition-all group block rounded-lg h-full"
     >
       {!!Icon && (
         <Icon
@@ -173,14 +172,14 @@ function ServiceCard({ item, f }: { item: Item; f: F }) {
           aria-hidden="true"
         />
       )}
-      <h3 className="text-white font-heading font-bold text-xl mb-4">
+      <h3 className="text-foreground font-heading font-semibold tracking-tight text-xl mb-4">
         {item.title}
       </h3>
       {!!item.body && (
         <RichText
           doc={item.body}
           path={["items", item._key, "body"]}
-          className="relative z-10 text-white/70 font-sans text-base leading-relaxed mb-6"
+          className="relative z-10 text-muted-foreground font-sans text-base leading-relaxed mb-6"
         />
       )}
       {!!item.link && (
@@ -202,10 +201,10 @@ function CheckItem({ item, f }: { item: Item; f: F }) {
   return (
     <div
       {...f("items")}
-      className="cms-card bg-ink-soft/50 backdrop-blur-sm p-5 flex items-start gap-4 h-full"
+      className="cms-card bg-card p-5 flex items-start gap-4 h-full"
     >
       <span
-        className={`${accentColor} font-heading font-bold text-xs mt-1 shrink-0`}
+        className={`${accentColor} font-heading font-semibold tracking-tight text-xs mt-1 shrink-0`}
         aria-hidden="true"
       >
         &#x2713;

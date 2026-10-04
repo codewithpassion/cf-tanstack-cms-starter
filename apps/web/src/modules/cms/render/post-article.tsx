@@ -33,7 +33,7 @@ export function PostArticle({
 }: CmsPageData & { post: PostMeta }) {
   const config = useSiteConfig();
   return (
-    <div className="bg-ink text-white font-sans overflow-x-clip">
+    <div className="bg-background text-foreground font-sans overflow-x-clip">
       {buildJsonLd(doc, path, config, parents).map((node, i) => (
         <script
           key={i}
@@ -41,7 +41,6 @@ export function PostArticle({
           dangerouslySetInnerHTML={{ __html: safeJsonLd(node) }}
         />
       ))}
-      <div className="fixed inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-transparent pointer-events-none z-0" />
 
       <Navigation />
 
@@ -54,21 +53,21 @@ export function PostArticle({
       <section className="py-20 relative">
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            className="cyber-border bg-ink-soft/50 p-12 backdrop-blur-sm text-center max-w-4xl mx-auto"
+            className="cms-card bg-muted p-12 text-center max-w-4xl mx-auto"
             initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="font-heading font-bold text-3xl md:text-4xl text-primary mb-6">
+            <h2 className="font-heading font-semibold tracking-tight text-3xl md:text-4xl text-primary mb-6">
               Have a question about this?
             </h2>
-            <p className="text-white/80 font-sans text-lg mb-8 max-w-2xl mx-auto">
+            <p className="text-muted-foreground font-sans text-lg mb-8 max-w-2xl mx-auto">
               Tell us what you're working on and we'll get back to you.
             </p>
             <motion.a
               href={CONTACT_PATH}
-              className="inline-block bg-gradient-to-r from-primary to-primary-soft text-black font-heading font-bold px-8 py-4 hover:shadow-lg hover:shadow-primary/50 transition-all uppercase tracking-wider"
+              className="inline-block rounded-md bg-primary text-primary-foreground font-medium px-6 py-3 shadow-soft hover:bg-primary/90 transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -90,9 +89,9 @@ export function PreviewBanner() {
     <div
       role="status"
       data-testid="preview-banner"
-      className="fixed bottom-4 left-1/2 z-[100] -translate-x-1/2 rounded-full border border-amber-400/60 bg-black/85 px-4 py-2 font-sans text-sm text-amber-200 shadow-lg backdrop-blur"
+      className="fixed bottom-4 left-1/2 z-[100] -translate-x-1/2 rounded-full border border-border bg-foreground px-4 py-2 font-sans text-sm text-background shadow-lift"
     >
-      Draft preview — not published
+      Draft preview: not published
     </div>
   );
 }

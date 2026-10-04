@@ -3,12 +3,7 @@ import type { z } from "zod";
 
 import { useField } from "../render/field";
 import { Reveal } from "../render/reveal";
-import {
-  type BlockComponentProps,
-  Eyebrow,
-  headingPrimary,
-  headingWhite,
-} from "./ui";
+import { type BlockComponentProps, Eyebrow, headingColor } from "./ui";
 
 type Props = z.output<typeof stats.schema>;
 
@@ -33,7 +28,7 @@ export function StatsBlock({ props }: BlockComponentProps<Props>) {
           {!!props.heading && (
             <h2
               {...f("heading")}
-              className={`font-heading font-bold text-2xl md:text-3xl ${headingWhite}`}
+              className={`font-heading font-semibold tracking-tight text-2xl md:text-3xl ${headingColor}`}
             >
               {props.heading}
             </h2>
@@ -45,11 +40,11 @@ export function StatsBlock({ props }: BlockComponentProps<Props>) {
           <Reveal key={item._key} y={20} delay={i * 0.08}>
             <div {...f("items")}>
               <div
-                className={`font-heading font-black text-4xl md:text-5xl ${headingPrimary} mb-2`}
+                className={`font-heading font-semibold tracking-tight text-4xl md:text-5xl ${headingColor} mb-2`}
               >
                 {item.value}
               </div>
-              <div className="text-white/70 font-sans text-base leading-relaxed">
+              <div className="text-muted-foreground font-sans text-base leading-relaxed">
                 {item.label}
               </div>
             </div>

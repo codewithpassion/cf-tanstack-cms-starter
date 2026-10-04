@@ -43,21 +43,20 @@ export const TEXT_SIZES: Record<TextSize, string> = {
 
 const GRADIENTS: Record<GradientPreset, string> = {
   none: "none",
-  dark: "linear-gradient(to bottom, color-mix(in srgb, var(--color-ink-soft) 30%, transparent), var(--color-ink))",
+  // "dark" and "ink-rise" keep their stored names; they are neutral washes that follow the theme.
+  dark: "linear-gradient(to bottom, transparent, var(--muted))",
   "primary-glow":
-    "linear-gradient(to top right, color-mix(in srgb, var(--color-primary) 10%, transparent), transparent)",
+    "linear-gradient(to top right, color-mix(in srgb, var(--color-brand-primary) 10%, transparent), transparent)",
   "accent-glow":
-    "linear-gradient(to top right, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent)",
+    "linear-gradient(to top right, color-mix(in srgb, var(--color-brand-accent) 10%, transparent), transparent)",
   // The presets below match Tailwind's `bg-gradient-to-*` output (oklab).
-  // The reverse of `dark`.
-  "ink-rise":
-    "linear-gradient(to bottom in oklab, var(--color-ink), color-mix(in oklab, var(--color-ink-soft) 30%, transparent))",
+  "ink-rise": "linear-gradient(to bottom, var(--muted), transparent)",
   // A faint accent wash from the left edge.
   "accent-edge":
-    "linear-gradient(to right in oklab, color-mix(in oklab, var(--color-accent) 5%, transparent), transparent)",
+    "linear-gradient(to right in oklab, color-mix(in oklab, var(--color-brand-accent) 5%, transparent), transparent)",
   // Accent on the left, primary on the right.
   "accent-primary":
-    "linear-gradient(to right in oklab, color-mix(in oklab, var(--color-accent) 5%, transparent), transparent, color-mix(in oklab, var(--color-primary) 5%, transparent))",
+    "linear-gradient(to right in oklab, color-mix(in oklab, var(--color-brand-accent) 5%, transparent), transparent, color-mix(in oklab, var(--color-brand-primary) 5%, transparent))",
 };
 
 const MARGINS: Record<Align, [left: string, right: string]> = {
@@ -73,14 +72,14 @@ export type CmsStyleProps = {
   attrs: Record<`data-cms-${string}`, string>;
 };
 
-/** Token → `var(--color-<token>)`; hex is re-checked because it lands in an inline style. */
+/** Token → `var(--color-brand-<token>)`; hex is re-checked because it lands in an inline style. */
 export function colorValue(color: Color | undefined): string | undefined {
   if (!color) {
     return;
   }
   if ("token" in color) {
     return BRAND_TOKENS.includes(color.token)
-      ? `var(--color-${color.token})`
+      ? `var(--color-brand-${color.token})`
       : undefined;
   }
   return HEX_RE.test(color.hex) ? color.hex : undefined;
@@ -310,7 +309,7 @@ export function computeStyleVars(
     }
   }
 
-  if (s.border === "cyber" || s.border === "subtle") {
+  if (s.border === "glow" || s.border === "subtle") {
     attrs["data-cms-border"] = s.border;
   }
   hideAttrs(attrs, s.hide);

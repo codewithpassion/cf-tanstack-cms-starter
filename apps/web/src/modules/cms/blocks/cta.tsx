@@ -9,7 +9,7 @@ import {
   type BlockComponentProps,
   Buttons,
   bigButtonClass,
-  headingWhite,
+  headingColor,
   textColor,
 } from "./ui";
 
@@ -23,19 +23,19 @@ export function CtaBlock({ props }: BlockComponentProps<Props>) {
       {!!props.heading && (
         <h2
           {...accentedField(f("heading"), props.heading, props.headingAccent)}
-          className={`font-heading font-black text-4xl md:text-5xl ${headingWhite} leading-tight mb-8`}
+          className={`font-heading font-semibold tracking-tight text-4xl md:text-5xl ${headingColor} leading-tight mb-8`}
         >
           <Accented
             text={props.heading}
             accent={props.headingAccent}
             field={f("headingAccent")}
-            color="text-accent"
+            color="text-primary"
           />
         </h2>
       )}
       {!!props.body &&
         (compact ? (
-          <p {...f("body")} className="text-white/60 font-sans mb-6">
+          <p {...f("body")} className="text-muted-foreground font-sans mb-6">
             {props.body}
           </p>
         ) : (
@@ -76,7 +76,7 @@ export function CtaBlock({ props }: BlockComponentProps<Props>) {
         <div {...f("link")} className="mt-8">
           <a
             href={props.link.href}
-            className="text-accent font-sans text-sm tracking-wider hover:text-white transition-colors"
+            className="text-primary font-sans text-sm tracking-wider hover:text-foreground transition-colors"
           >
             {props.link.label}
           </a>

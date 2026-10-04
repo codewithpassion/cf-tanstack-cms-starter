@@ -163,9 +163,9 @@ describe("update (merge-patch)", () => {
 
   it("adds style to a block that had none, and undoes back to no style", () => {
     const { doc: d, inverse } = run(doc(), [
-      { op: "update", key: "cta", style: { border: "cyber" } },
+      { op: "update", key: "cta", style: { border: "glow" } },
     ]);
-    expect(nth(d.blocks, 2).style).toEqual({ border: "cyber" });
+    expect(nth(d.blocks, 2).style).toEqual({ border: "glow" });
     expect(applyOps(d, inverse).doc.blocks[2]).not.toHaveProperty("style");
   });
 

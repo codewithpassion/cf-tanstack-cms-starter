@@ -8,8 +8,7 @@ import {
   accentColor,
   type BlockComponentProps,
   Eyebrow,
-  headingPrimary,
-  headingWhite,
+  headingColor,
   textColor,
 } from "./ui";
 
@@ -28,7 +27,7 @@ export function StepsBlock({ props }: BlockComponentProps<Props>) {
         )}
         <h2
           {...f("heading")}
-          className={`font-heading font-bold text-2xl md:text-3xl ${headingWhite} mb-8`}
+          className={`font-heading font-semibold tracking-tight text-2xl md:text-3xl ${headingColor} mb-8`}
         >
           {props.heading}
         </h2>
@@ -44,20 +43,17 @@ export function StepsBlock({ props }: BlockComponentProps<Props>) {
       <div className="flex flex-col cms-gap">
         {props.items.map((item, i) => (
           <Reveal key={item._key} y={20} delay={i * 0.08}>
-            <div
-              {...f("items")}
-              className="cms-card bg-ink-soft/50 backdrop-blur-sm p-6 md:p-8"
-            >
+            <div {...f("items")} className="cms-card bg-card p-6 md:p-8">
               <div className="flex items-baseline gap-4 mb-4">
                 {!!item.label && (
                   <span
-                    className={`${accentColor} font-heading font-bold text-sm`}
+                    className={`${accentColor} font-heading font-semibold tracking-tight text-sm`}
                   >
                     {item.label}
                   </span>
                 )}
                 <h3
-                  className={`font-heading font-bold text-lg ${headingPrimary}`}
+                  className={`font-heading font-semibold tracking-tight text-lg ${headingColor}`}
                 >
                   {item.title}
                 </h3>

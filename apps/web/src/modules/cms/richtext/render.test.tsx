@@ -62,8 +62,8 @@ describe("RichText", () => {
 
   it("uses the article typography for a post body", () => {
     const html = renderToString(<RichText doc={doc} variant="article" />);
-    expect(html.match(/►/g)?.length).toBe(2);
-    expect(html).toContain("cyber-border");
+    expect(html.match(/size-1\.5/g)?.length).toBe(2);
+    expect(html).toContain("border-l-4 border-primary");
   });
 
   it("renders the supported nodes", () => {

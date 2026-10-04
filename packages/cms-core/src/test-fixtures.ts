@@ -59,7 +59,7 @@ export function sampleDoc(): PageDoc {
             { _key: "b", title: "Two", body: richTextFromString("Second.") },
           ],
         },
-        style: { hide: { tablet: true }, border: "cyber" },
+        style: { hide: { tablet: true }, border: "glow" },
       },
       {
         _key: "faq1",

@@ -37,7 +37,7 @@ describe("colour validation", () => {
   });
 
   it("maps tokens to theme vars and rejects unknown tokens", () => {
-    expect(colorValue({ token: "danger" })).toBe("var(--color-danger)");
+    expect(colorValue({ token: "danger" })).toBe("var(--color-brand-danger)");
     expect(
       blockStyleSchema.safeParse({ colors: { text: { token: "pink" } } })
         .success
@@ -80,7 +80,7 @@ describe("computeStyleVars", () => {
       hide: { tablet: true },
     });
     expect(style).toEqual({
-      "--cms-heading": "var(--color-accent)",
+      "--cms-heading": "var(--color-brand-accent)",
       "--cms-text": "#fff",
     });
     expect(attrs).toEqual({
@@ -170,7 +170,9 @@ describe("computeElementVars", () => {
       color: { token: "danger" },
       hide: { desktop: true, tablet: false },
     });
-    expect(Object.entries(style)).toEqual([["color", "var(--color-danger)"]]);
+    expect(Object.entries(style)).toEqual([
+      ["color", "var(--color-brand-danger)"],
+    ]);
     expect(attrs).toEqual({ "data-cms-hide-d": "" });
   });
 });

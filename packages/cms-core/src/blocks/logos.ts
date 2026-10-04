@@ -68,7 +68,7 @@ export const logos = defineBlock({
     },
     align: { desktop: "center" },
     gap: { desktop: 32 },
-    background: { color: { hex: "#2a2a2a4d" }, gradient: "accent-edge" },
+    background: { gradient: "accent-edge" },
   },
   elements: {
     eyebrow: ["color", "size", "align", "hide"],

@@ -7,7 +7,7 @@ import { RichText } from "../richtext/render";
 import {
   type BlockComponentProps,
   Eyebrow,
-  headingWhite,
+  headingColor,
   textColor,
 } from "./ui";
 
@@ -30,7 +30,7 @@ export function ChecklistBlock({ props }: BlockComponentProps<Props>) {
       {!!props.heading && (
         <h2
           {...f("heading")}
-          className={`font-heading font-bold text-2xl md:text-3xl ${headingWhite} mb-8`}
+          className={`font-heading font-semibold tracking-tight text-2xl md:text-3xl ${headingColor} mb-8`}
         >
           {props.heading}
         </h2>
@@ -39,7 +39,7 @@ export function ChecklistBlock({ props }: BlockComponentProps<Props>) {
         {props.items.map((item) => (
           <li key={item._key} className="flex items-start gap-4">
             <span
-              className="mt-1 size-4 shrink-0 rounded-sm border-2 border-[color:var(--cms-accent,var(--color-accent))]"
+              className="mt-1 size-4 shrink-0 rounded-sm border-2 border-[color:var(--cms-accent,var(--brand-label))]"
               aria-hidden="true"
             />
             <RichText

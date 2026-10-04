@@ -19,7 +19,7 @@ import {
   accentedField,
   type BlockComponentProps,
   Eyebrow,
-  headingWhite,
+  headingColor,
   hideOnly,
 } from "./ui";
 
@@ -120,7 +120,7 @@ export function TestimonialBlock({ props }: BlockComponentProps<Props>) {
                 props.heading,
                 props.headingAccent
               )}
-              className={`font-heading font-black text-4xl md:text-5xl ${headingWhite} leading-tight`}
+              className={`font-heading font-semibold tracking-tight text-4xl md:text-5xl ${headingColor} leading-tight`}
             >
               <Accented
                 text={props.heading}
@@ -149,10 +149,10 @@ export function TestimonialBlock({ props }: BlockComponentProps<Props>) {
         <Reveal y={30} delay={0.2}>
           <div
             {...f("card")}
-            className="cms-card bg-ink-soft/50 p-12 md:p-16 backdrop-blur-sm rounded-lg"
+            className="cms-card bg-card p-12 md:p-16 rounded-lg"
           >
             <Quote
-              className="text-accent/50 w-14 h-14 mb-8"
+              className="text-primary/50 w-14 h-14 mb-8"
               aria-hidden="true"
             />
             <div aria-live={count > 1 && !playing ? "polite" : "off"}>
@@ -195,7 +195,7 @@ export function TestimonialBlock({ props }: BlockComponentProps<Props>) {
                 <button
                   type="button"
                   onClick={togglePaused}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 p-1 text-white/50 hover:text-white transition-colors"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground transition-colors"
                   aria-label={
                     paused ? "Play testimonials" : "Pause testimonials"
                   }
@@ -230,7 +230,7 @@ function Dot({
     <button
       type="button"
       onClick={select}
-      className={`transition-all ${active ? "w-8 h-2 bg-primary" : "w-2 h-2 bg-white/30 hover:bg-white/50"}`}
+      className={`transition-all ${active ? "w-8 h-2 bg-primary" : "w-2 h-2 bg-foreground/20 hover:bg-foreground/40"}`}
       aria-label={`Go to testimonial ${index + 1}`}
       aria-current={active ? "true" : undefined}
     />
@@ -240,7 +240,7 @@ function Dot({
 function Slide({ item }: { item: Item }) {
   return (
     <>
-      <blockquote className="text-white font-sans text-xl md:text-2xl leading-relaxed mb-10 italic">
+      <blockquote className="text-foreground font-sans text-xl md:text-2xl leading-relaxed mb-10 italic">
         "{item.quote}"
       </blockquote>
       <div className="border-t border-primary/30 pt-8 flex items-center gap-4">
@@ -255,11 +255,11 @@ function Slide({ item }: { item: Item }) {
           />
         )}
         <div>
-          <cite className="text-primary font-heading font-bold text-xl not-italic">
+          <cite className="text-primary font-heading font-semibold tracking-tight text-xl not-italic">
             {item.name}
           </cite>
           {!!item.role && (
-            <div className="text-white/60 font-sans text-base mt-2">
+            <div className="text-muted-foreground font-sans text-base mt-2">
               {item.company ? `${item.role} at ${item.company}` : item.role}
             </div>
           )}

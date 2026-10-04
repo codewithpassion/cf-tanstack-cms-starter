@@ -5,18 +5,19 @@ import { ChevronDown, Menu, X } from "lucide-react";
 import { Fragment, type ReactNode, useEffect, useState } from "react";
 import { useSiteConfig } from "#/modules/cms/site/site-context";
 import { SiteHref, useSite } from "#/modules/cms/site/use-site";
+import { Logo } from "./logo";
 import ThemeToggle from "./theme-toggle";
 
 const linkBase = "font-sans text-sm transition-colors";
-const linkIdle = "text-muted-foreground hover:text-primary";
-const linkActive = "text-primary";
+const linkIdle = "text-muted-foreground hover:text-foreground";
+const linkActive = "text-foreground";
 
 /**
  * The public site's top bar, from the site doc's nav (site/use-site.tsx). CMS pages render it
  * themselves (unless the page sets `chrome: "none"`). In flow and sticky, not fixed: CMS blocks
  * don't leave room for a fixed bar. Links with `children` get a dropdown on desktop (hover, or the
  * toggle button for touch and keyboard) and an indented list on mobile. `actions` go after the
- * theme toggle (header.tsx puts the Clerk user button there).
+ * theme toggle.
  */
 export function Navigation({ actions }: { actions?: ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -61,10 +62,10 @@ export function Navigation({ actions }: { actions?: ReactNode }) {
       <nav aria-label="Main" className="mx-auto max-w-6xl px-6">
         <div className="flex h-16 items-center justify-between gap-4">
           <Link
-            className="font-heading text-foreground text-lg no-underline transition-opacity hover:opacity-80"
+            className="no-underline transition-opacity hover:opacity-80"
             to="/"
           >
-            {name}
+            <Logo name={name} />
           </Link>
 
           {/* Desktop */}
@@ -78,9 +79,6 @@ export function Navigation({ actions }: { actions?: ReactNode }) {
                   key={link._key}
                 >
                   {link.label}
-                  {active && (
-                    <span className="absolute -bottom-1 left-0 h-0.5 w-full bg-primary" />
-                  )}
                 </SiteHref>
               );
               if (!link.children?.length) {
@@ -113,7 +111,7 @@ export function Navigation({ actions }: { actions?: ReactNode }) {
                     className={`absolute top-full left-0 pt-3 group-hover:block ${open ? "block" : "hidden"}`}
                     id={menuId}
                   >
-                    <div className="flex min-w-48 flex-col rounded-md border border-border bg-popover py-2 shadow-lg">
+                    <div className="flex min-w-48 flex-col rounded-md border border-border bg-popover py-2 shadow-lift">
                       {link.children.map((child) => (
                         <SiteHref
                           className={`whitespace-nowrap px-4 py-2 ${linkBase} ${isActive(child.href) ? linkActive : linkIdle}`}
@@ -130,7 +128,7 @@ export function Navigation({ actions }: { actions?: ReactNode }) {
             })}
 
             <SiteHref
-              className="rounded-md border border-border px-3.5 py-2.5 font-sans text-foreground text-sm transition-colors hover:border-primary"
+              className="rounded-md bg-primary px-3.5 py-2 font-medium font-sans text-primary-foreground text-sm shadow-soft transition-colors hover:bg-primary/90"
               href={nav.cta.href}
             >
               {nav.cta.label}
@@ -148,7 +146,7 @@ export function Navigation({ actions }: { actions?: ReactNode }) {
             <button
               aria-expanded={mobileMenuOpen}
               aria-label="Toggle menu"
-              className="text-primary"
+              className="text-foreground"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               type="button"
             >
@@ -188,7 +186,7 @@ export function Navigation({ actions }: { actions?: ReactNode }) {
               ))}
 
               <SiteHref
-                className="mt-2 rounded-md border border-border px-3.5 py-3 text-center font-sans text-foreground text-sm transition-colors hover:border-primary"
+                className="mt-2 rounded-md bg-primary px-3.5 py-3 text-center font-medium font-sans text-primary-foreground text-sm transition-colors hover:bg-primary/90"
                 href={nav.cta.href}
                 onClick={() => setMobileMenuOpen(false)}
               >

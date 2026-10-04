@@ -20,7 +20,7 @@ import { BlockKeyContext, useEditMode } from "../render/edit-mode";
  */
 
 const linkClass =
-  "text-[color:var(--cms-accent,var(--color-accent))] underline underline-offset-4 hover:opacity-80 transition-opacity";
+  "text-[color:var(--cms-accent,var(--brand-label))] underline underline-offset-4 hover:opacity-80 transition-opacity";
 
 function renderText(node: RichTextText, key: number): ReactNode {
   let out: ReactNode = node.text;
@@ -34,7 +34,7 @@ function renderText(node: RichTextText, key: number): ReactNode {
         break;
       case "code":
         out = (
-          <code className="font-mono text-[0.9em] bg-ink-soft px-1.5 py-0.5 rounded">
+          <code className="font-mono text-[0.9em] bg-muted px-1.5 py-0.5 rounded">
             {out}
           </code>
         );
@@ -67,7 +67,7 @@ function renderInline(content: RichTextText[] | undefined): ReactNode {
 export type Bullets = "disc" | "check";
 
 const checkClass =
-  "text-[color:var(--cms-accent,var(--color-accent))] font-heading font-bold text-xs mt-1 shrink-0";
+  "text-[color:var(--cms-accent,var(--brand-label))] font-heading font-semibold tracking-tight text-xs mt-1 shrink-0";
 
 function renderListItem(
   item: ListItem,
@@ -117,7 +117,7 @@ function renderNode(
       return (
         <Tag
           key={key}
-          className={`font-heading font-bold ${size} text-[color:var(--cms-heading,var(--color-white))] mt-8 mb-4 first:mt-0`}
+          className={`font-heading font-semibold tracking-tight ${size} text-[color:var(--cms-heading,var(--foreground))] mt-8 mb-4 first:mt-0`}
         >
           {renderInline(node.content)}
         </Tag>
@@ -164,18 +164,19 @@ function renderNode(
 // blog's article look (docs/cms-plan.md §3.8). Colours read
 // the block's --cms-* vars with that look as the fallback.
 
-const articleText = "text-[color:var(--cms-text,rgb(255_255_255/0.8))]";
-const articleAccent = "text-[color:var(--cms-accent,var(--color-accent))]";
+const articleText = "text-[color:var(--cms-text,var(--muted-foreground))]";
+const articleAccent = "text-[color:var(--cms-accent,var(--brand-label))]";
 const ARTICLE = {
   p: `${articleText} font-sans text-lg leading-relaxed mb-6`,
-  h2: "font-heading font-bold text-2xl md:text-3xl text-[color:var(--cms-heading,var(--color-primary))] mt-12 mb-6",
-  h3: `font-heading font-bold text-xl ${articleAccent} mt-8 mb-4`,
+  h2: "font-heading font-semibold tracking-tight text-2xl md:text-3xl text-[color:var(--cms-heading,var(--foreground))] mt-12 mb-6",
+  h3: `font-heading font-semibold tracking-tight text-xl ${articleAccent} mt-8 mb-4`,
   ul: "space-y-3 mb-6",
   li: `flex gap-3 ${articleText} font-sans leading-relaxed`,
   ol: `list-decimal pl-6 space-y-3 mb-6 ${articleText} font-sans leading-relaxed`,
   blockquote:
-    "cyber-border bg-ink-soft/30 pl-6 py-4 my-8 border-l-4 border-primary",
-  quoteP: "text-white font-sans text-xl italic leading-relaxed not-first:mt-4",
+    "bg-muted pl-6 pr-4 py-4 my-8 border-l-4 border-primary rounded-r-md",
+  quoteP:
+    "text-foreground font-sans text-xl italic leading-relaxed not-first:mt-4",
 };
 
 /** A list item's content: its paragraphs' text inline (as the blog's `<span>{item}</span>`), nested lists as lists. */
@@ -218,7 +219,10 @@ function renderArticleNode(
           {node.content.map((item, i) =>
             item?.type === "listItem" ? (
               <li key={i} className={ARTICLE.li}>
-                <span className={`${articleAccent} mt-1`}>&#9658;</span>
+                <span
+                  aria-hidden="true"
+                  className="mt-2.5 size-1.5 shrink-0 rounded-full bg-primary"
+                />
                 <span>{articleItemContent(item)}</span>
               </li>
             ) : null

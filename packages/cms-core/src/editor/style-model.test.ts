@@ -421,12 +421,10 @@ describe("contrast", () => {
       b: 255,
       a: 1,
     });
-    const cyan = colorRgba({ token: "accent" })!;
-    expect([
-      Math.round(cyan.r),
-      Math.round(cyan.g),
-      Math.round(cyan.b),
-    ]).toEqual([0, 212, 255]); // #00d4ff, this site's cyan
+    const sky = colorRgba({ token: "accent" })!;
+    expect([Math.round(sky.r), Math.round(sky.g), Math.round(sky.b)]).toEqual([
+      2, 132, 199,
+    ]); // #0284c7, sky-600
     expect(colorRgba({ hex: "#00000080" })!.a).toBeCloseTo(0.5, 2);
   });
 

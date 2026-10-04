@@ -1,5 +1,6 @@
 import { useSiteConfig } from "#/modules/cms/site/site-context";
 import { SiteHref, useSite } from "#/modules/cms/site/use-site";
+import { Logo } from "./logo";
 
 // One grid column per footer column, plus the brand column and (when it has items) the text
 // column, from lg up. Whole class names, so Tailwind generates them.
@@ -14,8 +15,7 @@ const LG_COLS: Record<number, string> = {
   8: "lg:grid-cols-8",
 };
 
-const heading =
-  "mb-4 font-sans font-semibold text-primary text-xs uppercase tracking-[0.18em]";
+const heading = "mb-4 font-sans font-semibold text-foreground text-sm";
 
 /**
  * The public site's footer, from the site doc's footer (site/use-site.tsx). CMS pages render it
@@ -30,15 +30,15 @@ export function Footer() {
   const columns = footer.columns.length + 1 + (hasHighlights ? 1 : 0);
 
   return (
-    <footer className="border-border border-t bg-background py-12 font-sans text-muted-foreground text-sm">
+    <footer className="border-border border-t bg-muted/40 py-12 font-sans text-muted-foreground text-sm">
       <div className="mx-auto max-w-6xl px-6">
         <div
           className={`grid grid-cols-1 gap-8 md:grid-cols-2 ${LG_COLS[columns] ?? "lg:grid-cols-4"}`}
         >
           {/* Brand */}
           <div>
-            <div className="mb-2 font-heading text-base text-foreground">
-              {name}
+            <div className="mb-3">
+              <Logo name={name} />
             </div>
             <p className="mb-2">{footer.tagline}</p>
             <p className="text-xs">{footer.location}</p>
@@ -51,7 +51,7 @@ export function Footer() {
               <nav aria-label={column.title} className="flex flex-col gap-2">
                 {column.links.map((link) => (
                   <SiteHref
-                    className="text-muted-foreground transition-colors hover:text-primary"
+                    className="text-muted-foreground transition-colors hover:text-foreground"
                     href={link.href}
                     key={link._key}
                   >
@@ -88,7 +88,7 @@ export function Footer() {
             <div className="flex gap-6">
               {footer.legalLinks.map((link) => (
                 <SiteHref
-                  className="text-xs transition-colors hover:text-primary"
+                  className="text-xs transition-colors hover:text-foreground"
                   href={link.href}
                   key={link._key}
                 >

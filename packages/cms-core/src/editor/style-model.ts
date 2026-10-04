@@ -432,17 +432,17 @@ export function paddingDragOp(
 
 /**
  * The brand tokens' values as sRGB hex, for contrast ratings. They must match the theme tokens in
- * apps/web/src/styles.css (`@theme`); parseCssColor reads hex and hsl only, so the hex is kept here
+ * apps/web/src/styles.css (`@theme static`, `--color-brand-*`); parseCssColor reads hex and hsl only, so the hex is kept here
  * (the web app's theme-tokens test checks the two agree). Change both together.
  */
 export const TOKEN_CSS: Record<BrandToken, string> = {
-  primary: "#ff7733",
-  "primary-soft": "#fb9518",
-  ink: "#1a1a1a",
-  danger: "#ff3859",
-  accent: "#00d4ff",
-  "ink-soft": "#2a2a2a",
-  muted: "#3a3a3a",
+  primary: "#4f46e5",
+  "primary-soft": "#818cf8",
+  ink: "#09090b",
+  danger: "#dc2626",
+  accent: "#0284c7",
+  "ink-soft": "#3f3f46",
+  muted: "#71717a",
   white: "#fff",
 };
 

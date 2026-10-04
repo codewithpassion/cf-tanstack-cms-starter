@@ -7,7 +7,7 @@ import { RichText } from "../richtext/render";
 import {
   type BlockComponentProps,
   Eyebrow,
-  headingWhite,
+  headingColor,
   textColor,
 } from "./ui";
 
@@ -17,7 +17,7 @@ type Props = z.output<typeof callout.schema>;
 export function CalloutBlock({ props }: BlockComponentProps<Props>) {
   const f = useField();
   return (
-    <Reveal className="cms-card bg-ink-soft/50 backdrop-blur-sm p-8 md:p-12">
+    <Reveal className="cms-card bg-card p-8 md:p-12">
       {!!props.eyebrow && (
         <Eyebrow field={f("eyebrow")} size="xs">
           {props.eyebrow}
@@ -26,7 +26,7 @@ export function CalloutBlock({ props }: BlockComponentProps<Props>) {
       {!!props.heading && (
         <h2
           {...f("heading")}
-          className={`font-heading font-bold text-2xl md:text-3xl ${headingWhite} mb-6`}
+          className={`font-heading font-semibold tracking-tight text-2xl md:text-3xl ${headingColor} mb-6`}
         >
           {props.heading}
         </h2>

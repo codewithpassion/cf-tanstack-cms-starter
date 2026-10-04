@@ -52,13 +52,13 @@ describe("PageRenderer", () => {
     expect(hero).not.toContain("--cms-pt-d");
     expect(hero).toContain("--cms-pt-m:48px");
     expect(hero).toContain("--cms-pb-d:80px");
-    expect(html).toContain("--cms-heading:var(--color-accent)");
+    expect(html).toContain("--cms-heading:var(--color-brand-accent)");
     // hero heading element: mobile-only size
     expect(html).toContain('data-cms-fs="m"');
     expect(html).toContain("--cms-e-fs-m:1.5rem");
-    // featureGrid hidden on tablet (and mobile, by cascade), cyber border
+    // featureGrid hidden on tablet (and mobile, by cascade), glow border
     expect(html).toContain('data-cms-hide-t="" data-cms-hide-m=""');
-    expect(html).toContain('data-cms-border="cyber"');
+    expect(html).toContain('data-cms-border="glow"');
   });
 
   it("emits no edit attributes outside the editor", () => {

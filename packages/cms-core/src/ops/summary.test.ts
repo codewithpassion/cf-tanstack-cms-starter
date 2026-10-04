@@ -48,7 +48,7 @@ describe("summarizeChange", () => {
       {
         style: {
           elements: { heading: { color: { token: "primary-soft" } } },
-          border: "cyber",
+          border: "glow",
         },
       }
     );

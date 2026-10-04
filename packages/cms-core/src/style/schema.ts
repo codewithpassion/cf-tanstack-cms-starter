@@ -87,7 +87,7 @@ export const blockStyleSchema = z.strictObject({
       accent: colorSchema.optional(),
     })
     .optional(),
-  border: z.enum(["none", "cyber", "subtle"]).optional(),
+  border: z.enum(["none", "glow", "subtle"]).optional(),
   elements: z.record(z.string(), elementStyleSchema).optional(),
 });
 

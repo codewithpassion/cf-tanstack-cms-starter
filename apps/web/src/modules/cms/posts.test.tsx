@@ -23,7 +23,7 @@ type SamplePost = {
   readingTimeOverride?: number;
   /** A TipTap JSON body, as stored. */
   body: unknown;
-  /** The body's text as the article typography shows it (list items get a ► bullet). */
+  /** The body's text as the article typography shows it (list items get a bullet). */
   visible: string;
   hasQuote: boolean;
 };
@@ -61,7 +61,7 @@ const SAMPLE_POSTS: SamplePost[] = [
       ],
     },
     visible:
-      "Why it matters Lorem ipsum dolor sit amet. ► First point ► Second point A quote.",
+      "Why it matters Lorem ipsum dolor sit amet. First point Second point A quote.",
     hasQuote: true,
   },
   {
@@ -83,7 +83,7 @@ const SAMPLE_POSTS: SamplePost[] = [
         bullets("Write it down", "Share it"),
       ],
     },
-    visible: "Start small Pick one task. ► Write it down ► Share it",
+    visible: "Start small Pick one task. Write it down Share it",
     hasQuote: false,
   },
 ];
@@ -121,7 +121,7 @@ const OPACITY_0_RE = /opacity:0/g;
 
 describe("post body rendering", () => {
   it.each(SAMPLE_POSTS.map((p) => [p.slug, p] as const))(
-    "%s: the article typography shows exactly the body's text, with ► bullets",
+    "%s: the article typography shows exactly the body's text, with bullets",
     (_slug, p) => {
       const html = renderToStaticMarkup(
         <PostContext.Provider value={true}>
@@ -138,12 +138,12 @@ describe("post body rendering", () => {
       expect(visible).toBe(p.visible);
       // The article classes for headings, paragraphs and the quote.
       expect(html).toContain(
-        'class="font-heading font-bold text-2xl md:text-3xl'
+        'class="font-heading font-semibold tracking-tight text-2xl md:text-3xl'
       );
       expect(html).toContain("text-lg leading-relaxed mb-6");
       if (p.hasQuote) {
         expect(html).toContain(
-          "cyber-border bg-ink-soft/30 pl-6 py-4 my-8 border-l-4 border-primary"
+          "bg-muted pl-6 pr-4 py-4 my-8 border-l-4 border-primary"
         );
       }
     }
@@ -153,7 +153,7 @@ describe("post body rendering", () => {
     const html = renderToStaticMarkup(
       <PageRenderer doc={postDoc(FIRST_POST)} />
     );
-    expect(html).not.toContain("►");
+    expect(html).not.toContain("size-1.5");
     expect(html).toContain("list-disc");
   });
 });

@@ -4,6 +4,7 @@
  * ignored: the front door never moves.
  */
 import { createFileRoute } from "@tanstack/react-router";
+import { LogoMark } from "#/components/logo";
 import { getTrpc } from "#/integrations/trpc/client";
 import { CmsPage } from "#/modules/cms/render/cms-page";
 import {
@@ -50,11 +51,29 @@ function Home() {
 /** The home page before anything is published: where to go to fill the site. */
 function NothingPublished() {
   return (
-    <main className="page-wrap px-4 py-24 text-center">
-      <h1 className="display-title text-3xl">Nothing published yet.</h1>
-      <p className="mt-4 text-muted-foreground">
-        Sign in to <a href="/admin">/admin</a> and import the starter content.
+    <main className="page-wrap flex min-h-[70dvh] flex-col items-center justify-center px-4 py-24 text-center">
+      <LogoMark className="mb-6 size-12" />
+      <h1 className="display-title text-3xl sm:text-4xl">
+        Nothing published yet
+      </h1>
+      <p className="mt-3 max-w-md text-muted-foreground">
+        Your site is running. Sign in to the admin to import the starter
+        content, or build your first page.
       </p>
+      <div className="mt-8 flex flex-wrap justify-center gap-3">
+        <a
+          className="rounded-md bg-primary px-5 py-2.5 font-medium text-primary-foreground text-sm shadow-soft transition-colors hover:bg-primary/90"
+          href="/admin/setup"
+        >
+          Import starter content
+        </a>
+        <a
+          className="rounded-md border border-border bg-background px-5 py-2.5 font-medium text-sm shadow-soft transition-colors hover:bg-accent"
+          href="/admin"
+        >
+          Open the admin
+        </a>
+      </div>
     </main>
   );
 }

@@ -584,7 +584,7 @@ describe("stop reasons and repairs", () => {
     );
     (refused as unknown as { stop_details: unknown }).stop_details = {
       type: "refusal",
-      category: "cyber",
+      category: "glow",
       explanation: "no",
     };
     const { client, requests } = fakeClient([refused]);
@@ -601,7 +601,7 @@ describe("stop reasons and repairs", () => {
     expect(requests).toHaveLength(1);
     expect(events).toContainEqual({
       type: "refusal",
-      category: "cyber",
+      category: "glow",
       explanation: "no",
     });
     expect(danglingToolUses(await store.messages("t1"))).toEqual([]);

@@ -29,9 +29,11 @@ function themeStaticBlock(): string {
   return "";
 }
 
-/** The value `--color-<token>` is declared with inside `@theme static`, if it is. */
+/** The value `--color-brand-<token>` is declared with inside `@theme static`, if it is. */
 function declared(block: string, token: string): string | undefined {
-  const match = new RegExp(`--color-${token}\\s*:\\s*([^;]+);`).exec(block);
+  const match = new RegExp(`--color-brand-${token}\\s*:\\s*([^;]+);`).exec(
+    block
+  );
   // biome-ignore lint/suspicious/noUnnecessaryConditions: exec returns null when the token isn't declared.
   return match ? match[1]?.trim() : undefined;
 }
@@ -39,7 +41,7 @@ function declared(block: string, token: string): string | undefined {
 describe("CMS colour tokens", () => {
   const block = themeStaticBlock();
 
-  // The CMS writes var(--color-<token>) inline, where Tailwind can't see it, so the variables
+  // The CMS writes var(--color-brand-<token>) inline, where Tailwind can't see it, so the variables
   // must come from `@theme static` to be in the built CSS.
   it("declares every BRAND_TOKENS colour inside @theme static in src/styles.css", () => {
     expect(block).not.toBe("");
@@ -49,15 +51,14 @@ describe("CMS colour tokens", () => {
     expect(missing).toEqual([]);
   });
 
-  // The editor's contrast check rates colours by TOKEN_CSS. A token declared as a hex literal must
-  // match it; tokens that alias a theme variable (primary, accent, muted -> the shadcn tokens)
-  // can't be compared statically.
-  it("TOKEN_CSS matches every hex literal in @theme static", () => {
+  // The editor's contrast check rates colours by TOKEN_CSS. Every token is a hex literal in
+  // `@theme static` (--color-brand-*, never an alias of a shadcn variable) and must equal it.
+  it("TOKEN_CSS matches every token in @theme static", () => {
     const literals = BRAND_TOKENS.flatMap((token) => {
       const value = declared(block, token);
       return value && HEX_RE.test(value) ? [[token, value] as const] : [];
     });
-    expect(literals.length).toBeGreaterThan(0);
+    expect(literals.length).toBe(BRAND_TOKENS.length);
     for (const [token, value] of literals) {
       expect(value.toLowerCase(), token).toBe(TOKEN_CSS[token].toLowerCase());
     }

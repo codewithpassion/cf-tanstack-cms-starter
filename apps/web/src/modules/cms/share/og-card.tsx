@@ -17,7 +17,8 @@ import {
   useState,
 } from "react";
 
-import { Divider, Eyebrow, headingPrimary, textColor } from "../blocks/ui";
+import { LogoMark } from "#/components/logo";
+import { Divider, Eyebrow, headingColor, textColor } from "../blocks/ui";
 import { PageRenderer } from "../render/page-renderer";
 import { useSiteConfig } from "../site/site-context";
 
@@ -88,7 +89,7 @@ function OgFrame({ children }: { children: ReactNode }) {
 
   return (
     <div
-      className="relative overflow-hidden bg-ink font-sans text-white"
+      className="relative overflow-hidden bg-background font-sans text-foreground"
       data-og-frame=""
       data-og-ready={ready ? "" : undefined}
       ref={ref}
@@ -119,12 +120,9 @@ function LogoBadge() {
   const { name } = useSiteConfig();
   return (
     <div className="absolute right-0 bottom-6 left-0 z-20 flex justify-center">
-      <div className="flex items-center gap-3 border border-primary/40 bg-ink/80 px-5 py-2">
-        <span
-          aria-hidden
-          className="h-2.5 w-2.5 bg-gradient-to-r from-primary to-accent"
-        />
-        <span className="font-bold font-heading text-lg text-primary uppercase tracking-widest">
+      <div className="flex items-center gap-2.5 rounded-full border border-border bg-card px-4 py-2 shadow-soft">
+        <LogoMark className="size-6" />
+        <span className="font-heading font-semibold text-foreground text-lg tracking-tight">
           {name}
         </span>
       </div>
@@ -188,12 +186,12 @@ function HeroTemplate({
 }
 
 const mix = (token: string, percent: number) =>
-  `color-mix(in srgb, var(--color-${token}) ${percent}%, transparent)`;
+  `color-mix(in srgb, var(--color-brand-${token}) ${percent}%, transparent)`;
 
 const GRADIENT_BG: Record<ShareGradient, string> = {
-  "primary-glow": `radial-gradient(ellipse at 20% 90%, ${mix("primary", 35)}, transparent 60%), radial-gradient(ellipse at 85% 10%, ${mix("primary-soft", 15)}, transparent 55%)`,
-  "accent-glow": `radial-gradient(ellipse at 80% 15%, ${mix("accent", 28)}, transparent 60%), radial-gradient(ellipse at 15% 90%, ${mix("accent", 10)}, transparent 55%)`,
-  "accent-primary": `radial-gradient(ellipse at 0% 50%, ${mix("accent", 25)}, transparent 55%), radial-gradient(ellipse at 100% 50%, ${mix("primary", 30)}, transparent 55%)`,
+  "primary-glow": `radial-gradient(ellipse at 20% 90%, ${mix("primary", 18)}, transparent 60%), radial-gradient(ellipse at 85% 10%, ${mix("primary-soft", 14)}, transparent 55%)`,
+  "accent-glow": `radial-gradient(ellipse at 80% 15%, ${mix("accent", 16)}, transparent 60%), radial-gradient(ellipse at 15% 90%, ${mix("accent", 8)}, transparent 55%)`,
+  "accent-primary": `radial-gradient(ellipse at 0% 50%, ${mix("accent", 14)}, transparent 55%), radial-gradient(ellipse at 100% 50%, ${mix("primary", 16)}, transparent 55%)`,
 };
 
 function Background({ params }: { params: ShareParams }) {
@@ -208,7 +206,7 @@ function Background({ params }: { params: ShareParams }) {
           width={OG_WIDTH}
         />
         {/* Keeps the text readable on any photo. */}
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/60 to-ink/85" />
+        <div className="absolute inset-0 bg-background/85" />
       </>
     );
   }
@@ -272,7 +270,7 @@ function CardTemplate({
       <SafeColumn>
         {!!eyebrow && <Eyebrow field={{}}>{eyebrow}</Eyebrow>}
         <h1
-          className={`font-black font-heading ${headlineSize(headline)} ${headingPrimary} mb-6`}
+          className={`font-semibold font-heading tracking-tight ${headlineSize(headline)} ${headingColor} mb-6`}
         >
           {headline}
         </h1>
@@ -305,12 +303,12 @@ function PostTemplate({
       />
       <SafeColumn>
         {!!category && (
-          <div className="mb-6 border border-accent/60 px-3 py-1 font-sans text-accent text-sm uppercase tracking-widest">
+          <div className="mb-6 rounded-full border border-border bg-muted px-3 py-1 font-medium font-sans text-[color:var(--brand-label)] text-sm">
             {category}
           </div>
         )}
         <h1
-          className={`font-black font-heading ${headlineSize(title)} mb-6 text-white`}
+          className={`font-semibold font-heading tracking-tight ${headlineSize(title)} mb-6 text-foreground`}
         >
           {title}
         </h1>

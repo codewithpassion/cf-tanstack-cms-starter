@@ -59,18 +59,35 @@
   background-size: cover;
 }
 
-/* Border applies to the block's card surfaces. Default "none" keeps today's look. */
-.cms-block[data-cms-border="cyber"] .cms-card {
-  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+/*
+ * Card surfaces (.cms-card): a soft default (card colour, 1px border, soft shadow) in a layer so a
+ * utility on the element still wins. The block's `border` style (unlayered, so it beats the layer)
+ * then picks: "none" keeps the default, "subtle" is flat (border, no shadow), "glow" is an indigo
+ * ring with a soft glow. DESIGN KNOB: change these three rules to restyle every card.
+ */
+@layer components {
+  .cms-card {
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+  }
 }
 
 .cms-block[data-cms-border="subtle"] .cms-card {
-  border: 1px solid var(--color-border);
+  box-shadow: none;
+}
+
+.cms-block[data-cms-border="glow"] .cms-card {
+  border-color: color-mix(in srgb, var(--color-brand-primary) 45%, transparent);
+  box-shadow: 0 0 0 4px
+    color-mix(in srgb, var(--color-brand-primary) 8%, transparent);
 }
 
 /* A highlighted card (pricing's recommended plan) keeps its primary border whatever the block's border style. */
 .cms-block .cms-card[data-cms-highlight] {
-  border: 1px solid var(--color-primary);
+  border-color: var(--color-brand-primary);
+  box-shadow: var(--shadow-lift);
 }
 
 /*
@@ -169,15 +186,5 @@
 @media (width < 768px) {
   [data-cms-hide-m] {
     display: none;
-  }
-}
-
-/*
- * The article blockquote's frame (richtext/render.tsx `ARTICLE.blockquote`), from the source's
- * app/app.css. Layered as it was there, so Tailwind utilities on the same element still win.
- */
-@layer components {
-  .cyber-border {
-    position: relative;
   }
 }

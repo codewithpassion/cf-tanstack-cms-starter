@@ -15,7 +15,7 @@ import {
   type BlockComponentProps,
   bigButtonClass,
   Eyebrow,
-  headingWhite,
+  headingColor,
   hideOnly,
   Lines,
   notInline,
@@ -71,7 +71,7 @@ export function LogosBlock({ props }: BlockComponentProps<Props>) {
         )}
         <h2
           {...accentedField(f("heading"), props.heading, props.headingAccent)}
-          className={`font-heading font-black text-4xl md:text-6xl ${headingWhite} mb-8 leading-tight`}
+          className={`font-heading font-semibold tracking-tight text-4xl md:text-6xl ${headingColor} mb-8 leading-tight`}
         >
           <Accented
             text={props.heading}
@@ -87,13 +87,13 @@ export function LogosBlock({ props }: BlockComponentProps<Props>) {
               props.subheading,
               props.subheadingAccent
             )}
-            className="text-white font-sans text-xl md:text-2xl font-medium mb-12"
+            className="text-foreground font-sans text-xl md:text-2xl font-medium mb-12"
           >
             <Accented
               text={props.subheading}
               accent={props.subheadingAccent}
               field={f("subheadingAccent")}
-              color="text-accent"
+              color="text-primary"
             />
           </p>
         )}
@@ -101,18 +101,20 @@ export function LogosBlock({ props }: BlockComponentProps<Props>) {
         {!!props.callout && (
           <ScaleIn
             attrs={hideOnly(f("callout"))}
-            className="cms-measure bg-primary/10 p-8 max-w-4xl backdrop-blur-sm rounded-lg"
+            className="cms-measure bg-primary/10 p-8 max-w-4xl rounded-lg"
           >
             <p
               {...f("callout")}
-              className="text-lg md:text-xl text-white font-sans font-semibold leading-relaxed"
+              className="text-lg md:text-xl text-foreground font-sans font-semibold leading-relaxed"
             >
-              <span className="text-primary-soft">{props.callout.lead}</span>
+              <span className="text-primary">{props.callout.lead}</span>
               {!!props.callout.body && (
                 <>
                   <br />
                   <br />
-                  <span className="text-white/80">{props.callout.body}</span>
+                  <span className="text-muted-foreground">
+                    {props.callout.body}
+                  </span>
                 </>
               )}
             </p>
@@ -128,7 +130,7 @@ export function LogosBlock({ props }: BlockComponentProps<Props>) {
               <Reveal key={item._key} y={50} delay={i * 0.1} className="h-full">
                 <div
                   {...f("items")}
-                  className="cms-card text-left bg-ink/50 p-10 backdrop-blur-sm hover:scale-[1.02] transition-all rounded-lg h-full"
+                  className="cms-card text-left bg-card p-10 hover:-translate-y-0.5 transition-all rounded-lg h-full"
                 >
                   {item.image ? (
                     // biome-ignore lint/correctness/useImageSize: a media-library logo of unknown aspect ratio, 48px high.
@@ -139,15 +141,15 @@ export function LogosBlock({ props }: BlockComponentProps<Props>) {
                       className="h-12 w-auto mb-6"
                     />
                   ) : (
-                    <div className="text-[color:var(--cms-accent,var(--color-accent))] mb-6">
+                    <div className="text-[color:var(--cms-accent,var(--brand-label))] mb-6">
                       <Icon className="w-12 h-12" aria-hidden="true" />
                     </div>
                   )}
-                  <h3 className="font-heading font-bold text-xl text-white mb-5">
+                  <h3 className="font-heading font-semibold tracking-tight text-xl text-foreground mb-5">
                     {item.name}
                   </h3>
                   {!!item.caption && (
-                    <p className="text-white/70 font-sans leading-relaxed text-base">
+                    <p className="text-muted-foreground font-sans leading-relaxed text-base">
                       {item.caption}
                     </p>
                   )}
@@ -163,7 +165,7 @@ export function LogosBlock({ props }: BlockComponentProps<Props>) {
           {!!props.quote && (
             <blockquote
               {...accentedField(f("quote"), props.quote, props.quoteAccent)}
-              className="cms-measure text-xl md:text-2xl text-white/90 font-sans italic leading-relaxed max-w-4xl mb-12 p-10 bg-gradient-to-r from-accent/10 to-primary/10 backdrop-blur-sm rounded-lg"
+              className="cms-measure text-xl md:text-2xl text-muted-foreground font-sans italic leading-relaxed max-w-4xl mb-12 p-10 bg-gradient-to-r from-primary/10 to-brand-accent/10 rounded-lg"
             >
               <QuoteText text={props.quote} accent={props.quoteAccent} f={f} />
             </blockquote>

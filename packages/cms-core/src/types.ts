@@ -9,7 +9,7 @@ export type Device = "desktop" | "tablet" | "mobile";
 /** Desktop is the base; tablet and mobile override it. Unset = inherit the next larger device; the block default applies only to a property unset on every device. */
 export type Responsive<T> = Partial<Record<Device, T>>;
 
-/** Brand tokens map to `--color-<token>` in src/styles.css `@theme static` (the design knob: rename values here and in the theme together). */
+/** Brand tokens map to `--color-brand-<token>` in src/styles.css `@theme static` (the design knob: rename values here and in the theme together). */
 export const BRAND_TOKENS = [
   "primary",
   "primary-soft",
@@ -59,7 +59,7 @@ export type BlockStyle = {
     image?: { mediaId: string; overlay?: Color; opacity?: number };
   };
   colors?: { text?: Color; heading?: Color; accent?: Color };
-  border?: "none" | "cyber" | "subtle";
+  border?: "none" | "glow" | "subtle";
   /** Named elements a block declares as styleable, e.g. "heading", "body", "button", "items" (all items as a group). */
   elements?: Record<string, ElementStyle>;
 };

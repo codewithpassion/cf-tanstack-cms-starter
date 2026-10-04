@@ -1,4 +1,13 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300..700&family=Newsreader:opsz,wght@6..72,300..600&display=swap");
+/*
+ * DESIGN KNOBS. Everything a rebrand touches is in this file, in this order:
+ *   1. Fonts: the Google Fonts @import below and --font-sans / --font-heading.
+ *   2. CMS brand tokens (@theme static): the colours the editor offers. Mirror in cms-core TOKEN_CSS.
+ *   3. Theme colours, light then dark (:root / .dark): shadcn variables, the admin and the public
+ *      site's default text and surfaces follow these.
+ *   4. Radius and shadows.
+ * Gradient presets live in packages/cms-core/src/style/vars.ts (GRADIENTS). See docs/design.md.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -7,9 +16,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* 1. Fonts. Headings use the same family as body text; change --font-heading to pair another. */
 @theme inline {
-  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-heading: "Newsreader", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Inter", ui-sans-serif, system-ui, sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -52,111 +62,111 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* CMS brand tokens (cms-core types.ts BRAND_TOKENS). The CMS writes var(--color-<token>) inline
-   where Tailwind can't see it, so they live in `@theme static` to be emitted even when unused.
-   primary, accent and muted share their names with the shadcn tokens above, so they resolve to the
-   same variables (one source of truth); the rest are literals. Phase 4 restyles: change a hex here
-   and the matching TOKEN_CSS entry in cms-core editor/style-model.ts together (theme-tokens.test). */
+/* 2. CMS brand tokens (cms-core types.ts BRAND_TOKENS). The editor stores a token name in the page
+   doc (never rename them) and writes var(--color-brand-<token>) inline, where Tailwind can't see
+   it, so they live in `@theme static` to be emitted even when unused. They use their own
+   --color-brand-* names so they never collide with shadcn's primary, accent and muted.
+   Tokens are the same in light and dark: block defaults use the theme variables below instead, so
+   they only show where an editor picked one. Change a hex here AND the same token in cms-core
+   src/editor/style-model.ts TOKEN_CSS (theme-tokens.test.ts fails when they drift). */
 @theme static {
-  --color-primary: var(--primary);
-  --color-primary-soft: #fb9518;
-  --color-accent: var(--accent);
-  --color-danger: #ff3859;
-  --color-ink: #1a1a1a;
-  --color-ink-soft: #2a2a2a;
-  --color-muted: var(--muted);
-  --color-white: #fff;
+  --color-brand-primary: #4f46e5; /* indigo-600 */
+  --color-brand-primary-soft: #818cf8; /* indigo-400 */
+  --color-brand-accent: #0284c7; /* sky-600 */
+  --color-brand-danger: #dc2626; /* red-600 */
+  --color-brand-ink: #09090b; /* zinc-950 */
+  --color-brand-ink-soft: #3f3f46; /* zinc-700 */
+  --color-brand-muted: #71717a; /* zinc-500 */
+  --color-brand-white: #fff;
 }
 
-/* Brand core from docs/image.png - constant across themes. One accent only:
-   terracotta. Everything else is warm paper and ink. */
+/* 4. Radius (8px) and soft shadows. */
 :root {
-  --brand-terracotta: oklch(0.6724 0.1308 38.76); /* #d97757 */
-  --brand-paper: oklch(0.9818 0.0054 95.1); /* #faf9f5 */
-  --brand-ink: oklch(0.209 0 0); /* #181818 */
-
-  --radius: 0.75rem;
+  --radius: 0.5rem;
+  --shadow-soft: 0 1px 2px 0 rgb(0 0 0 / 0.04), 0 1px 3px 0 rgb(0 0 0 / 0.06);
+  --shadow-lift:
+    0 4px 6px -2px rgb(0 0 0 / 0.05), 0 12px 24px -6px rgb(0 0 0 / 0.1);
 }
 
-/* Light is the reference surface: ink on warm paper, hairline dividers, and
-   terracotta for fills and labels. */
+.dark {
+  --shadow-soft: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-lift: 0 8px 24px -6px rgb(0 0 0 / 0.55);
+}
+
+/* 3. Theme colours, light: white and zinc, one indigo accent. */
 :root,
 .light {
-  --background: var(--brand-paper);
-  --foreground: var(--brand-ink);
-  --card: oklch(1 0 0);
-  --card-foreground: var(--brand-ink);
-  --popover: oklch(1 0 0);
-  --popover-foreground: var(--brand-ink);
-  --primary: var(--brand-terracotta);
-  --primary-foreground: var(
-    --brand-ink
-  ); /* white on terracotta is only 3.1:1 */
-  --secondary: oklch(0.9457 0.0096 93.57); /* #efede6 */
-  --secondary-foreground: var(--brand-ink);
-  --muted: oklch(0.9457 0.0096 93.57);
-  --muted-foreground: oklch(
-    0.5181 0.01 84.59
-  ); /* #6b6862, image's #8a8681 fails AA */
-  --accent: oklch(0.9457 0.0096 93.57);
-  --accent-foreground: var(--brand-ink);
-  --destructive: oklch(0.5289 0.1661 28.5); /* #b8382e */
-  --border: oklch(0.9088 0.0123 96.43); /* #e3e1d8 divider */
-  --input: oklch(0.9088 0.0123 96.43);
-  --ring: var(--brand-terracotta);
-  --chart-1: var(--brand-terracotta);
-  --chart-2: var(--brand-ink);
-  --chart-3: oklch(0.3791 0 0); /* #424242 */
-  --chart-4: oklch(0.622 0.0088 73.7); /* #8a8681 */
-  --chart-5: oklch(0.9088 0.0123 96.43);
-  --sidebar: var(--brand-paper);
-  --sidebar-foreground: var(--brand-ink);
-  --sidebar-primary: var(--brand-terracotta);
-  --sidebar-primary-foreground: var(--brand-ink);
-  --sidebar-accent: oklch(0.9457 0.0096 93.57);
-  --sidebar-accent-foreground: var(--brand-ink);
-  --sidebar-border: oklch(0.9088 0.0123 96.43);
-  --sidebar-ring: var(--brand-terracotta);
+  --background: #fff;
+  --foreground: #09090b; /* zinc-950 */
+  --card: #fff;
+  --card-foreground: #09090b;
+  --popover: #fff;
+  --popover-foreground: #09090b;
+  --primary: #4f46e5; /* indigo-600, 6.3:1 with white text */
+  --primary-foreground: #fff;
+  --secondary: #f4f4f5; /* zinc-100 */
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a; /* zinc-500, 4.8:1 on white */
+  --accent: #f4f4f5; /* hover highlight in menus; the CMS accent colour is a token above */
+  --accent-foreground: #18181b;
+  --destructive: #dc2626;
+  --border: #e4e4e7; /* zinc-200 */
+  --input: #e4e4e7;
+  --ring: #6366f1;
+  --chart-1: #4f46e5;
+  --chart-2: #0284c7;
+  --chart-3: #71717a;
+  --chart-4: #a1a1aa;
+  --chart-5: #e4e4e7;
+  --sidebar: #fafafa; /* zinc-50 */
+  --sidebar-foreground: #09090b;
+  --sidebar-primary: #4f46e5;
+  --sidebar-primary-foreground: #fff;
+  --sidebar-accent: #f4f4f5;
+  --sidebar-accent-foreground: #18181b;
+  --sidebar-border: #e4e4e7;
+  --sidebar-ring: #6366f1;
 
-  /* Terracotta text needs a darker step to pass AA on paper. */
-  --brand-label: oklch(0.5585 0.1322 38.91); /* #b35434 */
+  /* Eyebrow and link text: a darker indigo step so small text passes AA on white. */
+  --brand-label: #4338ca; /* indigo-700 */
 }
 
-/* Dark variant: the same hues with paper and ink swapped. */
+/* Dark: zinc-950 surfaces, brighter indigo. */
 .dark {
-  --background: var(--brand-ink);
-  --foreground: var(--brand-paper);
-  --card: oklch(0.2485 0.0024 67.72); /* #222120 */
-  --card-foreground: var(--brand-paper);
-  --popover: oklch(0.2485 0.0024 67.72);
-  --popover-foreground: var(--brand-paper);
-  --primary: var(--brand-terracotta);
-  --primary-foreground: var(--brand-ink);
-  --secondary: oklch(0.2894 0.0039 84.58); /* #2c2b29 */
-  --secondary-foreground: var(--brand-paper);
-  --muted: oklch(0.2894 0.0039 84.58);
-  --muted-foreground: oklch(0.6973 0.0111 81.79); /* #a19d96 */
-  --accent: oklch(0.2894 0.0039 84.58);
-  --accent-foreground: var(--brand-paper);
-  --destructive: oklch(0.6683 0.1574 28.93); /* #e5695a */
-  --border: oklch(0.3417 0.0059 78.25); /* #3a3835 */
-  --input: oklch(0.3417 0.0059 78.25);
-  --ring: var(--brand-terracotta);
-  --chart-1: var(--brand-terracotta);
-  --chart-2: var(--brand-paper);
-  --chart-3: oklch(0.6973 0.0111 81.79);
-  --chart-4: oklch(0.5181 0.01 84.59);
-  --chart-5: oklch(0.3417 0.0059 78.25);
-  --sidebar: var(--brand-ink);
-  --sidebar-foreground: var(--brand-paper);
-  --sidebar-primary: var(--brand-terracotta);
-  --sidebar-primary-foreground: var(--brand-ink);
-  --sidebar-accent: oklch(0.2894 0.0039 84.58);
-  --sidebar-accent-foreground: var(--brand-paper);
-  --sidebar-border: oklch(0.3417 0.0059 78.25);
-  --sidebar-ring: var(--brand-terracotta);
+  --background: #09090b;
+  --foreground: #fafafa;
+  --card: #18181b; /* zinc-900 */
+  --card-foreground: #fafafa;
+  --popover: #18181b;
+  --popover-foreground: #fafafa;
+  --primary: #6366f1; /* indigo-500 */
+  --primary-foreground: #fff;
+  --secondary: #27272a; /* zinc-800 */
+  --secondary-foreground: #fafafa;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa; /* zinc-400 */
+  --accent: #27272a;
+  --accent-foreground: #fafafa;
+  --destructive: #f87171;
+  --border: #27272a;
+  --input: #3f3f46;
+  --ring: #818cf8;
+  --chart-1: #818cf8;
+  --chart-2: #38bdf8;
+  --chart-3: #a1a1aa;
+  --chart-4: #71717a;
+  --chart-5: #3f3f46;
+  --sidebar: #0f0f12;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #6366f1;
+  --sidebar-primary-foreground: #fff;
+  --sidebar-accent: #27272a;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: #27272a;
+  --sidebar-ring: #818cf8;
 
-  --brand-label: oklch(0.7187 0.1122 39.57); /* #e08b6e */
+  --brand-label: #a5b4fc; /* indigo-300 */
 }
 
 @layer base {
@@ -172,8 +182,7 @@
     @apply font-sans;
   }
 
-  /* shadcn's base layer does not style inline code, and the Quick Start list
-     on the home page renders it. Layered so Tailwind utilities still win. */
+  /* shadcn's base layer does not style inline code. Layered so Tailwind utilities still win. */
   code {
     @apply rounded-md border border-border bg-muted px-1.5 py-0.5 font-mono text-[0.82em] text-foreground;
   }
@@ -181,14 +190,11 @@
 
 body {
   min-height: 100dvh;
-  overflow-wrap: anywhere;
-}
-
-body {
   margin: 0;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-wrap: anywhere;
 }
 
 .page-wrap {
@@ -196,22 +202,23 @@ body {
   margin-inline: auto;
 }
 
-/* Serif display heading, sentence case, slightly tightened like the image. */
+/* Page headings outside the CMS blocks (login, not found, empty home). */
 .display-title {
   font-family: var(--font-heading);
-  font-weight: 400;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  letter-spacing: -0.025em;
 }
 
-/* Soft panel: rounded, hairline border, no shadow. */
+/* Panel: card surface, 1px border, soft shadow. */
 .island-shell {
   position: relative;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-2xl);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
 }
 
-/* Eyebrow label: small terracotta text above a heading. */
+/* Eyebrow label: small indigo text above a heading. */
 .island-kicker {
   font-size: 0.8125rem;
   font-weight: 600;
@@ -222,24 +229,11 @@ body {
   position: relative;
   display: inline-flex;
   align-items: center;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 500;
   color: var(--muted-foreground);
   text-decoration: none;
-  transition: color 200ms ease;
-}
-
-.nav-link::after {
-  position: absolute;
-  bottom: -6px;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  content: "";
-  background: var(--brand-terracotta);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 170ms ease;
+  transition: color 150ms ease;
 }
 
 .nav-link:hover,
@@ -247,29 +241,18 @@ body {
   color: var(--foreground);
 }
 
-.nav-link:hover::after,
-.nav-link.is-active::after {
-  transform: scaleX(1);
-}
-
-@media (max-width: 640px) {
-  .nav-link::after {
-    bottom: -4px;
-  }
-}
-
 .site-footer {
   border-top: 1px solid var(--border);
 }
 
 .rise-in {
-  animation: rise-in 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: rise-in 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes rise-in {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;

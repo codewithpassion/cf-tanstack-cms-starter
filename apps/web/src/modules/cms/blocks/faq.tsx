@@ -7,8 +7,7 @@ import { RichText } from "../richtext/render";
 import {
   type BlockComponentProps,
   Eyebrow,
-  headingPrimary,
-  headingWhite,
+  headingColor,
   textColor,
 } from "./ui";
 
@@ -26,19 +25,15 @@ export function FaqBlock({ props }: BlockComponentProps<Props>) {
       )}
       <h2
         {...f("heading")}
-        className={`font-heading font-bold text-2xl md:text-3xl ${headingWhite} mb-8`}
+        className={`font-heading font-semibold tracking-tight text-2xl md:text-3xl ${headingColor} mb-8`}
       >
         {props.heading}
       </h2>
       <div className="flex flex-col cms-gap">
         {props.items.map((item) => (
-          <div
-            key={item._key}
-            {...f("items")}
-            className="cms-card bg-ink-soft/50 backdrop-blur-sm p-6"
-          >
+          <div key={item._key} {...f("items")} className="cms-card bg-card p-6">
             <h3
-              className={`font-heading font-bold text-base ${headingPrimary} mb-3`}
+              className={`font-heading font-semibold tracking-tight text-base ${headingColor} mb-3`}
             >
               {item.q}
             </h3>

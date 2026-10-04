@@ -61,7 +61,7 @@ const testSite = () => structuredClone(publicSite(TEST_SITE));
 describe("Navigation + Footer from the site doc", () => {
   it("render the defaults with no site doc: site name, nav links and button, footer column and copyright", async () => {
     const html = await render();
-    expect(html).toContain(`>${TEST_CONFIG.name}</a>`);
+    expect(html).toContain(`>${TEST_CONFIG.name}</span></span></a>`);
     expect(html).toContain('href="/blog"');
     expect(html).toContain(">Get in touch<");
     expect(html).toContain(">Edit me: a short line about the site.<");
@@ -130,15 +130,15 @@ describe("Navigation + Footer from the site doc", () => {
     const html = await render(site);
     // Active links end in a bare `text-primary`; idle ones only have `hover:text-primary`.
     expect(html).toMatch(
-      /<button aria-controls="nav-menu-co" aria-expanded="false" aria-haspopup="true" aria-label="Company menu" class="[^"]* text-primary" type="button">/
+      /<button aria-controls="nav-menu-co" aria-expanded="false" aria-haspopup="true" aria-label="Company menu" class="[^"]* text-foreground" type="button">/
     );
     expect(html).toContain('id="nav-menu-co"');
-    // /about is the current page: its parent "Company" is highlighted with the underline; "Blog" isn't.
+    // /about is the current page: its parent "Company" is highlighted; "Blog" isn't.
     expect(html).toMatch(
-      /class="relative [^"]* text-primary"[^>]*href="\/company"[^>]*>Company<span class="absolute -bottom-1/
+      /class="relative [^"]* text-foreground"[^>]*href="\/company"[^>]*>Company<\/a>/
     );
     expect(html).toMatch(
-      /class="relative [^"]*text-muted-foreground hover:text-primary"[^>]*href="\/blog"[^>]*>Blog<\/a>/
+      /class="relative [^"]*text-muted-foreground hover:text-foreground"[^>]*href="\/blog"[^>]*>Blog<\/a>/
     );
   });
 

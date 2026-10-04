@@ -7,17 +7,14 @@ import type { FieldProps } from "../render/field";
 export type BlockComponentProps<P> = { props: P };
 
 /**
- * Shared visual idiom of the blocks: a "> Label" eyebrow, heading font, gradient divider bar,
- * gradient/outline buttons. Colours read the block's --cms-* vars with the theme tokens as the
- * fallback.
+ * Shared visual idiom of the blocks: a small eyebrow label, heading font, solid and outline
+ * buttons. Colours read the block's --cms-* vars (set when an editor picks a colour) and fall back
+ * to the theme variables, so an unstyled block follows light and dark mode.
  */
 
-export const textColor = "text-[color:var(--cms-text,rgb(255_255_255/0.8))]";
-export const accentColor = "text-[color:var(--cms-accent,var(--color-accent))]";
-export const headingPrimary =
-  "text-[color:var(--cms-heading,var(--color-primary))]";
-export const headingWhite =
-  "text-[color:var(--cms-heading,var(--color-white))]";
+export const textColor = "text-[color:var(--cms-text,var(--muted-foreground))]";
+export const accentColor = "text-[color:var(--cms-accent,var(--primary))]";
+export const headingColor = "text-[color:var(--cms-heading,var(--foreground))]";
 
 /** `size`/`spacing`: section intros use `sm` + `mb-6`, denser sections `xs` + `mb-4`. */
 export function Eyebrow({
@@ -34,9 +31,9 @@ export function Eyebrow({
   return (
     <div
       {...field}
-      className={`${accentColor} font-sans ${size === "xs" ? "text-xs" : "text-sm"} tracking-widest uppercase ${spacing}`}
+      className={`text-[color:var(--cms-accent,var(--brand-label))] font-sans font-semibold ${size === "xs" ? "text-xs" : "text-sm"} ${spacing}`}
     >
-      &gt; {children}
+      {children}
     </div>
   );
 }
@@ -130,15 +127,13 @@ export function Lines({ text }: { text: string }) {
 }
 
 export function Divider() {
-  return (
-    <div className="cms-measure w-24 h-1 bg-gradient-to-r from-primary to-accent mb-8" />
-  );
+  return <div className="cms-measure w-12 h-1 rounded-full bg-primary mb-8" />;
 }
 
 const primaryClass =
-  "inline-block bg-gradient-to-r from-primary to-primary-soft text-black font-heading font-bold px-8 py-4 uppercase tracking-wider transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/50 active:scale-95";
+  "inline-block rounded-md bg-primary text-primary-foreground font-medium px-5 py-2.5 shadow-soft transition-colors hover:bg-primary/90 active:bg-primary";
 const secondaryClass =
-  "inline-block border border-accent text-accent font-heading font-bold px-8 py-4 uppercase tracking-wider transition-all hover:scale-105 hover:bg-accent/10 active:scale-95";
+  "inline-block rounded-md border border-border bg-background text-foreground font-medium px-5 py-2.5 shadow-soft transition-colors hover:bg-accent";
 
 /** Buttons sit in an inline-flex row so they follow the block's text alignment. */
 export function Buttons({
@@ -174,23 +169,21 @@ export function Buttons({
 }
 
 /**
- * Large buttons (home hero, trust section, large CTA): not uppercase, a scale on hover. The font
+ * Large buttons (home hero, trust section, large CTA). The font
  * size is inherited, so an element `size` style applies. `secondary` is a primary outline,
  * `tertiary` an accent outline.
  */
 const BIG_BUTTON = {
-  primary:
-    "bg-gradient-to-r from-primary to-primary-soft text-black hover:shadow-lg hover:shadow-primary/50",
+  primary: "bg-primary text-primary-foreground shadow-soft hover:bg-primary/90",
   secondary:
-    "border-2 border-primary text-primary hover:bg-primary hover:text-black",
-  tertiary:
-    "border-2 border-accent text-accent hover:bg-accent hover:text-black",
+    "border border-border bg-background text-foreground shadow-soft hover:bg-accent",
+  tertiary: "border border-primary text-primary hover:bg-primary/10",
 } as const;
 
 export function bigButtonClass(
   kind: keyof typeof BIG_BUTTON,
   size: "md" | "lg" = "md"
 ): string {
-  const pad = size === "lg" ? "px-12 py-6 text-lg" : "px-10 py-5";
-  return `inline-block font-heading font-bold ${pad} transition-all hover:scale-105 active:scale-95 ${BIG_BUTTON[kind]}`;
+  const pad = size === "lg" ? "px-7 py-3.5 text-base" : "px-6 py-3";
+  return `inline-block rounded-md font-medium ${pad} transition-colors ${BIG_BUTTON[kind]}`;
 }

@@ -14,7 +14,7 @@ import {
   accentColor,
   type BlockComponentProps,
   Eyebrow,
-  headingWhite,
+  headingColor,
 } from "./ui";
 
 type Props = z.output<typeof postList.schema>;
@@ -34,7 +34,7 @@ export function PostListBlock({ props }: BlockComponentProps<Props>) {
           {!!props.heading && (
             <h2
               {...f("heading")}
-              className={`font-heading font-bold text-3xl md:text-4xl ${headingWhite}`}
+              className={`font-heading font-semibold tracking-tight text-3xl md:text-4xl ${headingColor}`}
             >
               {props.heading}
             </h2>
@@ -42,7 +42,7 @@ export function PostListBlock({ props }: BlockComponentProps<Props>) {
         </Reveal>
       )}
       {posts.length === 0 && editing && (
-        <p className="border border-dashed border-white/20 p-6 text-center font-sans text-sm text-white/60">
+        <p className="border border-dashed border-border p-6 text-center font-sans text-sm text-muted-foreground">
           No published posts{props.category ? ` in “${props.category}”` : ""}{" "}
           yet. Published posts appear here.
         </p>
@@ -55,27 +55,27 @@ export function PostListBlock({ props }: BlockComponentProps<Props>) {
           <Reveal key={post.slug} y={20} delay={i * 0.1}>
             <a
               href={`/blog/${postSlug(post.slug)}`}
-              className="cms-card block bg-ink-soft/50 p-8 backdrop-blur-sm hover:bg-ink-soft/70 transition-all group h-full"
+              className="cms-card block bg-card p-8 hover:shadow-lift transition-all group h-full"
             >
               <div className="flex items-center gap-3 mb-4">
                 {!!post.category && (
                   <span
-                    className={`${accentColor} font-sans text-xs uppercase tracking-wider border border-accent/30 px-2 py-1`}
+                    className={`${accentColor} font-sans text-xs rounded-full border border-border bg-muted px-2.5 py-0.5`}
                   >
                     {post.category}
                   </span>
                 )}
-                <span className="text-white/40 font-sans text-xs">
+                <span className="text-muted-foreground font-sans text-xs">
                   {formatReadingTime(post.readingTime)}
                 </span>
               </div>
-              <h3 className="font-heading font-bold text-xl text-primary mb-3 group-hover:text-primary-soft transition-colors leading-tight">
+              <h3 className="font-heading font-semibold tracking-tight text-xl text-foreground mb-3 group-hover:text-primary transition-colors leading-tight">
                 {post.title}
               </h3>
-              <p className="text-white/70 font-sans leading-relaxed mb-6">
+              <p className="text-muted-foreground font-sans leading-relaxed mb-6">
                 {post.excerpt}
               </p>
-              <div className="text-white/40 font-sans text-sm">
+              <div className="text-muted-foreground font-sans text-sm">
                 {!!post.author && `${post.author} · `}
                 {formatPostDate(post.publishedAt)}
               </div>
@@ -87,7 +87,7 @@ export function PostListBlock({ props }: BlockComponentProps<Props>) {
         <div {...f("link")} className="mt-10">
           <a
             href="/blog"
-            className={`${accentColor} font-sans text-xs uppercase tracking-wider hover:text-white transition-colors`}
+            className={`${accentColor} font-sans text-xs hover:text-foreground transition-colors`}
           >
             {props.viewAllLabel} &rarr;
           </a>

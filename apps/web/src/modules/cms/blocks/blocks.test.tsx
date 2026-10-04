@@ -18,8 +18,8 @@ import { CmsRenderContext } from "../render/render-context";
 import { BLOCK_ICONS, getBlock, listBlocks } from "./registry";
 
 const WHITE_ACCENT_SPAN_RE =
-  /<span style="color:var\(--color-white\)" class="text-accent">Transform<\/span>/;
-const BRACKETED_TAGLINE_RE = /\[<\/span>Tagline<span class="text-primary">\]/;
+  /<span style="color:var\(--color-brand-white\)" class="text-primary">Transform<\/span>/;
+const TAGLINE_RE = /rounded-full[^>]*>Tagline<\/div>/;
 const SERVICE_CARD_LINK_RE =
   /<a href="\/services" class="[^"]*after:absolute after:inset-0[^"]*">Learn More →<\/a>/;
 const CARD_AS_LINK_RE = /<a [^>]*class="cms-card/;
@@ -29,9 +29,9 @@ const HIDDEN_LOGO_COLUMN_RE =
 const HIDDEN_CALLOUT_BOX_RE =
   /<div data-cms-hide-d="" data-cms-collapses="" class="cms-measure bg-primary\/10/;
 const CHECKLIST_EYEBROW_RE =
-  /<div data-cms-fs="d t m" style="color:var\(--color-danger\);--cms-e-fs-d:2\.25rem[^"]*"[^>]*>&gt; <!-- -->Checklist<\/div>/;
+  /<div data-cms-fs="d t m" style="color:var\(--color-brand-danger\);--cms-e-fs-d:2\.25rem[^"]*"[^>]*>Checklist<\/div>/;
 const CHECKLIST_HEADING_RE =
-  /<h2 data-cms-fs="m" style="color:var\(--color-white\);--cms-e-fs-m:0\.875rem"[^>]*>What to have ready\.<\/h2>/;
+  /<h2 data-cms-fs="m" style="color:var\(--color-brand-white\);--cms-e-fs-m:0\.875rem"[^>]*>What to have ready\.<\/h2>/;
 const HIDDEN_DOTS_RE =
   /<div data-cms-hide-d="" data-cms-collapses="" class="flex justify-center gap-2 mt-8"/;
 
@@ -260,7 +260,7 @@ describe("hero home variant", () => {
 
   it("renders the bracketed tagline, three buttons and both logos (mobile and desktop)", () => {
     const html = render([hero]);
-    expect(html).toMatch(BRACKETED_TAGLINE_RE);
+    expect(html).toMatch(TAGLINE_RE);
     for (const label of ["One", "Two", "Three"]) {
       expect(html).toContain(`>${label}</a>`);
     }
@@ -339,7 +339,7 @@ describe("pricing", () => {
       }),
     ]);
     expect(html).toContain(
-      '$18,900 + GST<!-- --> <span class="text-white/60 text-xl md:text-2xl">per 40-hour block</span>'
+      '$18,900 + GST<!-- --> <span class="text-muted-foreground text-xl md:text-2xl">per 40-hour block</span>'
     );
     expect(html).toContain("Terms.");
   });

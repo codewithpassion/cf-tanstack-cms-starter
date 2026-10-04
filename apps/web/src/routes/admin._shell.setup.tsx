@@ -59,7 +59,7 @@ function SetupPage() {
   return (
     <div className="max-w-4xl p-8" data-testid="setup-page">
       <h1 className="mb-2 font-bold font-heading text-2xl">Setup</h1>
-      <p className="mb-6 text-neutral-400 text-sm">
+      <p className="mb-6 text-muted-foreground text-sm">
         One-off steps for a new environment, run by this site's Worker against
         its own database. Each can be run again safely: a second run changes
         nothing.
@@ -70,11 +70,11 @@ function SetupPage() {
           data-testid="setup-status"
         >
           <li>
-            <span className="text-neutral-400">Pages:</span> {status.pages} in
-            the CMS, {status.published} published.
+            <span className="text-muted-foreground">Pages:</span> {status.pages}{" "}
+            in the CMS, {status.published} published.
           </li>
           <li data-testid="setup-status-gsc">
-            <span className="text-neutral-400">Search Console:</span>{" "}
+            <span className="text-muted-foreground">Search Console:</span>{" "}
             {status.gscConfigured ? "connected." : "not connected."}
           </li>
         </ul>
@@ -166,12 +166,12 @@ function AiSettingsCard() {
     testId: string
   ) => (
     <div className="flex flex-wrap items-center gap-3 text-sm">
-      <label className="w-44 text-neutral-300" htmlFor={testId}>
+      <label className="w-44 text-muted-foreground" htmlFor={testId}>
         {label}
       </label>
-      <span className="text-neutral-400">$</span>
+      <span className="text-muted-foreground">$</span>
       <input
-        className="w-24 rounded border border-neutral-700 bg-neutral-950 px-2 py-1 disabled:opacity-50"
+        className="w-24 rounded border border-border bg-background px-2 py-1 disabled:opacity-50"
         data-testid={testId}
         disabled={!f || f.none}
         id={testId}
@@ -181,7 +181,7 @@ function AiSettingsCard() {
         type="number"
         value={f ? f.value : ""}
       />
-      <label className="flex items-center gap-1.5 text-neutral-400">
+      <label className="flex items-center gap-1.5 text-muted-foreground">
         <input
           checked={f ? f.none : false}
           data-testid={`${testId}-none`}
@@ -309,12 +309,9 @@ function AgentModelsEditor() {
   };
 
   return (
-    <div
-      className="mt-6 border-neutral-800 border-t pt-4"
-      data-testid="ai-models"
-    >
+    <div className="mt-6 border-border border-t pt-4" data-testid="ai-models">
       <h3 className="mb-1 font-semibold">Agent models</h3>
-      <p className="mb-3 text-neutral-400 text-sm">
+      <p className="mb-3 text-muted-foreground text-sm">
         What a new conversation in the AI tab can use. Each conversation keeps
         the model it started with: turning a model off (or removing it) stops
         its conversations from taking new messages, and they offer to start a
@@ -322,11 +319,11 @@ function AgentModelsEditor() {
         Cloudflare account; prices come from the Workers AI pricing page.
       </p>
       {!models && state.step !== "error" && (
-        <p className="text-neutral-500 text-sm">Loading…</p>
+        <p className="text-muted-foreground text-sm">Loading…</p>
       )}
       {!!models && (
         <table className="mb-3 w-full text-sm [overflow-wrap:normal]">
-          <thead className="text-left text-neutral-500 text-xs">
+          <thead className="text-left text-muted-foreground text-xs">
             <tr>
               <th className="w-16 py-1 font-normal">Enabled</th>
               <th className="py-1 font-normal">Label</th>
@@ -338,7 +335,7 @@ function AgentModelsEditor() {
           <tbody>
             {models.map((m, i) => (
               <tr
-                className="border-neutral-800 border-t align-top"
+                className="border-border border-t align-top"
                 data-testid="ai-model-row"
                 key={`${m.provider}|${m.id}`}
               >
@@ -354,17 +351,17 @@ function AgentModelsEditor() {
                 <td className="py-1.5 pr-2">
                   <input
                     aria-label="Label"
-                    className="w-full rounded border border-neutral-700 bg-neutral-950 px-2 py-0.5"
+                    className="w-full rounded border border-border bg-background px-2 py-0.5"
                     maxLength={60}
                     onChange={(e) => update(i, { label: e.target.value })}
                     value={m.label}
                   />
                 </td>
-                <td className="py-1.5 pr-2 text-neutral-300">
+                <td className="py-1.5 pr-2 text-muted-foreground">
                   {PROVIDER_LABEL[m.provider]}
                 </td>
                 <td className="py-1.5 pr-2">
-                  <code className="text-neutral-300 text-xs">{m.id}</code>
+                  <code className="text-muted-foreground text-xs">{m.id}</code>
                   {!m.available && !!m.reason && (
                     <p className="mt-0.5 text-amber-300/90 text-xs">
                       Unavailable here: {m.reason}
@@ -374,7 +371,7 @@ function AgentModelsEditor() {
                 <td className="py-1.5 text-right">
                   {m.provider === "workers-ai" && (
                     <button
-                      className="text-neutral-500 text-xs hover:text-danger"
+                      className="text-muted-foreground text-xs hover:text-danger"
                       data-testid="ai-model-remove"
                       onClick={() =>
                         setModels((ms) => ms && ms.filter((_, j) => j !== i))
@@ -393,7 +390,7 @@ function AgentModelsEditor() {
       <div className="mb-3 flex flex-wrap items-center gap-2 text-sm">
         <input
           aria-label="Workers AI model id"
-          className="w-72 rounded border border-neutral-700 bg-neutral-950 px-2 py-1"
+          className="w-72 rounded border border-border bg-background px-2 py-1"
           data-testid="ai-model-new-id"
           onChange={(e) => setNewId(e.target.value)}
           placeholder="@cf/<org>/<model>"
@@ -401,7 +398,7 @@ function AgentModelsEditor() {
         />
         <input
           aria-label="Label for the new model"
-          className="w-40 rounded border border-neutral-700 bg-neutral-950 px-2 py-1"
+          className="w-40 rounded border border-border bg-background px-2 py-1"
           maxLength={60}
           onChange={(e) => setNewLabel(e.target.value)}
           placeholder="Label"
@@ -417,7 +414,7 @@ function AgentModelsEditor() {
           Add Workers AI model
         </Button>
       </div>
-      <p className="mb-3 text-neutral-500 text-xs">
+      <p className="mb-3 text-muted-foreground text-xs">
         Function calling required: only add text-generation models whose Workers
         AI page lists function calling. The agent can't work without tools.
       </p>
@@ -454,11 +451,11 @@ function Card({
 }) {
   return (
     <section
-      className="rounded border border-neutral-800 bg-neutral-900 p-5"
+      className="rounded border border-border bg-card p-5"
       data-testid={testId}
     >
       <h2 className="mb-1 font-semibold text-lg">{title}</h2>
-      <p className="mb-4 text-neutral-400 text-sm">{description}</p>
+      <p className="mb-4 text-muted-foreground text-sm">{description}</p>
       {children}
     </section>
   );

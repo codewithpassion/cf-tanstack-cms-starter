@@ -323,7 +323,7 @@ export function styleTokens() {
     maxWidths: MAX_WIDTHS,
     textSizes: TEXT_SIZES,
     breakpoints: { desktop: "≥1024px", tablet: "768–1023px", mobile: "<768px" },
-    borders: ["none", "cyber", "subtle"],
+    borders: ["none", "glow", "subtle"],
     contrast:
       "WCAG AA: 4.5:1 for body text, 3:1 for large text (≥24px). Only solid colour-on-colour pairs can be rated.",
   };

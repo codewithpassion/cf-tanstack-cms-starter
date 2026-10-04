@@ -61,7 +61,7 @@ describe("OgCard wordmark and gradients", () => {
 
   it("builds the default card gradient from the renamed brand tokens", () => {
     const html = render(docOf(), "card");
-    expect(html).toContain("var(--color-accent)");
-    expect(html).toContain("var(--color-primary)");
+    expect(html).toContain("var(--color-brand-accent)");
+    expect(html).toContain("var(--color-brand-primary)");
   });
 });

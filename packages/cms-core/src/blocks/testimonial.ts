@@ -53,7 +53,6 @@ export const testimonial = defineBlock({
     },
     maxWidth: { desktop: "narrow" },
     align: { desktop: "center" },
-    background: { color: { token: "ink" } },
   },
   elements: {
     eyebrow: ["color", "size", "align", "hide"],

@@ -13,10 +13,8 @@ import {
   type BlockComponentProps,
   Buttons,
   bigButtonClass,
-  Divider,
   Eyebrow,
-  headingPrimary,
-  headingWhite,
+  headingColor,
   hideOnly,
   textColor,
 } from "./ui";
@@ -48,16 +46,15 @@ function PageHero({ props }: BlockComponentProps<Props>) {
       )}
       <h1
         {...accentedField(f("heading"), props.heading, props.headingAccent)}
-        className={`font-heading font-black ${page ? "text-4xl md:text-6xl" : "text-3xl md:text-5xl"} ${headingPrimary} mb-6`}
+        className={`font-heading font-semibold tracking-tight ${page ? "text-4xl md:text-6xl" : "text-3xl md:text-5xl"} ${headingColor} mb-6`}
       >
         <Accented
           text={props.heading}
           accent={props.headingAccent}
           field={f("headingAccent")}
-          color="text-accent"
+          color="text-primary"
         />
       </h1>
-      <Divider />
       {!!props.lead && (
         <p
           {...f("lead")}
@@ -126,7 +123,7 @@ function Logo({
         {...field}
         src={src}
         alt={alt}
-        className="w-full h-full object-contain"
+        className="w-full h-auto rounded-xl border border-border shadow-lift object-contain"
       />
     </div>
   );
@@ -147,40 +144,50 @@ function HomeHero({ props }: BlockComponentProps<Props>) {
     ] as const
   ).flatMap(([b, kind]) => (b ? [{ ...b, kind }] : []));
   return (
-    <div className="min-h-[calc(100vh-120px)] flex items-center justify-center">
-      <div className="relative z-10">
-        <div className="flex flex-col lg:flex-row-reverse items-center justify-between gap-12">
+    <div className="flex items-center justify-center">
+      <div className="relative z-10 w-full">
+        <div
+          className={`flex flex-col ${logo ? "lg:flex-row-reverse" : ""} items-center justify-between gap-12`}
+        >
           {/* The logo's columns carry its hide markers: hidden, it leaves no empty column or gap. */}
           {!!logo && (
             <div
               {...hideOnly(f("logo"))}
               className="lg:hidden w-full flex justify-center"
             >
-              <Enter className="relative" y={-50}>
+              <Enter className="relative w-full max-w-md" y={12}>
                 <Logo
                   src={mediaUrl(logo.mediaId)}
                   alt={logo.alt}
                   field={f("logo")}
-                  box="w-64 h-64 p-6"
+                  box="w-full"
                 />
               </Enter>
             </div>
           )}
-          <Enter className="lg:w-1/2 space-y-12" x={100}>
+          <Enter className={`${logo ? "lg:w-1/2" : "w-full"} space-y-8`} y={12}>
             <div className="space-y-6">
+              {!!props.eyebrow && (
+                <div
+                  {...f("eyebrow")}
+                  className="cms-measure inline-flex rounded-full border border-border bg-muted px-3 py-1 font-sans text-xs font-medium text-[color:var(--cms-accent,var(--brand-label))]"
+                >
+                  {props.eyebrow}
+                </div>
+              )}
               <h1
                 {...accentedField(
                   f("heading"),
                   props.heading,
                   props.headingAccent
                 )}
-                className={`font-heading font-black text-4xl md:text-5xl lg:text-6xl ${headingWhite} leading-tight`}
+                className={`font-heading font-semibold tracking-tight text-4xl md:text-5xl lg:text-6xl text-balance ${headingColor} leading-tight`}
               >
                 <Accented
                   text={props.heading}
                   accent={props.headingAccent}
                   field={f("headingAccent")}
-                  color="text-accent"
+                  color="text-primary"
                 />
               </h1>
               {!!props.lead && (
@@ -191,21 +198,10 @@ function HomeHero({ props }: BlockComponentProps<Props>) {
                   {props.lead}
                 </div>
               )}
-              {!!props.eyebrow && (
-                <div
-                  {...f("eyebrow")}
-                  className="text-[color:var(--cms-accent,var(--color-accent))] font-sans text-sm tracking-widest uppercase"
-                >
-                  <span className="text-primary">[</span>
-                  {props.eyebrow}
-                  <span className="text-primary">]</span>
-                </div>
-              )}
             </div>
             {buttons.length > 0 && (
               <div {...f("buttons")}>
-                {/* items-start: the borderless primary stays 4px shorter than the outlined ones, as today. */}
-                <div className="inline-flex flex-wrap items-start gap-6">
+                <div className="inline-flex flex-wrap items-center gap-3">
                   {buttons.map((b) => (
                     <a
                       key={b.kind}
@@ -222,14 +218,19 @@ function HomeHero({ props }: BlockComponentProps<Props>) {
           {!!logo && (
             <div
               {...hideOnly(f("logo"))}
-              className="hidden lg:flex lg:w-1/2 justify-center md:-mt-30"
+              className="hidden lg:flex lg:w-1/2 justify-center"
             >
-              <Enter className="relative" x={-100} duration={1} delay={0.3}>
+              <Enter
+                className="relative w-full"
+                y={16}
+                duration={0.8}
+                delay={0.2}
+              >
                 <Logo
                   src={mediaUrl(logo.mediaId)}
                   alt={logo.alt}
                   field={f("logo")}
-                  box="w-80 h-80 md:w-120 md:h-120 p-8"
+                  box="w-full"
                 />
               </Enter>
             </div>

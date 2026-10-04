@@ -40,28 +40,28 @@ export function PostLayout({
           >
             <a
               href="/blog"
-              className="inline-flex items-center gap-2 text-accent font-sans text-xs uppercase tracking-wider mb-8 hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 text-primary font-sans text-xs mb-8 hover:text-foreground transition-colors"
             >
               &larr; Back to Blog
             </a>
 
             <div className="flex items-center gap-3 mb-6">
-              <span className="text-accent font-sans text-xs uppercase tracking-wider border border-accent/30 px-2 py-1">
+              <span className="text-primary font-sans text-xs rounded-full border border-border bg-muted px-2.5 py-0.5">
                 {post.category}
               </span>
               {readingTime && (
-                <span className="text-white/40 font-sans text-xs">
+                <span className="text-muted-foreground font-sans text-xs">
                   {readingTime}
                 </span>
               )}
             </div>
 
-            <h1 className="font-heading font-black text-3xl md:text-5xl text-primary mb-6 leading-tight">
+            <h1 className="font-heading font-semibold tracking-tight text-3xl md:text-5xl text-foreground mb-6 leading-tight text-balance">
               {postTitle(doc)}
             </h1>
-            <div className="w-24 h-1 bg-gradient-to-r from-primary to-accent mb-8" />
+            <div className="w-12 h-1 rounded-full bg-primary mb-8" />
 
-            <div className="flex items-center gap-4 text-white/50 font-sans text-sm">
+            <div className="flex items-center gap-4 text-muted-foreground font-sans text-sm">
               <span>{post.author}</span>
               <span>·</span>
               <span>{formatPostDate(post.publishedAt)}</span>
@@ -77,7 +77,7 @@ export function PostLayout({
             <img
               src={mediaUrl(post.featuredImage.mediaId)}
               alt={post.featuredImage.alt}
-              className="w-full cyber-border object-cover"
+              className="w-full rounded-lg border border-border object-cover"
             />
           </div>
         </section>
@@ -95,7 +95,7 @@ export function PostLayout({
 
           {post.tags.length > 0 && (
             <Animated
-              className="mt-12 pt-8 border-t border-white/10"
+              className="mt-12 pt-8 border-t border-border"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
@@ -106,7 +106,7 @@ export function PostLayout({
                   <a
                     key={tag}
                     href={`/blog?tag=${encodeURIComponent(tag)}`}
-                    className="text-white/50 font-sans text-xs border border-white/20 px-3 py-1 hover:text-white hover:border-white/40 transition-colors"
+                    className="text-muted-foreground font-sans text-xs border border-border px-3 py-1 hover:text-foreground hover:border-foreground/30 transition-colors"
                   >
                     {tag}
                   </a>

@@ -14,7 +14,7 @@ export function ImageBlock({
   const { editing } = useEditMode();
   if (!props.mediaId) {
     return editing ? (
-      <div className="border border-dashed border-white/30 p-12 text-center text-white/60 font-sans">
+      <div className="border border-dashed border-border p-12 text-center text-muted-foreground font-sans">
         Choose an image
       </div>
     ) : null;
@@ -35,7 +35,7 @@ export function ImageBlock({
         {!!props.caption && (
           <figcaption
             {...f("caption")}
-            className="mt-3 text-white/60 font-sans text-sm"
+            className="mt-3 text-muted-foreground font-sans text-sm"
           >
             {props.caption}
           </figcaption>

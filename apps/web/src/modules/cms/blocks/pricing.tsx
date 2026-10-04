@@ -8,14 +8,13 @@ import {
   type BlockComponentProps,
   Buttons,
   Eyebrow,
-  headingPrimary,
-  headingWhite,
+  headingColor,
 } from "./ui";
 
 type Props = z.output<typeof pricing.schema>;
 type Plan = Props["plans"][number];
 
-const card = "cms-card bg-ink-soft/50 backdrop-blur-sm";
+const card = "cms-card bg-card";
 
 /** Grid columns by plan count; four or more wrap at two, then four. */
 const PLAN_COLUMNS: Partial<Record<number, string>> = {
@@ -40,14 +39,14 @@ export function PricingBlock({ props }: BlockComponentProps<Props>) {
       )}
       <h2
         {...f("heading")}
-        className={`font-heading font-bold text-2xl ${single ? "" : "md:text-3xl "}${headingWhite} mb-4`}
+        className={`font-heading font-semibold tracking-tight text-2xl ${single ? "" : "md:text-3xl "}${headingColor} mb-4`}
       >
         {props.heading}
       </h2>
       {!!props.intro && (
         <p
           {...f("intro")}
-          className="cms-measure text-white/70 font-sans text-base leading-relaxed max-w-2xl mb-6"
+          className="cms-measure text-muted-foreground font-sans text-base leading-relaxed max-w-2xl mb-6"
         >
           {props.intro}
         </p>
@@ -57,7 +56,7 @@ export function PricingBlock({ props }: BlockComponentProps<Props>) {
   const note = props.note && (
     <p
       {...f("note")}
-      className="cms-measure text-white/70 font-sans text-sm leading-relaxed max-w-2xl"
+      className="cms-measure text-muted-foreground font-sans text-sm leading-relaxed max-w-2xl"
     >
       {props.note}
     </p>
@@ -100,19 +99,21 @@ function PlanBody({ plan, f }: { plan: Plan; f: ReturnType<typeof useField> }) {
   return (
     <div {...f("plans")}>
       {!!plan.name && (
-        <h3 className={`font-heading font-bold text-lg ${headingPrimary} mb-3`}>
+        <h3
+          className={`font-heading font-semibold tracking-tight text-lg ${headingColor} mb-3`}
+        >
           {plan.name}
         </h3>
       )}
       <p
         {...f("price")}
-        className="text-primary font-heading font-bold text-3xl md:text-4xl mb-3"
+        className="text-primary font-heading font-semibold tracking-tight text-3xl md:text-4xl mb-3"
       >
         {plan.price}
         {!!plan.unit && (
           <>
             {" "}
-            <span className="text-white/60 text-xl md:text-2xl">
+            <span className="text-muted-foreground text-xl md:text-2xl">
               {plan.unit}
             </span>
           </>
@@ -123,12 +124,12 @@ function PlanBody({ plan, f }: { plan: Plan; f: ReturnType<typeof useField> }) {
           {plan.inclusions.map((inc) => (
             <li key={inc._key} className="flex items-start gap-3">
               <span
-                className={`${accentColor} font-heading font-bold text-xs mt-1 shrink-0`}
+                className={`${accentColor} font-heading font-semibold tracking-tight text-xs mt-1 shrink-0`}
                 aria-hidden="true"
               >
                 &#x2713;
               </span>
-              <span className="text-white/80 font-sans text-sm leading-relaxed">
+              <span className="text-muted-foreground font-sans text-sm leading-relaxed">
                 {inc.text}
               </span>
             </li>

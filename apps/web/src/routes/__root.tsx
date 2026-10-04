@@ -34,6 +34,7 @@ export const Route = createRootRoute({
       { title: loaderData?.config.name ?? "" },
     ],
     links: [
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       // data-cms-canvas: the editor canvas (modules/cms/editor/mirror-styles.ts) mirrors only these.
       {
         rel: "stylesheet",
