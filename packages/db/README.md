@@ -1,16 +1,17 @@
 # @repo/db
 
-The database layer of the monorepo: a [Drizzle](https://orm.drizzle.team) schema for [Cloudflare D1](https://developers.cloudflare.com/d1/), the generated migrations, and one example table (`notes`) showing the shape every table should follow.
+The database layer of the monorepo: a [Drizzle](https://orm.drizzle.team) schema for [Cloudflare D1](https://developers.cloudflare.com/d1/), the generated migrations, and the table modules.
 
 ## Entry points
 
 | Import | Contents | Where it may run |
 | --- | --- | --- |
 | `@repo/db` | the tables, the `Database` type | Server only: it imports drizzle |
-| `@repo/db/notes` | `listNotes`, `createNote` | Server only, called by `@repo/services` |
-| `@repo/db/shared` | `Note` type, `NOTE_TEXT_MAX_LENGTH` | Anywhere, including React components |
+| `@repo/db/shared` | browser-safe row types and constants | Anywhere, including React components |
 
 One entry per module, no barrel file: a new table gets its own `src/<name>.ts` and its own `exports` line in `package.json`. Keep the server/browser split. Importing a drizzle-backed entry from a route component pulls drizzle into the browser bundle. Anything the UI needs goes in `src/shared.ts`.
+
+TODO(cms-port): the CMS tables and their table modules (pages, site, posts, media, api keys, ...) arrive in phase 1.
 
 ## Using it
 
@@ -20,22 +21,19 @@ app does not call them directly. It goes through [`@repo/services`](../services)
 which validates input first:
 
 ```ts
-import { createNote, listNotes } from "@repo/db/notes";
 import { drizzle } from "drizzle-orm/d1";
 
-const db = drizzle(env.DB);
-const notes = await listNotes(db);
-const note = await createNote(db, { text: "hello" });
+const db = drizzle(env.DB); // then hand it to a table module's functions
 ```
 
 `env.DB` is the D1 binding declared in `apps/web/wrangler.jsonc`; this package never reads environment variables or bindings itself. `drizzle(env.DB)` is cheap, so there is nothing to cache between requests.
 
 ### Table modules
 
-`src/notes.ts` is the template for new tables:
+Each table module follows one shape (TODO(cms-port): name the first real module here as the template):
 
 - The stored row shape stays private to the module.
-- Functions return plain JSON (`Note`, with `id: string` and an ISO date). tRPC serializes results as JSON, so the row types should not leak.
+- Functions return plain, serialisable values with ISO date strings or `Date`s (tRPC carries both through superjson).
 - No validation here. The service in `@repo/services` validates input before it reaches these functions.
 - The parameter type is `Database` from `@repo/db`, which is any drizzle SQLite instance, sync or async. That is what lets the tests swap D1 for `bun:sqlite`.
 

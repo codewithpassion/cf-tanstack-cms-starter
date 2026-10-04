@@ -6,35 +6,30 @@ The service layer: business rules and input validation, on top of the query func
 
 | Import | Contents |
 | --- | --- |
-| `@repo/services/notes` | `createNotesService`, `createNoteInput` (zod schema), `NotesService`, `CreateNoteInput` |
+| `@repo/services/clock` | `Clock`, `systemClock`: the clock port |
 
-One entry per module, no barrel file, same as `@repo/db`. Everything here is server-only: services import drizzle-backed modules.
+One entry per module, no barrel file, same as `@repo/db`. Everything here is server-only: services import drizzle-backed modules. TODO(cms-port): the CMS services (pages, site, posts, media, api keys, agent runs, Search Console sync) arrive in phase 2.
 
 ## Using it
 
-A service is a factory that takes a drizzle instance:
+A service is a factory that takes its ports: repositories built on a drizzle instance, a KV-like port, an R2-like port, a clock. Nothing here reads `env`, so the same service runs on the Worker and in a test:
 
 ```ts
-import { createNotesService } from "@repo/services/notes";
-import { drizzle } from "drizzle-orm/d1";
+import { systemClock } from "@repo/services/clock";
 
-const notes = createNotesService(drizzle(env.DB));
-await notes.create({ text: "  hello  " }); // stored as "hello"
-await notes.list();
+// const pages = createPagesService({ repo, kv, clock: systemClock });
 ```
 
 In the app, `apps/web/src/server/trpc/context.ts` builds the services once per call and puts them on `ctx.services`.
 
 ## Writing a service
 
-`src/notes.ts` is the template:
-
 - Export the input schema (zod). The tRPC router passes it to `.input()`, and the service parses with it again, so a caller that skips tRPC still gets validated input.
 - Methods are `async`, so a validation error rejects the promise rather than throwing synchronously.
-- Take a `Database` from `@repo/db`. Never read `env`, bindings or the request; the caller passes in what the service needs, including the user id when a rule depends on it.
-- Return the plain JSON shapes from `@repo/db/shared`.
+- Take ports. Never read `env`, bindings or the request; the caller passes in what the service needs, including the user id when a rule depends on it.
+- Return plain shapes from `@repo/db/shared`.
 
-A new service also needs a line in `apps/web/src/server/trpc/context.ts` and in the add-clerk skill's copy of that file (`.claude/skills/add-clerk/templates/apps/web/src/server/trpc/context.ts`).
+A new service also needs a line in `apps/web/src/server/trpc/context.ts`.
 
 ## Tests
 
@@ -42,4 +37,4 @@ A new service also needs a line in `apps/web/src/server/trpc/context.ts` and in 
 bun test
 ```
 
-Like `@repo/db`, each test gets a fresh in-memory `bun:sqlite` database with the real migrations applied, so the tests cover the service, the queries and the schema together.
+Services are tested against in-memory fakes of their ports. D1 table modules are tested in `@repo/db`.
