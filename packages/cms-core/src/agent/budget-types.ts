@@ -1,3 +1,5 @@
+import { DEFAULT_DAILY_CAP_USD, DEFAULT_THREAD_CAP_USD } from "./limits";
+
 /** Budget shapes shared by the agent UI and the server (the budget arithmetic lives in services). Types only. */
 
 /** A raised limit: `amountUsd` null = no limit (for that thread, or that day). */
@@ -31,4 +33,15 @@ export type BudgetStatus = {
   day: BudgetLine & { day: string };
   /** Which cap stops the next model call, if any (thread, then run, then day). */
   blocked: "thread" | "run" | "day" | null;
+};
+
+/** The default caps the admin changes under AI settings. Null = no cap. */
+export type BudgetSettings = {
+  threadCapUsd: number | null;
+  dailyCapUsd: number | null;
+};
+
+export const DEFAULT_BUDGET_SETTINGS: BudgetSettings = {
+  threadCapUsd: DEFAULT_THREAD_CAP_USD,
+  dailyCapUsd: DEFAULT_DAILY_CAP_USD,
 };

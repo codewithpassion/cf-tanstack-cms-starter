@@ -88,11 +88,9 @@ export function postReadingTime(
   return post.readingTimeOverride ?? post.readingTime;
 }
 
-/** Today in Sydney as YYYY-MM-DD: a new post's date, and the date its first publish gives it. */
-export function todayInSydney(now = Date.now()): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Australia/Sydney",
-  }).format(new Date(now));
+/** Today in `timeZone` (IANA, default UTC: the site's `timeZone`, D14) as YYYY-MM-DD: a new post's date, and the date its first publish gives it. */
+export function todayIn(timeZone = "UTC", now = Date.now()): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone }).format(new Date(now));
 }
 
 /** `blog/what-is-x` → `what-is-x` (the `$slug` of /blog/$slug). */
@@ -157,10 +155,10 @@ export function formatReadingTime(minutes: number): string {
   return minutes > 0 ? `${minutes} min read` : "";
 }
 
-/** A post date ("2026-07-12" or an ISO timestamp) as the blog shows it: "12 July 2026", in Sydney time. */
-export function formatPostDate(date: string): string {
-  return new Date(date).toLocaleDateString("en-AU", {
-    timeZone: "Australia/Sydney",
+/** A post date ("2026-07-12" or an ISO timestamp) as the blog shows it: "12 July 2026", in `timeZone` (default UTC). */
+export function formatPostDate(date: string, timeZone = "UTC"): string {
+  return new Date(date).toLocaleDateString("en-GB", {
+    timeZone,
     day: "numeric",
     month: "long",
     year: "numeric",

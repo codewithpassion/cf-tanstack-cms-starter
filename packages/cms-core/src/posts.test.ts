@@ -15,7 +15,7 @@ import {
   postTitle,
   postWordCount,
   readingTimeOf,
-  todayInSydney,
+  todayIn,
   withReadingTime,
 } from "./posts";
 import { buildJsonLd } from "./render/page-json-ld";
@@ -93,7 +93,10 @@ describe("reading time", () => {
     expect(formatReadingTime(9)).toBe("9 min read");
     expect(formatReadingTime(0)).toBe("");
     expect(formatPostDate("2026-07-12")).toBe("12 July 2026");
-    expect(formatPostDate("2026-03-19T23:30:00.000Z")).toBe("20 March 2026"); // Sydney time
+    expect(formatPostDate("2026-03-19T23:30:00.000Z")).toBe("19 March 2026");
+    expect(formatPostDate("2026-03-19T23:30:00.000Z", "Australia/Sydney")).toBe(
+      "20 March 2026"
+    );
     expect(postSlug("blog/x-y")).toBe("x-y");
   });
 });
@@ -162,11 +165,14 @@ describe("post title, reading time and slugs", () => {
     ).toEqual([false, false, false, false, false]);
   });
 
-  it("today in Sydney", () => {
-    expect(todayInSydney(Date.parse("2026-10-01T14:30:00Z"))).toBe(
-      "2026-10-02"
-    );
-    expect(todayInSydney(Date.parse("2026-10-01T12:00:00Z"))).toBe(
+  it("today in the given zone, UTC by default", () => {
+    const at = Date.parse("2026-10-01T14:30:00Z");
+    expect(todayIn("Australia/Sydney", at)).toBe("2026-10-02");
+    expect(
+      todayIn("Australia/Sydney", Date.parse("2026-10-01T12:00:00Z"))
+    ).toBe("2026-10-01");
+    expect(todayIn(undefined, at)).toBe("2026-10-01");
+    expect(todayIn(undefined, Date.parse("2026-10-01T23:59:00Z"))).toBe(
       "2026-10-01"
     );
   });

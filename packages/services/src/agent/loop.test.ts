@@ -1199,9 +1199,7 @@ describe("M1: spending caps pause the turn; an override continues it", () => {
     expectValidRoles(requests[1]!.messages);
     expect((await budget()).thread).toMatchObject({
       capUsd: null,
-      overrides: [
-        expect.objectContaining({ createdBy: "admin@example.com" }),
-      ],
+      overrides: [expect.objectContaining({ createdBy: "admin@example.com" })],
     });
   });
 

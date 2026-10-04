@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 
 import { createBlock } from "./blocks/registry";
-import { postBlockStyle, todayInSydney } from "./posts";
+import { postBlockStyle, todayIn } from "./posts";
 import { richTextFromString } from "./richtext/schema";
 import type { PageDoc } from "./types";
 
@@ -39,11 +39,14 @@ export function newPostDoc({
   slug,
   category,
   author,
+  timeZone,
 }: {
   title: string;
   slug: string;
   category: string;
   author: string;
+  /** IANA zone of "today" (the site's `timeZone`), default UTC. */
+  timeZone?: string;
 }): PageDoc {
   return {
     _schema: 1,
@@ -61,8 +64,8 @@ export function newPostDoc({
       title,
       excerpt: "",
       author,
-      // Today in Sydney, as YYYY-MM-DD; the first publish moves it to that day (editor/store.ts).
-      publishedAt: todayInSydney(),
+      // Today in the site's zone, as YYYY-MM-DD; the first publish moves it to that day (editor/store.ts).
+      publishedAt: todayIn(timeZone),
       category,
       tags: [],
       readingTime: 0,

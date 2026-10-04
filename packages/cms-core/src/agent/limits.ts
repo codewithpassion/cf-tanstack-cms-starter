@@ -10,8 +10,6 @@ export const DEFAULT_THREAD_CAP_USD = 3;
 export const DEFAULT_RUN_CAP_USD = 15;
 /** Default spend per day across all conversations, in USD. */
 export const DEFAULT_DAILY_CAP_USD = 20;
-/** The daily cap counts spend since midnight in this time zone ("today" in the AI tab). */
-export const BUDGET_TIME_ZONE = "Australia/Sydney";
 /** What the "raise" buttons add, in USD. */
 export const THREAD_RAISE_STEPS_USD = [5, 20] as const;
 export const DAY_RAISE_STEP_USD = 20;

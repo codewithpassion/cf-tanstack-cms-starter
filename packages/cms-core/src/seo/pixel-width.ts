@@ -154,15 +154,27 @@ export const arialMeasure: TextMeasure = (text, fontPx) => {
   return (units * fontPx) / 1000;
 };
 
+/** The part of `document` the canvas measure uses. */
+type CanvasDocument = {
+  createElement: (tag: "canvas") => {
+    getContext: (id: "2d") => {
+      font: string;
+      measureText: (text: string) => { width: number };
+    } | null;
+  };
+};
+
 /**
  * A canvas-backed measure (browser only), falling back to `arialMeasure` when there is no canvas.
  * Uses Arial like Google's result page.
  */
 export function canvasMeasure(): TextMeasure {
-  if (typeof document === "undefined") {
+  // Typed access through `globalThis`, so consumers compile without the DOM lib.
+  const doc = (globalThis as { document?: CanvasDocument }).document;
+  if (!doc) {
     return arialMeasure;
   }
-  const ctx = document.createElement("canvas").getContext("2d");
+  const ctx = doc.createElement("canvas").getContext("2d");
   if (!ctx) {
     return arialMeasure;
   }

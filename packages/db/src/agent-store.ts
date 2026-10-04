@@ -1,3 +1,4 @@
+// biome-ignore-all lint/style/noExportedImports: re-exports cms-core's budget settings next to the store that uses them.
 // biome-ignore-all lint/complexity/useOptionalChain: ported verbatim; explicit checks kept as in the source.
 // biome-ignore-all lint/performance/noAwaitInLoops: sequential on purpose (ordered tool calls, retries, D1 writes in order), as in the source.
 // biome-ignore-all lint/style/noNonNullAssertion: indexes the source code proves in range (this repo sets noUncheckedIndexedAccess, the source does not), plus assertions as in the source; type-only.
@@ -5,10 +6,12 @@
 // biome-ignore-all lint/suspicious/noEvolvingTypes: ported verbatim; the insert list is typed by its pushes, as in the source.
 // biome-ignore-all lint/suspicious/useAwait: async to satisfy promise-returning interfaces and callbacks; kept as in the source.
 
-import type { BudgetOverride } from "@repo/cms-core/agent/budget-types";
 import {
-  DEFAULT_DAILY_CAP_USD,
-  DEFAULT_THREAD_CAP_USD,
+  type BudgetOverride,
+  type BudgetSettings,
+  DEFAULT_BUDGET_SETTINGS,
+} from "@repo/cms-core/agent/budget-types";
+import {
   LOCK_LEASE_MS,
   LOCK_TAKEOVER_AFTER_MS,
 } from "@repo/cms-core/agent/limits";
@@ -62,18 +65,9 @@ import type { PageDoc } from "./shared.ts";
  * produced depends on them). Each thread's rows are in its provider's format.
  */
 
-// TODO(cms-port): BudgetSettings. `BudgetOverride` is in cms-core (`agent/budget-types`); the
-// settings shape and its defaults were mixed with the store port in the source, so they are
-// declared here until the services phase moves them.
-export type BudgetSettings = {
-  threadCapUsd: number | null;
-  dailyCapUsd: number | null;
-};
-
-export const DEFAULT_BUDGET_SETTINGS: BudgetSettings = {
-  threadCapUsd: DEFAULT_THREAD_CAP_USD,
-  dailyCapUsd: DEFAULT_DAILY_CAP_USD,
-};
+// `BudgetSettings` and its defaults live in cms-core (`agent/budget-types`); re-exported so the
+// store's callers keep one import path.
+export { type BudgetSettings, DEFAULT_BUDGET_SETTINGS };
 
 export type StoredMessage = {
   seq: number;
