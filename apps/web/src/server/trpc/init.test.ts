@@ -17,7 +17,8 @@ const contextFor = (
 ): Context => ({
   adminEmails,
   auth: { userId, verifiedEmails: () => Promise.resolve(emails) },
-  services: {},
+  // No router in this file calls a service.
+  services: {} as Context["services"],
   userId,
 });
 

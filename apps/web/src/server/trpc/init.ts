@@ -1,5 +1,6 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
+import { matchAdminEmail } from "../cms/admin-match.ts";
 import type { Context } from "./context.ts";
 
 const t = initTRPC.context<Context>().create({
@@ -56,8 +57,10 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
  */
 export const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
   if (ctx.adminEmails.length > 0) {
-    const emails = await ctx.auth.verifiedEmails();
-    const email = emails.find((entry) => ctx.adminEmails.includes(entry));
+    const email = matchAdminEmail(
+      await ctx.auth.verifiedEmails(),
+      ctx.adminEmails
+    );
     if (email) {
       return next({ ctx: { ...ctx, adminEmail: email } });
     }

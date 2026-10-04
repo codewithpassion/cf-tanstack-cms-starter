@@ -3,10 +3,13 @@
 // rejects the latter. `auth` and `adminEmails` are what `adminProcedure` (init.ts)
 // needs to decide whether the caller is an admin.
 import { env } from "cloudflare:workers";
-import { createClerkClient } from "@clerk/backend";
 import { getAuth } from "@clerk/hono";
 import { auth } from "@clerk/tanstack-react-start/server";
+import { getRequest } from "@tanstack/react-start/server";
 import type { Context as HonoContext } from "hono";
+import { lookupVerifiedEmails } from "../cms/admin.ts";
+import { parseAdminEmails } from "../cms/admin-match.ts";
+import { type CmsServices, cmsServices } from "../cms/wiring.ts";
 
 /** Who is calling. `verifiedEmails` asks Clerk lazily, so only admin checks pay for it. */
 export type CallerAuth = {
@@ -23,36 +26,17 @@ export type Context = {
   /** Lowercased entries of the comma-separated ADMIN_EMAILS secret. Empty means nobody is an admin. */
   adminEmails: string[];
   auth: CallerAuth;
-  // TODO(cms-port): the services (pages, site, posts, media, ...) go here.
-  services: Record<string, never>;
+  /** Every service, built from the bindings per request (cms/wiring.ts). */
+  services: { cms: CmsServices };
   /** Signed-in user, or null for anonymous callers. */
   userId: string | null;
 };
 
-const parseAdminEmails = (value: string | undefined): string[] =>
-  (value ?? "")
-    .split(",")
-    .map((entry) => entry.trim().toLowerCase())
-    .filter(Boolean);
-
-// The Clerk user's verified addresses, lowercased. Without Clerk keys or a
-// signed-in user there are none, so the admin check fails closed.
-const lookupVerifiedEmails = async (
+const createContext = (
   bindings: Env,
-  userId: string | null
-): Promise<string[]> => {
-  if (!(userId && bindings.CLERK_SECRET_KEY)) {
-    return [];
-  }
-  const user = await createClerkClient({
-    secretKey: bindings.CLERK_SECRET_KEY,
-  }).users.getUser(userId);
-  return user.emailAddresses
-    .filter((address) => address.verification?.status === "verified")
-    .map((address) => address.emailAddress.toLowerCase());
-};
-
-const createContext = (bindings: Env, userId: string | null): Context => {
+  userId: string | null,
+  request: Request | null
+): Context => {
   let emails: Promise<string[]> | undefined;
   return {
     adminEmails: parseAdminEmails(bindings.ADMIN_EMAILS),
@@ -64,7 +48,7 @@ const createContext = (bindings: Env, userId: string | null): Context => {
         return emails;
       },
     },
-    services: {},
+    services: { cms: cmsServices(bindings, { author: userId, request }) },
     userId,
   };
 };
@@ -76,7 +60,7 @@ const createContext = (bindings: Env, userId: string | null): Context => {
 export const createHonoContext = (
   c: HonoContext<{ Bindings: Env }>
 ): Promise<Context> =>
-  Promise.resolve(createContext(c.env, getAuth(c)?.userId ?? null));
+  Promise.resolve(createContext(c.env, getAuth(c)?.userId ?? null, c.req.raw));
 
 /**
  * In-process calls from route loaders during SSR (src/integrations/trpc).
@@ -84,5 +68,5 @@ export const createHonoContext = (
  */
 export const createSsrContext = async (): Promise<Context> => {
   const { userId } = await auth();
-  return createContext(env, userId);
+  return createContext(env, userId, getRequest());
 };
