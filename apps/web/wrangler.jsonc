@@ -45,7 +45,8 @@
     // Shown in the site chrome and used as the MCP server name.
     "SITE_NAME": "Boilerplate",
     // Public origin for sitemap, canonical URLs and share images, e.g. "https://example.com".
-    // Empty means: use the origin of the request.
+    // Empty only works in `bun run dev` (the request origin is used); a deployed Worker must set it,
+    // or every CMS request fails.
     "SITE_ORIGIN": "",
     // Search Console property for the daily sync, e.g. "sc-domain:example.com". Empty disables it.
     "GSC_PROPERTY": ""
