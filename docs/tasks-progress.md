@@ -18,7 +18,7 @@ One row per item of the build. Tick a row only with proof: the command that was 
 | [x] | `wrangler.jsonc`: `DB`, `CMS_PAGES`, `OAUTH_KV`, `CMS_MEDIA`, `AI`, `BROWSER`, cron, vars, flags, `workers_dev` | `CF_REMOTE_BINDINGS=0 bun run dev` reaches "ready"; `curl localhost:3000/api/health` returns `{"status":"ok"}` |
 | [x] | `env.d.ts` declares every secret on `Cloudflare.Env` and `Env`; `.env.example` documents each; `cf-typegen` run | `bun run check` passes on a checkout where typegen sees the names |
 | [x] | `docs/architecture.md` and this file | committed |
-| [x] | Gates: `bun install`, `bun run check`, `bun run test`, `bun run build`, dev boot | all exit 0; see the commit message of the last Phase 0 commit |
+| [x] | Gates: `bun install`, `bun run check`, `bun run test`, `bun run build`, dev boot | `bun install`: `Checked 846 installs ... (no changes)`; `bun run check`: `Tasks: 5 successful, 5 total`; `bun run test`: 7 web + 1 db + 1 services + 1 cms-core pass, 0 fail; `bun run build`: `built in 453ms`; dev boot: `VITE ready`, `/api/health` `{"status":"ok"}` |
 
 ## Phase 1: Foundations
 
