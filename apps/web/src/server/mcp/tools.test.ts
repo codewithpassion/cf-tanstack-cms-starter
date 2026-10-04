@@ -30,6 +30,8 @@ import { createMemoryMediaRepo } from "@repo/services/testing/media-memory-repo"
 import { createMemoryRepo } from "@repo/services/testing/memory-repo";
 import { createSiteMemoryRepo } from "@repo/services/testing/site-memory-repo";
 
+import { mcpDeps } from "./handler";
+import { createTestEnv, TEST_ORIGIN } from "./test-env";
 import { callMcpTool, type McpDeps } from "./tools";
 
 const T0 = Date.parse("2026-10-03T00:00:00Z");
@@ -236,32 +238,84 @@ describe("MCP tool dispatch", () => {
   });
 });
 
-describe("without the agent's tools", () => {
-  it("answers the tools that run through the agent with NOT_AVAILABLE, and the rest as usual", async () => {
-    const s = mcpSetup("write");
-    s.deps.tools = null;
-    await createPage(s.cms, {
+describe("the agent's tools over real D1 (mcpDeps)", () => {
+  const key = {
+    id: "key1",
+    kind: "api-key" as const,
+    name: "laptop",
+    prefix: "cms_dev_Abc12345",
+    scope: "write" as const,
+  };
+  const body = (res: Awaited<ReturnType<typeof callMcpTool>>) => {
+    const first = res.content[0];
+    return first?.type === "text" ? JSON.parse(first.text) : null;
+  };
+
+  it("answers the read, link and create tools with the wired ToolDeps", async () => {
+    const { env, services } = createTestEnv();
+    await services.pages.createPage({
       kind: "page",
       slug: "services/a",
       title: "A",
       doc: docAt("services/a"),
     });
-    expect(
-      await s.call("get_page", { slug: "services/a", mode: "outline" })
-    ).toMatchObject({ isError: true, body: { code: "NOT_AVAILABLE" } });
-    expect(
-      await s.call("propose_ops", {
-        slug: "services/a",
-        summary: "x",
-        ops: [{ op: "remove", key: "faq1" }],
-      })
-    ).toMatchObject({ isError: true, body: { code: "NOT_AVAILABLE" } });
-    expect(await s.call("list_pages")).toMatchObject({ isError: false });
-    expect(s.calls.at(-2)).toMatchObject({
-      tool: "propose_ops",
-      ok: false,
-      errorCode: "NOT_AVAILABLE",
+    const deps = mcpDeps(env, key);
+    const call = (name: string, input: unknown = {}) =>
+      callMcpTool(deps, name, input);
+
+    const page = await call("get_page", {
+      slug: "services/a",
+      mode: "outline",
     });
+    expect(page.isError).toBeFalsy();
+    for (const name of [
+      "list_block_types",
+      "list_style_tokens",
+      "get_site_context",
+      "get_seo_overview",
+    ]) {
+      expect((await call(name)).isError).toBeFalsy();
+    }
+    expect((await call("search_media", { query: "" })).isError).toBeFalsy();
+    expect(
+      (await call("get_search_performance", { slug: "services/a", days: 28 }))
+        .isError
+    ).toBeFalsy();
+
+    const preview = await call("get_preview_url", { slug: "services/a" });
+    expect(preview.isError).toBeFalsy();
+    expect(JSON.stringify(body(preview))).toContain(
+      `${TEST_ORIGIN}/services/a?_preview=`
+    );
+
+    const created = await call("create_page", {
+      kind: "page",
+      slug: "services/b",
+      title: "B",
+    });
+    expect(created.isError).toBeFalsy();
+    expect(await services.pages.getPage({ slug: "services/b" })).toMatchObject({
+      status: "draft",
+      title: "B",
+    });
+  });
+
+  it("render_preview fails as a tool error without Browser Run, and is logged", async () => {
+    const { env, services, sqlite } = createTestEnv();
+    await services.pages.createPage({
+      kind: "page",
+      slug: "services/a",
+      title: "A",
+      doc: docAt("services/a"),
+    });
+    const res = await callMcpTool(mcpDeps(env, key), "render_preview", {
+      slug: "services/a",
+      device: "desktop",
+    });
+    expect(res.isError).toBe(true);
+    expect(sqlite.query("select tool, ok from mcp_calls").all()).toMatchObject([
+      { tool: "render_preview", ok: 0 },
+    ]);
   });
 });
 

@@ -88,11 +88,8 @@ export type McpDeps = {
   key: McpIdentity;
   /** The site's origin, for absolute links. An http origin (local dev) also lets `upload_media` fetch http URLs. */
   origin: string;
-  /**
-   * The built-in agent's tools, wired as for the AI tab. Null until the web agent wiring exists:
-   * the tools that run through the agent (`viaAgent`) then answer NOT_AVAILABLE.
-   */
-  tools: ToolDeps | null;
+  /** The built-in agent's tools, wired as for the AI tab (adapters/tool-deps.ts). */
+  tools: ToolDeps;
   store: AgentStore;
   /** Page service with `author: "mcp:<key name>#<key prefix>"` (`"mcp:<connection name>"` over OAuth). */
   cms: ServiceDeps;
@@ -238,15 +235,6 @@ async function viaAgent(
   input: Record<string, unknown>,
   onPage = false
 ): Promise<Out> {
-  if (!d.tools) {
-    // TODO(cms-port-agent): the handler passes the agent's ToolDeps (the web port of the source's
-    // agent/server/wiring.ts `toolDeps(env, origin)`) once it exists; until then every agent tool
-    // is unavailable over MCP.
-    return failure(
-      "NOT_AVAILABLE",
-      `${name} is not available yet: the agent tools are not wired up on this server.`
-    );
-  }
   const ctx: ToolCtx = {
     threadId: "",
     pageId: null,
@@ -917,6 +905,7 @@ const WRITE: ToolDef[] = [
           slug,
           category: input.category.trim(),
           author: input.author.trim(),
+          timeZone: d.site.config.timeZone,
         }),
       });
       return data({

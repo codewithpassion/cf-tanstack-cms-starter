@@ -12,6 +12,9 @@
     "deploy": "bun run build && wrangler d1 migrations apply DB --remote && wrangler deploy",
     "dev": "wrangler d1 migrations apply DB --local && vite dev --port 3000",
     "generate-routes": "tsr generate",
+    "gsc:auth": "bun scripts/gsc-auth.ts",
+    "gsc:backfill": "bun scripts/gsc-backfill.ts",
+    "gsc:sync": "bun scripts/gsc-sync.ts",
     "preview": "vite preview",
     "test": "bun test",
     "typecheck": "tsc --noEmit"

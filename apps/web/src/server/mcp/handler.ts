@@ -13,6 +13,7 @@ import { fromOAuthScopes, mcpServerName } from "@repo/services/mcp/scopes";
 import { createMcpHandler } from "agents/mcp/server";
 import { z } from "zod";
 
+import { agentToolDeps } from "../adapters/tool-deps";
 import { cmsServices } from "../cms/wiring";
 import {
   authorizationServerFor,
@@ -185,10 +186,7 @@ export function mcpDeps(
   return {
     key,
     origin: services.config.origin,
-    // TODO(cms-port-agent): the agent's ToolDeps (web port of the source's agent/server/wiring.ts
-    // `toolDeps(env, origin)`: render previews, share images, Search Console, preview links).
-    // Until it lands, the agent tools answer NOT_AVAILABLE (tools.ts `viaAgent`).
-    tools: null,
+    tools: agentToolDeps(env, services),
     store: services.agentStore,
     cms: services.pagesDeps,
     site: {

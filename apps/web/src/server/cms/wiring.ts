@@ -21,9 +21,12 @@ import {
 import { createPostsAdmin } from "@repo/services/cms/posts-admin";
 import type { RenderSigner } from "@repo/services/cms/render-token";
 import { createSiteService } from "@repo/services/cms/site-service";
+import { createGscAdmin } from "@repo/services/gsc/admin";
+import { createD1GscQueries, createD1GscStore } from "@repo/services/gsc/d1";
 import { createConnectionsService } from "@repo/services/mcp/connections";
 import { createApiKeysService } from "@repo/services/mcp/keys";
 import { drizzle } from "drizzle-orm/d1";
+import { gscClientFor } from "../adapters/gsc";
 
 export type CmsWiringOptions = {
   /** The request being served. Its origin is the site origin in dev when SITE_ORIGIN is empty. */
@@ -74,6 +77,7 @@ export const cmsServices = (env: Env, options: CmsWiringOptions = {}) => {
     author,
   };
   const queries = createPageQueries(db);
+  const gscClient = gscClientFor(env);
   const keys = createApiKeysService({
     keys: createApiKeyTable(db),
     calls: createMcpCallLog(db),
@@ -112,6 +116,18 @@ export const cmsServices = (env: Env, options: CmsWiringOptions = {}) => {
     apiKeys: keys,
     connections: createConnectionsService({
       connections: createOauthConnectionTable(db),
+    }),
+    /** The Search Console client; null when the GSC secrets or `GSC_PROPERTY` aren't set. */
+    gscClient,
+    gscConfigured: gscClient !== null,
+    /** Search Console reads (D1) and the two Google calls ("Inspect now", "Resubmit sitemap"). */
+    gsc: createGscAdmin({
+      queries: createD1GscQueries(db),
+      pages: pagesDeps.repo,
+      store: createD1GscStore(db),
+      client: gscClient,
+      config,
+      log: console.log,
     }),
     /** The public page loader: published page from KV, or a draft/proposal behind a preview token. */
     loadPage: (input: {
