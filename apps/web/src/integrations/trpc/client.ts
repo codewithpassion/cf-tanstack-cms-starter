@@ -3,16 +3,16 @@
 // fetching its own URL is a needless round trip, and relative URLs do not
 // resolve on the server.
 //
-// No transformer, so results must be plain JSON: the in-process link hands
-// SSR loaders the raw value, while the HTTP link JSON-encodes it. A Date
-// would be a Date after SSR and a string after client-side navigation.
-// Return ISO strings, or add superjson to both links and initTRPC.
+// superjson is the transformer on initTRPC (server/trpc/init.ts) and on both
+// links below, so a Date, Map or Set arrives as itself whether the call ran
+// in-process during SSR or over HTTP in the browser. Add it to any new link too.
 import { createIsomorphicFn } from "@tanstack/react-start";
 import {
   createTRPCClient,
   httpBatchLink,
   unstable_localLink,
 } from "@trpc/client";
+import superjson from "superjson";
 import { createSsrContext } from "#/server/trpc/context";
 import { type AppRouter, appRouter } from "#/server/trpc/router";
 
@@ -23,12 +23,13 @@ export const getTrpc = createIsomorphicFn()
         unstable_localLink({
           createContext: createSsrContext,
           router: appRouter,
+          transformer: superjson,
         }),
       ],
     })
   )
   .client(() =>
     createTRPCClient<AppRouter>({
-      links: [httpBatchLink({ url: "/api/trpc" })],
+      links: [httpBatchLink({ transformer: superjson, url: "/api/trpc" })],
     })
   );

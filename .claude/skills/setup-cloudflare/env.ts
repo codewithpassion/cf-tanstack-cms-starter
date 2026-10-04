@@ -12,10 +12,14 @@
 import { tmpdir } from "node:os";
 import { $, file, write } from "bun";
 
-// Empty by design: nothing the boilerplate puts in .env.local belongs on a
-// deployed Worker. CLOUDFLARE_ACCOUNT_ID is for wrangler itself. A skill that
-// adds a service the Worker reads keys from (add-clerk) adds those key names here.
-const DEPLOYED_KEYS: readonly string[] = [];
+// Only the Clerk keys the Worker reads. CLOUDFLARE_ACCOUNT_ID is for wrangler
+// itself and DEV_LOGIN_* must never reach a deployed Worker.
+// TODO(cms-port): phase 5 adds ADMIN_EMAILS, PREVIEW_SIGNING_KEY and the optional keys.
+const DEPLOYED_KEYS: readonly string[] = [
+  "CLERK_SECRET_KEY",
+  "CLERK_PUBLISHABLE_KEY",
+  "VITE_CLERK_PUBLISHABLE_KEY",
+];
 
 const DATABASE_ID = /("database_id":\s*)"[^"]*"/;
 

@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Button } from "#/components/ui/button";
+import ClerkHeader from "../integrations/clerk/header-user.tsx";
 import ThemeToggle from "./theme-toggle";
 
 export default function Header() {
@@ -30,13 +31,6 @@ export default function Header() {
             to="/about"
           >
             About
-          </Link>
-          <Link
-            activeProps={{ className: "nav-link is-active" }}
-            className="nav-link"
-            to="/notes"
-          >
-            Notes
           </Link>
           <a
             className="nav-link"
@@ -95,6 +89,8 @@ export default function Header() {
               </svg>
             </a>
           </Button>
+          <ClerkHeader />
+
           <ThemeToggle />
         </div>
       </nav>

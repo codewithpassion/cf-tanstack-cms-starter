@@ -1,6 +1,6 @@
 ---
 name: project-init
-description: Turn this boilerplate into a named project - asks for the name, renames, optionally adds auth, puts the name in the README, and connects Cloudflare for a first deploy.
+description: Turn this boilerplate into a named project - asks for the name, renames, sets up Clerk auth, puts the name in the README, and connects Cloudflare for a first deploy.
 disable-model-invocation: true
 allowed-tools: AskUserQuestion, Skill, Bash(git:*), Bash(bun:*), Read, Edit, Write
 ---
@@ -30,18 +30,30 @@ its commit. Its "still mentions the old name" list includes hits inside
 `.claude/skills/`; leave those as they are.
 
 Done when `git status` is clean and the commit names both the old and new name.
-`add-clerk` needs that clean tree to start.
 
-## 3. Ask about auth
+## 3. Connect Clerk
 
-The boilerplate ships with no auth. Use `AskUserQuestion`: "Add authentication?"
+The code for Clerk auth is already in the repo, and the admin area needs it, so
+there is no question to ask. What is left is a Clerk application and its keys.
 
-- **Add Clerk**: invoke the `add-clerk` skill and follow it through, including
-  its verification. It wires Clerk into the app and connects it to a Clerk
-  application.
-- **No auth**: nothing to do, go to step 4.
+- Sign in to the Clerk CLI and pick or create the application: use the
+  `clerk-setup` skill, or `clerk apps create "<Display Name>" --json`, then
+  `clerk link --app <id>`, from the repo root.
+- `cp -n apps/web/.env.example apps/web/.env.local`, then
+  `clerk env pull --app <id> --file apps/web/.env.local`. It fills two of the
+  three key names; copy `CLERK_PUBLISHABLE_KEY` to `VITE_CLERK_PUBLISHABLE_KEY`
+  (or the reverse) so all three are set.
+- Optional dev login: set `DEV_LOGIN_EMAIL` (for example
+  `dev@<project-name>.test`) and `DEV_LOGIN_PASSWORD` in `apps/web/.env.local`,
+  then `bun run --cwd apps/web create-dev-user`.
+- Set `ADMIN_EMAILS` in `apps/web/.env.local` to the comma-separated emails that
+  may use `/admin`.
 
-Done when the chosen branch is complete.
+Never print `.env.local`: it holds secrets.
+
+Done when `.env.local` has the three Clerk keys and `ADMIN_EMAILS`, and
+`create-dev-user` (if dev login is on) printed `Created dev user` or
+`Updated password`.
 
 ## 4. Put the name in the README
 
@@ -61,14 +73,14 @@ line still calls it the boilerplate.
 
 Invoke the `setup-cloudflare` skill and follow it through. It signs the user
 in, records the account, and asks before it creates the D1 database and
-deploys. This comes last so the deploy ships the renamed app with auth already
-decided.
+deploys. This comes last so the deploy ships the renamed app with Clerk
+already connected.
 
 Done when the skill has handed back, whether or not the user chose to deploy.
 
 ## 6. Hand back
 
-Report the name, whether auth was added (and which Clerk app), the Worker URL
+Report the name, the Clerk app, whether dev login is on, the Worker URL
 or that the deploy was skipped, and the uncommitted diff from steps 3 to 5.
 Commit only if the user asks. Pass on the follow-ups the invoked skills raised
 (an old deployed Worker, the D1 `database_id` in `wrangler.jsonc`, a Clerk

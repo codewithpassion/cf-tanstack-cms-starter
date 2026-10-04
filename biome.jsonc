@@ -11,12 +11,6 @@
   // a JSX attribute. Linting them is pointless too - the findings could only ever be
   // resolved by editing vendored code.
   "files": {
-    "includes": [
-      "!**/components/ui",
-      "!**/hooks/use-mobile.ts",
-      // Verbatim copies of app files, kept by the add-clerk skill to copy back
-      // in. They are not part of the app until that skill runs.
-      "!.claude/skills/add-clerk/templates"
-    ]
+    "includes": ["!**/components/ui", "!**/hooks/use-mobile.ts"]
   }
 }
