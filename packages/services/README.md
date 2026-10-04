@@ -1,35 +1,86 @@
 # @repo/services
 
-The service layer: business rules and input validation, on top of the query functions in [`@repo/db`](../db). The web app calls it through tRPC (`apps/web/src/server/trpc/`), but nothing here knows about tRPC, Hono or Cloudflare. A script or a test can use a service the same way.
+The service layer: business rules and input validation, on top of the table modules in [`@repo/db`](../db) and the pure logic in [`@repo/cms-core`](../cms-core). The web app calls it through tRPC (`apps/web/src/server/trpc/`), but nothing here knows about tRPC, Hono or Cloudflare. A script or a test can use a service the same way.
 
 ## Entry points
 
-| Import | Contents |
-| --- | --- |
-| `@repo/services/clock` | `Clock`, `systemClock`: the clock port |
-
-One entry per module, no barrel file, same as `@repo/db`. Everything here is server-only: services import drizzle-backed modules. TODO(cms-port): the CMS services (pages, site, posts, media, api keys, agent runs, Search Console sync) arrive in phase 2.
-
-## Using it
-
-A service is a factory that takes its ports: repositories built on a drizzle instance, a KV-like port, an R2-like port, a clock. Nothing here reads `env`, so the same service runs on the Worker and in a test:
+`exports` is the pattern `"./*": "./src/*.ts"`: one entry per module, no barrel file. Import a module by path:
 
 ```ts
-import { systemClock } from "@repo/services/clock";
-
-// const pages = createPagesService({ repo, kv, clock: systemClock });
+import { createPagesService } from "@repo/services/cms/pages-service";
+import { createApiKeysService } from "@repo/services/mcp/keys";
 ```
 
-In the app, `apps/web/src/server/trpc/context.ts` builds the services once per call and puts them on `ctx.services`.
+Everything here is server-only (services import `@repo/db`). Two modules are also what the browser needs, and import only `@repo/db/shared`: `mcp/scopes` and `mcp/author`.
+
+| Module | Contents |
+| --- | --- |
+| `cms/pages-service` | Page lifecycle: drafts, ops, revisions, restore, publish to KV, unpublish, archive; `createPagesService(deps)` |
+| `cms/history-admin` | The history panel's bodies, returning `adminResult` unions; `createHistoryAdmin(deps)` |
+| `cms/site-service`, `cms/read-site` | Site doc lifecycle (draft, versions, publish to KV `site`); `readSite`, `readSiteSeo` for the public read; `createSiteService(deps)` |
+| `cms/posts-admin` | The `/admin/posts` list, new post, slug check, published posts; `createPostsAdmin(deps)` |
+| `cms/read-page`, `cms/load-page`, `cms/pages-index` | The public read path (KV only), draft previews, the `pages:index`/`posts:index` readers; `loadCmsPage(deps, input)` |
+| `cms/render-token`, `cms/preview-link` | HMAC render tokens and preview links; both take `{ signingKey }` |
+| `cms/media-service`, `cms/media-bytes` | Upload (type sniffing, EXIF strip, dedupe), list, alt text; `createMediaService(deps)` |
+| `cms/admin-result`, `cms/admin-errors` | The `adminResult` union (`{ ok: true, ... } \| { ok: false, code, message }`) and the `CmsError`/`OpError` mapping |
+| `mcp/keys` | API keys (`cms_live_` / `cms_dev_`, SHA-256 only), the call log and its 90-day retention; `createApiKeysService(deps)` |
+| `mcp/connections` | OAuth connections: client label, `<client> (<date>)` name, token check, revoke; `createConnectionsService(deps)` |
+| `mcp/scopes`, `mcp/author` | Scope helpers, OAuth scopes, `claudeMcpAddCommand`, `mcpServerName`; the `mcp:<name>#<prefix>` revision author |
+| `kv`-style ports: `cms/kv`, `cms/repo`, `cms/site-repo`, `cms/media-repo`, `mcp/ports` | The port types (below) |
+| `clock` | `Clock`, `systemClock` |
+| `testing/*` | In-memory fakes for tests: `memory-repo` (`CmsRepo`), `site-memory-repo`, `media-memory-repo`, `memory-kv`, `media-fixtures` |
+
+The AI agent runs and the Search Console sync are added by phase 2 C; the `AgentStore` port will live in `src/agent/store-port.ts`. TODO(cms-port): agent and gsc modules.
+
+## The port pattern
+
+A service is a module of functions over a `deps` object, plus a `create*Service(deps)` factory that binds the ports (`cms/bind.ts`). The deps hold ports, never an `env`:
+
+| Port | File | Backed in the app by |
+| --- | --- | --- |
+| `CmsRepo` | `cms/repo` | `createD1Repo(db)` from `@repo/db/pages` |
+| `SiteRepo` | `cms/site-repo` | `createSiteD1Repo(db)` from `@repo/db/site` |
+| `MediaRepo` | `cms/media-repo` | `createD1MediaRepo(db)` from `@repo/db/media` |
+| `PostQueries` | `cms/posts-admin` | `createPageQueries(db)` from `@repo/db/pages` |
+| `ApiKeyStore`, `McpCallLog` | `mcp/ports` | `createApiKeyTable(db)`, `createMcpCallLog(db)` from `@repo/db/api-keys` |
+| `OauthConnectionStore` | `mcp/ports` | `createOauthConnectionTable(db)` from `@repo/db/oauth-connections` |
+| `KvPort` (`get`/`put`/`delete`) | `cms/kv` | a `KVNamespace` (`env.CMS_PAGES`) as is |
+| `BlobPort` (`put`) | `cms/media-repo` | an `R2Bucket` (`env.CMS_MEDIA`) as is |
+| `OAuthGrants` (`listUserGrants`, `revokeGrant`) | `mcp/ports` | an adapter over `server.getOAuthApi(env)` of the OAuth provider library |
+| `validate`, `labelFor` | `cms/pages-service` (`ServiceDeps`) | `validatePageDoc` and `(t) => getBlockDef(t)?.label ?? t` from `@repo/cms-core` |
+| `Clock` | `clock` | `systemClock` |
+
+`src/ports.typecheck.ts` assigns each `@repo/db` factory to its port (`const _: CmsRepo = createD1Repo(db)`), so `tsc` fails when a table module and a port drift apart.
+
+Site name, origin and Search Console property are a `SiteConfig` (`@repo/cms-core/site/config`) passed in `SiteDeps.config`; the render-token signing key is `{ signingKey }`. The web app reads `SITE_NAME`, `SITE_ORIGIN` and `PREVIEW_SIGNING_KEY` and passes them.
+
+## How the web app wires it
+
+`apps/web/src/server/trpc/context.ts` builds the adapters from `env` once per call and puts the services on `ctx.services`:
+
+```ts
+const db = drizzle(env.DB, { schema });
+const pagesDeps = {
+  repo: createD1Repo(db),
+  kv: env.CMS_PAGES,
+  validate: validatePageDoc,
+  labelFor: (t) => getBlockDef(t)?.label ?? t,
+  author: user.id,
+};
+const pages = createPagesService(pagesDeps);
+const media = createMediaService({ repo: createD1MediaRepo(db), blobs: env.CMS_MEDIA });
+const keys = createApiKeysService({ keys: createApiKeyTable(db), calls: createMcpCallLog(db) });
+```
+
+`author` is the admin's user id, recorded on the revisions a call writes. Admin gating is the tRPC `adminProcedure`; services take no redirect or `href`, and a failure the editor shows comes back as an `adminResult` union.
 
 ## Writing a service
 
-- Export the input schema (zod). The tRPC router passes it to `.input()`, and the service parses with it again, so a caller that skips tRPC still gets validated input.
-- Methods are `async`, so a validation error rejects the promise rather than throwing synchronously.
 - Take ports. Never read `env`, bindings or the request; the caller passes in what the service needs, including the user id when a rule depends on it.
-- Return plain shapes from `@repo/db/shared`.
-
-A new service also needs a line in `apps/web/src/server/trpc/context.ts`.
+- Use `@repo/cms-core/*` for pure logic and `import type` row types from `@repo/db` (D4).
+- Methods are `async`, so a validation error rejects the promise rather than throwing synchronously.
+- Expected failures (`CmsError`, `OpError`) go through `adminResult`; only auth failures are `TRPCError`, in the router (D8).
+- Add the factory to `bind.ts`-style `create*Service` and a line in `apps/web/src/server/trpc/context.ts`.
 
 ## Tests
 
@@ -37,4 +88,4 @@ A new service also needs a line in `apps/web/src/server/trpc/context.ts`.
 bun test
 ```
 
-Services are tested against in-memory fakes of their ports. D1 table modules are tested in `@repo/db`.
+Services are tested against in-memory fakes of their ports (`src/testing/`) and, for keys, connections and the end-to-end cases in `cms/services.test.ts`, against the real `@repo/db` table modules on `createTestDb()`. Validation is the real `validatePageDoc` from `@repo/cms-core`. D1 queries (media usage, page queries) are tested in `@repo/db`.
