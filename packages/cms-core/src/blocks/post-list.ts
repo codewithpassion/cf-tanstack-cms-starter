@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { PostSummary } from "../posts";
 import { defineBlock } from "./define";
 
 const schema = z.strictObject({
@@ -12,6 +13,17 @@ const schema = z.strictObject({
 });
 
 type Props = z.output<typeof schema>;
+
+/** The newest `limit` published posts (in `category`, when set). `posts` is `posts:index`, newest first. The web registry's `hiddenWhen` uses it too. */
+export function selectPosts(
+  posts: readonly PostSummary[],
+  props: Pick<Props, "category" | "limit">
+): PostSummary[] {
+  const category = props.category?.trim().toLowerCase();
+  return posts
+    .filter((p) => !category || p.category.toLowerCase() === category)
+    .slice(0, props.limit);
+}
 
 export const postList = defineBlock({
   type: "postList",

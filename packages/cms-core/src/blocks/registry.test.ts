@@ -1,6 +1,8 @@
 import { describe, expect, it } from "bun:test";
+import type { PostSummary } from "../posts";
 import { sampleSeo } from "../test-fixtures";
 import { validatePageDoc } from "../validate";
+import { selectPosts } from "./post-list";
 import {
   BLOCK_DEFS,
   BLOCK_TYPES,
@@ -47,5 +49,15 @@ describe("block def registry", () => {
       ok: true,
       props: { a: 1 },
     });
+  });
+
+  it("selectPosts filters by category (case-insensitive) and limits", () => {
+    const post = (slug: string, category: string) =>
+      ({ slug, category }) as PostSummary;
+    const posts = [post("a", "News"), post("b", "Tips"), post("c", "news")];
+    expect(
+      selectPosts(posts, { category: " NEWS ", limit: 5 }).map((p) => p.slug)
+    ).toEqual(["a", "c"]);
+    expect(selectPosts(posts, { limit: 1 }).map((p) => p.slug)).toEqual(["a"]);
   });
 });
