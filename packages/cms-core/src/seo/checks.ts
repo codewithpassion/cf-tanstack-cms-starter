@@ -466,16 +466,18 @@ export function pageOutline(
         alt: typeof props.alt === "string" ? props.alt : "",
       });
     }
+    // The hero's logo is `{ mediaId, alt }`.
+    const logo = props.logo as { mediaId?: unknown; alt?: unknown } | undefined;
     if (
       block._type === "hero" &&
-      props.logo === true &&
+      typeof logo?.mediaId === "string" &&
       !unrendered.has("logo") &&
       !hiddenEverywhere(elementHidden("logo", true))
     ) {
       out.images.push({
         blockKey: key,
         label: "Hero logo",
-        alt: typeof props.logoAlt === "string" ? props.logoAlt : "",
+        alt: typeof logo.alt === "string" ? logo.alt : "",
       });
     }
   }

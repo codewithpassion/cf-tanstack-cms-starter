@@ -366,10 +366,13 @@ export function decideChangeset(
 ): Promise<AdminResult<{ revId: string | null }>> {
   const input = decideChangesetInput.parse(raw);
   const status: ChangesetStatus = input.status;
-  if (status !== "rejected" && input.draftVersion === undefined) {
-    throw new Error('Expected "draftVersion" for an accept');
-  }
   return adminResult(async () => {
+    if (status !== "rejected" && input.draftVersion === undefined) {
+      throw new CmsError(
+        "STALE_DRAFT",
+        "The draft hasn't been saved yet, so this can't be accepted. Wait for it to save and try again."
+      );
+    }
     const cs = await d.store.getChangeset(input.changesetId);
     if (!cs) {
       throw new CmsError("NOT_FOUND", "Changeset not found.");

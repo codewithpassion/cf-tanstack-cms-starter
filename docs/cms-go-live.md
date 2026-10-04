@@ -19,7 +19,7 @@ Variables are in `wrangler.jsonc` under `vars`:
 | Var | Notes |
 | --- | --- |
 | `SITE_NAME` | Site name, shown in the chrome; its slug names the MCP server. |
-| `SITE_ORIGIN` | The public origin, for example `https://your-site.example`, with no trailing slash. **Required in a deploy**: while it is empty every CMS request fails. |
+| `SITE_ORIGIN` | The public origin, for example `https://your-site.example`, with no trailing slash. **Required in a deploy**: while it is empty the whole site returns 500 (every page, not only the admin), because the root layout loads the site document. |
 | `SITE_TIME_ZONE` | IANA zone for "today" (new post dates, the agent's daily budget day). |
 | `GSC_PROPERTY` | Search Console property, for example `sc-domain:your-site.example`. Empty disables the sync. |
 

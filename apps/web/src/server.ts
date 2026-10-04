@@ -71,11 +71,12 @@ app.use("*", async (c, next) =>
 
 // One-click dev login: mints a one-time Clerk sign-in token for the dev user
 // and hands it to /dev-login to redeem client-side. Only active when
-// DEV_LOGIN_EMAIL is configured, which must never be set in a deployed
-// environment - that absence is the safety switch for this route.
+// DEV_LOGIN_EMAIL is configured AND this is a dev build (`vite dev`): a built
+// Worker, including `bun run preview`, never serves it, even if the secret was
+// uploaded by hand. DEV_LOGIN_EMAIL must still never be set in a deployed environment.
 app.get("/api/dev-login", async (c) => {
   const email = c.env.DEV_LOGIN_EMAIL;
-  if (!email) {
+  if (!(import.meta.env.DEV && email)) {
     return c.text("Dev login is not configured.", 404);
   }
 

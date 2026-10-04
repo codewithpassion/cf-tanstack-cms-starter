@@ -122,6 +122,34 @@ describe("POST /admin/api/agent", () => {
     expect(seen).toEqual([]);
   });
 
+  it("stops reading a streamed body at the cap, and refuses a declared oversize body unread", async () => {
+    const { deps: d, seen } = deps();
+    const chunk = new Uint8Array(32 * 1024).fill(120);
+    let pulled = 0;
+    const stream = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        pulled += 1;
+        controller.enqueue(chunk);
+        if (pulled >= 1000) {
+          controller.close();
+        }
+      },
+    });
+    const streamed = new Request(URL_, {
+      method: "POST",
+      body: stream,
+      headers: { "Sec-Fetch-Site": "same-origin" },
+      duplex: "half",
+    } as RequestInit);
+    expect((await handleAgentTurn(streamed, d)).status).toBe(413);
+    // 64 KB is two 32 KB chunks; allow a little read-ahead, nowhere near the 1000 on offer.
+    expect(pulled).toBeLessThan(20);
+
+    const declared = post("{}", { "Content-Length": String(70 * 1024) });
+    expect((await handleAgentTurn(declared, d)).status).toBe(413);
+    expect(seen).toEqual([]);
+  });
+
   it("rejects a cross-origin request before the admin check", async () => {
     let checked = false;
     const { deps: d } = deps(undefined, {

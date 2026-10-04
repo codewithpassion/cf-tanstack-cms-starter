@@ -1,4 +1,6 @@
-import { cmsServices } from "../cms/wiring";
+import { createApiKeyTable, createMcpCallLog } from "@repo/db/api-keys";
+import { createApiKeysService } from "@repo/services/mcp/keys";
+import { createDb } from "../cms/wiring";
 
 /**
  * The daily cron's MCP step (src/server.ts `scheduled`): deletes `mcp_calls` rows older than 90
@@ -10,7 +12,12 @@ export async function pruneMcpCallsDaily(
   now = Date.now()
 ): Promise<string | null> {
   try {
-    const deleted = await cmsServices(env).apiKeys.pruneCalls(now);
+    // D1 only: the full `cmsServices` needs SITE_ORIGIN, which an unconfigured deployment lacks.
+    const db = createDb(env);
+    const deleted = await createApiKeysService({
+      keys: createApiKeyTable(db),
+      calls: createMcpCallLog(db),
+    }).pruneCalls(now);
     console.log(JSON.stringify({ mcpCalls: "pruned", deleted }));
     return null;
   } catch (err) {

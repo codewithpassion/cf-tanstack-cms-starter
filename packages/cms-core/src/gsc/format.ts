@@ -1,6 +1,6 @@
 /** Number formats and verdict labels shared by the SEO tab's performance panel and /admin/seo. */
 
-export const fmtInt = (v: number) => v.toLocaleString("en-AU");
+export const fmtInt = (v: number) => v.toLocaleString("en-GB");
 export const fmtCtr = (v: number) => `${(v * 100).toFixed(1)}%`;
 export const fmtPosition = (v: number | null) =>
   v === null ? "—" : v.toFixed(1);

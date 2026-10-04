@@ -139,11 +139,7 @@ describe("pageOutline vs the rendered blocks", () => {
     }
   );
 
-  // Known cms-core gap: pageOutline reads the home hero's logo as `logo: true` + `logoAlt` (an
-  // older shape), but the schema stores `logo: { mediaId, alt }`, so the rendered logo is missing
-  // from the outline's images. `failing` flips to a failure once cms-core is fixed: then move the
-  // logo into the "hero home" fixture above and delete this test.
-  it.failing("hero home: the rendered logo is one outline image", () => {
+  it("hero home: the rendered logo is one outline image", () => {
     const d = doc([
       block("hero", "b1", {
         props: {

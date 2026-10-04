@@ -122,6 +122,16 @@ describe("agent admin service", () => {
     expect(models.ok && models.models.some((m) => m.available)).toBe(true);
   });
 
+  it("returns an accept without a draftVersion as a typed result, not a throw", async () => {
+    const res = await createAgentAdminService(deps()).decideChangeset({
+      changesetId: "cs1",
+      status: "accepted",
+      accepted: [],
+      rejected: [],
+    });
+    expect(res).toMatchObject({ ok: false, code: "STALE_DRAFT" });
+  });
+
   it("returns a run-state refusal as a result", async () => {
     const service = createAgentAdminService(deps());
     expect(await service.discardRunPlan({ runId: "missing" })).toMatchObject({

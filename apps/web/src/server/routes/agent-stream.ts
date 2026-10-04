@@ -1,5 +1,6 @@
 import type { AgentEvent } from "@repo/cms-core/agent/types";
 import type { BeginTurnResult, Turn } from "@repo/services/agent/turn";
+import { readBody } from "./media-upload";
 
 /**
  * The agent route's transport (routes/admin.api.agent.ts). `POST /admin/api/agent` runs one turn
@@ -136,10 +137,18 @@ export const handleAgentTurn = async (
   if (who instanceof Response) {
     return who;
   }
-  const text = await request.text();
-  if (text.length > MAX_BODY) {
+  // Check the declared length first, then count bytes while reading, so an oversize body is never buffered.
+  const declared = Number(request.headers.get("Content-Length"));
+  let bytes: Uint8Array | null = null;
+  if (!(declared > MAX_BODY)) {
+    bytes = request.body
+      ? await readBody(request.body, MAX_BODY)
+      : new Uint8Array();
+  }
+  if (!bytes) {
     return error(413, "The message is too long.");
   }
+  const text = new TextDecoder().decode(bytes);
   let body: unknown;
   try {
     body = JSON.parse(text);

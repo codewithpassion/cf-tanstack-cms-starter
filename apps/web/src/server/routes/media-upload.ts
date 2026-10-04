@@ -50,7 +50,7 @@ const isSameOrigin = (request: Request): boolean => {
 };
 
 /** The body, read while counting bytes; null as soon as it passes `max` (the rest is never buffered). */
-const readBody = async (
+export const readBody = async (
   body: ReadableStream<Uint8Array>,
   max: number
 ): Promise<Uint8Array<ArrayBuffer> | null> => {
